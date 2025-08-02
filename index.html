@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Protection ASCII - IAetIA22</title>
+  <style>
+    body {
+      font-family: 'Courier New', monospace;
+      background-color: #0f0f0f;
+      color: #00ff99;
+      text-align: center;
+      padding: 2em;
+    }
+    input, button {
+      margin: 1em;
+      padding: 0.5em;
+      font-size: 1em;
+      background-color: #222;
+      color: #00ff99;
+      border: 1px solid #00ff99;
+    }
+    #asciiPreview {
+      white-space: pre;
+      background-color: #111;
+      padding: 1em;
+      margin-top: 2em;
+      border: 1px dashed #00ff99;
+    }
+    img {
+      max-width: 300px;
+      margin-top: 1em;
+      border: 2px solid #00ff99;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🛡️ ASCII Image Protector – IAetIA22</h1>
+
+  <input type="file" id="imageInput" accept="image/*">
+  <br>
+  <img id="imagePreview" src="" alt="Aperçu de l'image" style="display:none;">
+  <br>
+  <button onclick="simulateASCII()">Convertir en ASCII</button>
+  <button onclick="simulateEncrypt()">Protéger (Simulation)</button>
+
+  <div id="asciiPreview"></div>
+
+  <script>
+    const imageInput = document.getElementById('imageInput');
+    const imagePreview = document.getElementById('imagePreview');
+    const asciiPreview = document.getElementById('asciiPreview');
+
+    imageInput.addEventListener('change', () => {
+      const file = imageInput.files[0];
+      if (file) {
+        imagePreview.src = URL.createObjectURL(file);
+        imagePreview.style.display = 'block';
+      }
+    });
+
+    function simulateASCII() {
+      asciiPreview.textContent = `
+        ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+        ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+        ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+        ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+        ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+        ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+        ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+      `;
+    }
+
+    function simulateEncrypt() {
+      alert("🔐 Image ASCII protégée avec chiffrement simulé !");
+    }
+  </script>
+
+</body>
+</html>
