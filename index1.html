@@ -1,141 +1,132 @@
+ascii_protector.html
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LearnLinkc</title>
+  <title>Protection ASCII - IAetIA22</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      background-color: #f4f4f4;
-    }
-    header {
-      background-color: #2c3e50;
-      color: white;
-      padding: 1em;
+      font-family: 'Courier New', monospace;
+      background-color: #0f0f0f;
+      color: #00ff99;
       text-align: center;
-    }
-    nav {
-      background-color: #34495e;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 1em;
-      padding: 0.5em;
-    }
-    nav a {
-      color: white;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    .search-bar {
-      margin: 2em auto;
-      text-align: center;
-    }
-    .search-bar input {
-      padding: 0.5em;
-      width: 80%;
-      max-width: 400px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-    .courses {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1em;
       padding: 2em;
     }
-    .course {
-      background-color: white;
-      padding: 1em;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      transition: transform 0.2s;
+    input, button {
+      margin: 1em;
+      padding: 0.5em;
+      font-size: 1em;
+      background-color: #222;
+      color: #00ff99;
+      border: 1px solid #00ff99;
+      cursor: pointer;
     }
-    .course:hover {
-      transform: scale(1.02);
-    }
-    .course h3 {
-      margin-top: 0;
-    }
-    footer {
-      background-color: #2c3e50;
-      color: white;
-      text-align: center;
+    #asciiPreview {
+      white-space: pre;
+      background-color: #111;
       padding: 1em;
       margin-top: 2em;
+      border: 1px dashed #00ff99;
+      max-width: 100%;
+      overflow-x: auto;
     }
-
-    @media (max-width: 600px) {
-      nav {
-        flex-direction: column;
-        align-items: center;
-      }
-      .search-bar input {
-        width: 90%;
-      }
+    img {
+      max-width: 300px;
+      margin-top: 1em;
+      border: 2px solid #00ff99;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>LearnLinkc</h1>
-    <p>Apprends, explore et progresse</p>
-  </header>
+  <h1>🛡️ ASCII Image Protector – IAetIA22</h1>
 
-  <nav>
-    <a href="#">Accueil</a>
-    <a href="#">Cours</a>
-    <a href="#">Favoris</a>
-    <a href="#">À propos</a>
-  </nav>
+  <input type="file" id="imageInput" accept="image/*"><br>
+  <img id="imagePreview" alt="Aperçu de l'image" style="display:none;"><br>
 
-  <div class="search-bar">
-    <input type="text" id="searchInput" placeholder="Rechercher un cours...">
-  </div>
+  <button onclick="convertToASCII()">Convertir en ASCII</button>
+  <button onclick="protectASCII()">Protéger (SHA-256)</button>
+  <button onclick="downloadASCII()">Télécharger ASCII</button>
 
-  <section class="courses" id="courseList">
-    <div class="course">
-      <h3>HTML & CSS</h3>
-      <p>Apprends les bases du développement web avec HTML et CSS.</p>
-    </div>
-    <div class="course">
-      <h3>JavaScript</h3>
-      <p>Découvre comment rendre tes pages interactives avec JS.</p>
-    </div>
-    <div class="course">
-      <h3>Python</h3>
-      <p>Maîtrise la programmation avec l’un des langages les plus populaires.</p>
-    </div>
-    <div class="course">
-      <h3>SQL</h3>
-      <p>Gère et interroge des bases de données efficacement.</p>
-    </div>
-  </section>
+  <div id="asciiPreview"></div>
 
-  <footer>
-    &copy; 2025 LearnLinkc. Tous droits réservés.
-  </footer>
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
   <script>
-    const searchInput = document.getElementById('searchInput');
-    const courses = document.querySelectorAll('.course');
+    const imageInput = document.getElementById('imageInput');
+    const imagePreview = document.getElementById('imagePreview');
+    const asciiPreview = document.getElementById('asciiPreview');
 
-    searchInput.addEventListener('input', () => {
-      const query = searchInput.value.toLowerCase();
-      courses.forEach(course => {
-        const title = course.querySelector('h3').textContent.toLowerCase();
-        const description = course.querySelector('p').textContent.toLowerCase();
-        if (title.includes(query) || description.includes(query)) {
-          course.style.display = 'block';
-        } else {
-          course.style.display = 'none';
-        }
-      });
+    imageInput.addEventListener('change', () => {
+      const file = imageInput.files[0];
+      if (file) {
+        imagePreview.src = URL.createObjectURL(file);
+        imagePreview.style.display = 'block';
+      }
     });
+
+    function convertToASCII() {
+      const img = imagePreview;
+      if (!img.src) {
+        alert("Veuillez d'abord charger une image.");
+        return;
+      }
+
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const width = 100;
+      const height = img.naturalHeight / (img.naturalWidth / width);
+      canvas.width = width;
+      canvas.height = height;
+
+      ctx.drawImage(img, 0, 0, width, height);
+      const imageData = ctx.getImageData(0, 0, width, height).data;
+
+      const chars = "@#S%?*+;:,. ";
+      let ascii = "";
+
+      for (let y = 0; y < height; y++) {
+        let row = "";
+        for (let x = 0; x < width; x++) {
+          const offset = (y * width + x) * 4;
+          const r = imageData[offset];
+          const g = imageData[offset + 1];
+          const b = imageData[offset + 2];
+          const brightness = (r + g + b) / 3;
+          const index = Math.floor((brightness / 255) * (chars.length - 1));
+          row += chars[index];
+        }
+        ascii += row + "\\n";
+      }
+
+      asciiPreview.textContent = ascii;
+    }
+
+    function protectASCII() {
+      const asciiText = asciiPreview.textContent.trim();
+      if (!asciiText) {
+        alert("⚠️ Veuillez d'abord générer l'image ASCII.");
+        return;
+      }
+
+      const hash = CryptoJS.SHA256(asciiText).toString();
+      alert("🔐 Hash SHA-256 généré :\\n" + hash);
+    }
+
+    function downloadASCII() {
+      const asciiText = asciiPreview.textContent.trim();
+      if (!asciiText) {
+        alert("⚠️ Aucune donnée ASCII à télécharger.");
+        return;
+      }
+
+      const blob = new Blob([asciiText], { type: 'text/plain' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'ascii_image.txt';
+      link.click();
+    }
   </script>
 
 </body>
 </html>
+~/ascii_ia_app $
