@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NetSecurePro IA - Interface Officielle</title>
+<style>
+  body {
+    margin: 0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #012F4B, #026494);
+    color: #eee;
+    display: flex; flex-direction: column; align-items: center;
+    min-height: 100vh;
+    padding: 1rem;
+  }
+  header {
+    margin-top: 1rem;
+    text-align: center;
+  }
+  header h1 {
+    font-weight: 900;
+    font-size: 2.5rem;
+    color: #FFA500;
+    margin-bottom: 0;
+  }
+  header p {
+    font-size: 1.1rem;
+    margin-top: 0.2rem;
+    color: #C0C0C0;
+  }
+  main {
+    background: rgba(255 255 255 / 0.1);
+    margin-top: 2rem;
+    border-radius: 12px;
+    padding: 2rem;
+    max-width: 480px;
+    width: 100%;
+    box-shadow: 0 0 30px rgba(0,0,0,0.7);
+  }
+  button#launchBtn {
+    background: #FFA500;
+    border: none;
+    border-radius: 8px;
+    padding: 1rem 2rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #012F4B;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    width: 100%;
+    margin-top: 1.5rem;
+  }
+  button#launchBtn:hover {
+    background: #ffbf47;
+  }
+  section#qrCode {
+    margin-top: 2rem;
+    text-align: center;
+  }
+  section#qrCode img {
+    width: 160px;
+    height: 160px;
+    border-radius: 16px;
+    box-shadow: 0 0 15px #FFA500;
+  }
+  footer {
+    margin-top: auto;
+    padding: 1rem 0;
+    font-size: 0.85rem;
+    color: #bbb;
+    text-align: center;
+  }
+  footer a {
+    color: #FFA500;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  footer a:hover {
+    text-decoration: underline;
+  }
+  @media (max-width: 520px) {
+    main {
+      max-width: 90vw;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>NetSecurePro IA</h1>
+  <p>Interface Officielle - Rebuild 2025</p>
+</header>
+
+<main>
+  <p>Bienvenue dans l’interface intelligente de <strong>NetSecurePro IA</strong>. Cette application sécurisée vous permet de gérer vos projets IA avec un lancement rapide et un contrôle complet.</p>
+
+  <button id="launchBtn" aria-label="Lancer l’interface IA">Lancer l’IA</button>
+
+  <section id="qrCode" aria-label="QR Code de téléchargement">
+    <p>Téléchargez l’archive complète :</p>
+    <img
+      src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAACWCAYAAAA8AXHiAAAABHNCSVQICAgIfAhkiAAABJpJREFUeJzt3T1v2kAQBuC2Txlhq9r7TnkJyQVJkEKKzDEHMT52ZSAp7xA6IvGmFhdNksWS9+hD9DuDXhAIkAyRHtyrJQu2bONndmSSXPbN88YY2Ylh9OL4P3pf3vv7mck4nkcrkQl29ewQKmSIsBMeVQE3vALfDUrcBp7ozMA8dK9Ds0G18xQDE4rnWeOVplgW+BSo5eWnOgP/F5W5Xj+Q63dF64lHy2QYO7tLjEdP1+qapTHP7tykAxUqWnhfdXBPxZULtOlKqjBFECAIEy0TCXw+AEosvFyA4H8i+9vRqB+wW+Xw6hUqxyH0wOH43EyDzy0DCAtZYfVuHz2B6ErD2H4FCHAcRoD58CEgs3EcBYhcDRBQICzdsP7TZ+AbwYNJA1PAh7ZYYBYFyHEOIQAhq+fBf1OPodHSXCu9nk8hVyo/1SNLjBhclyHlI3GBPg+pSME9Di0QjyA5AUV48MIlQ+3dCxBIMhPckYOQs7E88BHC4NoR40AyJBvEDXkVxQah+HePT2HDiFnoT1+j5Sbcj5RZPx8XWqNcApN+fJyD8B4JMNYCSH3p+CBPJ5Y1Wrl8vlZpjqZTDQkCwyHCfDoUmXzDw7I4f2DYNwFEAjCshNkVx+IA1w7DDmA5UDSakpAl0JoKn8PsnSg8lT6wPMU7ZgUx0Q0vlEAzF1ogDqEuOpTDQkAwmlMjxawSKRlBpO0QiObq9Xg4Dp5SxaLS1Q5cgB6KnEljSSwLkwkRUVm1CE4YBG6XeCTMl3PxW6jGmmqSqWS9Hs9kzDYyPm/vTh+wW2CR3x8WExHCNPZhhP2FcD4qQPf4aD/bScxy2Q5+3bJEXx86SqEYiFUpTYNp6kQ8LkUkWDaVLo8zWmj9KBLJeXpqNGqPyqEYoWKrl7fUIa1GyWNHH5zBzHUyqXy6RiQFiPzEC9Erm0ShcyTldDcpW7dZ5PAzFpTDsnk8hgPlMrY+9u2NA0Dd0Wm1KrNGLYHLOuWzWPZ9DNUKsTqlIvFFbL2e0VqVSlSvX9xxa7nDw9tAfYyWd3aZxsX2lxcFccF4pBAtNNI51OJpq8XL1WY6lbBMiFOnE+TJ+OZ+F7ufL5RHEcP6Xj+/HgX+7dTUqg94T2RERERERER0a/iP5A/Nk7w9GqxnMAAAAASUVORK5CYII="
+      alt="QR Code téléchargement archive NetSecurePro IA"
+    />
+  </section>
+
+  <section style="margin-top:2rem; font-size: 0.9rem; color:#ccc; text-align:center;">
+    <p>© 2025 NetSecurePro IA - par <a href="https://orcid.org/0009-0007-7571-3178" target="_blank" rel="noopener noreferrer" style="color:#FFA500;">Zoubirou Mohammed Ilyes</a></p>
+  </section>
+</main>
+
+<script>
+  document.getElementById('launchBtn').addEventListener('click', () => {
+    alert('🔐 Lancement simulé de l’interface IA locale...\n\nSous Termux, ouvrez index.html avec termux-open ou un navigateur.');
+  });
+</script>
+
+</body>
+</html>
