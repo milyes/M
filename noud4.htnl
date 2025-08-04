@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Module IA – Nœud 4</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      color: #333;
+    }
+    header {
+      background: #1a1a1a;
+      color: #fff;
+      padding: 1rem;
+      text-align: center;
+    }
+    nav {
+      background: #333;
+      padding: 1rem;
+      width: 200px;
+      height: 100vh;
+      float: left;
+      color: white;
+    }
+    nav ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    nav ul li {
+      margin: 10px 0;
+      cursor: pointer;
+    }
+    main {
+      margin-left: 200px;
+      padding: 2rem;
+    }
+    .btn-ia {
+      padding: 10px 20px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .btn-ia:hover {
+      background: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Module IA – Nœud 4</h1>
+    <p>NetSecurePro | Version WebView</p>
+  </header>
+
+  <nav>
+    <ul>
+      <li onclick="showContent('usb')">Analyse USB</li>
+      <li onclick="showContent('tunnel')">Tunnel Sécurisé</li>
+      <li onclick="showContent('cli')">Script CLI</li>
+      <li onclick="showContent('ia')">IA Interactif</li>
+    </ul>
+  </nav>
+
+  <main>
+    <div id="content">
+      <h2>Bienvenue dans le module IA</h2>
+      <p>Sélectionnez une option dans le menu à gauche pour commencer.</p>
+    </div>
+  </main>
+
+  <script>
+    function showContent(section) {
+      let content = document.getElementById("content");
+      switch (section) {
+        case 'usb':
+          content.innerHTML = "<h2>Analyse USB</h2><p>Analyse intelligente des périphériques connectés (logiciel ou script shell).</p>";
+          break;
+        case 'tunnel':
+          content.innerHTML = "<h2>Tunnel Sécurisé</h2><p>Activation d’un tunnel Cloudflare ou Ngrok pour accès distant sécurisé.</p>";
+          break;
+        case 'cli':
+          content.innerHTML = "<h2>Script CLI IA</h2><p>Scripts d'automatisation exécutables via Termux ou terminal sécurisé.</p>";
+          break;
+        case 'ia':
+          content.innerHTML = `<h2>IA Interactive</h2>
+            <p>Appuyez sur le bouton ci-dessous pour lancer une interaction IA.</p>
+            <button class="btn-ia" onclick="alert('IA en cours de traitement…')">Lancer l’IA</button>`;
+          break;
+        default:
+          content.innerHTML = "<h2>Erreur</h2><p>Section non trouvée.</p>";
+      }
+    }
+  </script>
+
+</body>
+</html>
