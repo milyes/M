@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Universal Chat - Menu IA</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 2rem;
+      background: #f4f6f8;
+      color: #222;
+    }
+    h1 {
+      color: #004aad;
+      font-size: 2em;
+      margin-bottom: 1rem;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      background: #007bff;
+      margin: 0.5rem 0;
+      padding: 1rem;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    li:hover {
+      background: #0056b3;
+    }
+    #output {
+      margin-top: 2rem;
+      background: #ffffff;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 0 10px #ccc;
+      min-height: 100px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Universal Chat - Menu IA</h1>
+  <ul id="menu">
+    <li data-module="start">Start mapping out ideas</li>
+    <li data-module="kanban">Create Kanban</li>
+    <li data-module="tchart">Generate T-Chart</li>
+    <li data-module="tree">Draw Tree Diagram</li>
+    <li data-module="flowchart">Create Flow Chart</li>
+  </ul>
+
+  <div id="output">Cliquez sur une option pour afficher le module correspondant...</div>
+
+  <script>
+    const output = document.getElementById('output');
+
+    const actions = {
+      start: () => "🧠 Module 'Start mapping out ideas' lancé.",
+      kanban: () => "🗂️ Module 'Create Kanban' lancé.",
+      tchart: () => "📊 Module 'Generate T-Chart' lancé.",
+      tree: () => "🌳 Module 'Draw Tree Diagram' lancé.",
+      flowchart: () => "🔁 Module 'Create Flow Chart' lancé."
+    };
+
+    document.getElementById('menu').addEventListener('click', e => {
+      if (e.target && e.target.nodeName === 'LI') {
+        const module = e.target.getAttribute('data-module');
+        output.textContent = actions[module] ? actions[module]() : "❌ Module non défini.";
+      }
+    });
+  </script>
+
+</body>
+</html>
