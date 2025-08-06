@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Inventaire IA – NetSecurePro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0f172a;
+      color: #f1f5f9;
+      margin: 0;
+      padding: 1em;
+    }
+    h1 {
+      color: #38bdf8;
+      text-align: center;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1em;
+    }
+    th, td {
+      border: 1px solid #334155;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #1e293b;
+      color: #facc15;
+    }
+    tr:nth-child(even) {
+      background-color: #1e293b;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 15px;
+      background: #1e293b;
+      color: white;
+      border: 1px solid #334155;
+      font-size: 1em;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 2em;
+      font-size: 0.9em;
+      color: #94a3b8;
+    }
+    .highlight {
+      color: #22d3ee;
+    }
+    a {
+      color: #60a5fa;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📦 Inventaire IA – <span class="highlight">NetSecurePro</span></h1>
+
+  <input type="text" id="search" placeholder="🔍 Rechercher un fichier, type, date ou description...">
+
+  <table id="inventoryTable">
+    <thead>
+      <tr>
+        <th>Nom du fichier</th>
+        <th>Type</th>
+        <th>Date</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Contenu dynamique injecté ici -->
+    </tbody>
+  </table>
+
+  <div class="footer">
+    © 2025 Zoubirou Mohammed Ilyes · 
+    <a href="https://orcid.org/0009-0007-7571-3178" target="_blank">ORCID</a>
+  </div>
+
+  <script>
+    async function chargerInventaire() {
+      const response = await fetch('INVENTAIRE.md');
+      const data = await response.text();
+      const lignes = data.split('\n').slice(3); // Ignore les entêtes
+      const tbody = document.querySelector("#inventoryTable tbody");
+
+      lignes.forEach(ligne => {
+        if (ligne.includes('|')) {
+          const colonnes = ligne.split('|').map(c => c.trim());
+          if (colonnes.length >= 5) {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td><a href="${colonnes[1]}" target="_blank">${colonnes[1]}</a></td>
+              <td>${colonnes[2]}</td>
+              <td>${colonnes[3]}</td>
+              <td>${colonnes[4]}</td>
+            `;
+            tbody.appendChild(tr);
+          }
+        }
+      });
+    }
+
+    document.getElementById("search").addEventListener("input", function () {
+      const filtre = this.value.toLowerCase();
+      const lignes = document.querySelectorAll("#inventoryTable tbody tr");
+      lignes.forEach(ligne => {
+        ligne.style.display = ligne.innerText.toLowerCase().includes(filtre) ? "" : "none";
+      });
+    });
+
+    chargerInventaire();
+  </script>
+
+</body>
+</html>
