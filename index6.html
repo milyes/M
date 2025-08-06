@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Bloc IA - NetSecurePro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background-color: #0f1117;
+      font-family: Arial, sans-serif;
+      color: #e0e0e0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .ia-block {
+      background-color: #181b23;
+      padding: 30px;
+      border-radius: 10px;
+      width: 350px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.7);
+    }
+    .ia-block h2 {
+      color: #4caf50;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .ia-block input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      background-color: #1c1f26;
+      color: #fff;
+      border: 1px solid #333;
+    }
+    .ia-block button {
+      width: 100%;
+      padding: 10px;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .ia-block .result {
+      margin-top: 15px;
+      background-color: #1c1f26;
+      padding: 10px;
+      border-radius: 5px;
+      min-height: 40px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="ia-block">
+  <h2>🧠 Interaction IA</h2>
+  <input id="inputIA" type="text" placeholder="Entrez votre logique...">
+  <button onclick="runIA()">Analyser avec l'IA</button>
+  <div class="result" id="resultIA">...</div>
+</div>
+
+<script>
+  async function runIA() {
+    const input = document.getElementById("inputIA").value;
+    const result = document.getElementById("resultIA");
+    result.innerHTML = "🧠 Analyse IA en cours...";
+    setTimeout(() => {
+      result.innerHTML = "✅ IA : '" + input + "' a été analysé avec succès.";
+    }, 1500);
+  }
+</script>
+
+</body>
+</html>
