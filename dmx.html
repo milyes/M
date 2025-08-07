@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IA22_LOGIC – Commandes & Modules</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f0f2f5;
+    }
+    .header {
+      background-color: #212529;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    .search-bar {
+      margin: 1rem 0;
+    }
+    .form-section {
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>⚙️ IA22_LOGIC – Commandes & Modules</h1>
+    <p>Interface responsive pour gérer les commandes et modules</p>
+  </div>
+
+  <div class="container">
+    <!-- 🔍 Barre de recherche -->
+    <div class="search-bar">
+      <input type="text" id="searchInput" class="form-control" placeholder="🔍 Rechercher une commande...">
+    </div>
+
+    <!-- 📋 Tableau des commandes -->
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+          <tr>
+            <th>Commande</th>
+            <th>Description</th>
+            <th>Paramètres</th>
+            <th>Modules associés</th>
+          </tr>
+        </thead>
+        <tbody id="commandTableBody">
+          <!-- Les lignes seront injectées dynamiquement -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 📡 Formulaire d'envoi de commande -->
+    <div class="form-section">
+      <h4>📤 Envoyer une commande</h4>
+      <form id="commandForm">
+        <div class="mb-3">
+          <input type="text" name="commande" class="form-control" placeholder="Nom de la commande" required>
+        </div>
+        <div class="mb-3">
+          <input type="text" name="parametres" class="form-control" placeholder="Paramètres (optionnel)">
+        </div>
+        <button type="submit" class="btn btn-primary">Envoyer</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // 🧠 Données simulées
+    const commandes = [
+      { nom: "INIT_SYSTEM", description: "Initialise le système", params: "mode, config", modules: ["Core", "Security"] },
+      { nom: "RUN_DIAGNOSTIC", description: "Diagnostic complet", params: "niveau, rapport", modules: ["Health", "Logs"] },
+      { nom: "EXPORT_DATA", description: "Exporte les données", params: "format, destination", modules: ["Storage", "Network"] },
+      { nom: "RESET_MODULE", description: "Réinitialise un module", params: "module_id", modules: ["Core", "Recovery"] },
+      { nom: "SHUTDOWN", description: "Arrête le système", params: "force", modules: ["Power", "Security"] }
+    ];
+
+    // 🧩 Injection des commandes dans le tableau
+    const tableBody = document.getElementById("commandTableBody");
+    function renderTable(data) {
+      tableBody.innerHTML = "";
+      data.forEach(cmd => {
+        const row = `<tr>
+          <td>${cmd.nom}</td>
+          <td>${cmd.description}</td>
+          <td>${cmd.params}</td>
+          <td>${cmd.modules.join(", ")}</td>
+        </tr>`;
+        tableBody.innerHTML += row;
+      });
+    }
+    renderTable(commandes);
+
+    // 🔍 Filtrage dynamique
+    document.getElementById("searchInput").addEventListener("keyup", function () {
+      const filter = this.value.toLowerCase();
+      const filtered = commandes.filter(cmd =>
+        cmd.nom.toLowerCase().includes(filter) ||
+        cmd.description.toLowerCase().includes(filter) ||
+        cmd.modules.join(", ").toLowerCase().includes(filter)
+      );
+      renderTable(filtered);
+    });
+
+    // 📡 Envoi de commande (simulé)
+    document.getElementById("commandForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const commande = this.commande.value;
+      const parametres = this.parametres.value;
+      alert(`Commande "${commande}" envoyée avec paramètres : ${parametres || "aucun"}`);
+      this.reset();
+    });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
