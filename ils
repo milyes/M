@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mohammed Ilyes – Schulich Sponsored</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f5f7fa;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      background: white;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .header {
+      background-color: #003366;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+    .header h2 {
+      margin-top: 10px;
+      font-weight: 400;
+      font-size: 18px;
+    }
+    .content {
+      display: flex;
+      flex-wrap: wrap;
+      padding: 20px;
+      gap: 20px;
+      align-items: center;
+      justify-content: center;
+    }
+    .photo {
+      flex: 1;
+      min-width: 200px;
+      max-width: 250px;
+    }
+    .photo img {
+      width: 100%;
+      border-radius: 10px;
+    }
+    .text {
+      flex: 2;
+      min-width: 250px;
+    }
+    .text h3 {
+      margin-top: 0;
+      color: #003366;
+    }
+    .cta {
+      text-align: center;
+      padding: 20px;
+    }
+    .cta button {
+      background-color: #0071bc;
+      color: white;
+      padding: 12px 25px;
+      border: none;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .cta button:hover {
+      background-color: #005b95;
+    }
+    .footer {
+      background-color: #eeeeee;
+      padding: 20px;
+      font-size: 14px;
+      text-align: center;
+      direction: rtl;
+      font-family: Tahoma, sans-serif;
+    }
+    .sponsor-tag {
+      font-size: 13px;
+      color: gray;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Mohammed Ilyes – Your Path to Success Starts Here</h1>
+      <h2>Sponsored by Schulich School of Business</h2>
+    </div>
+    <div class="content">
+      <div class="photo">
+        <!-- Remplacez cette image par votre photo personnelle -->
+        <img src="https://via.placeholder.com/250x300.png?text=Votre+Photo+Ici" alt="Mohammed Ilyes">
+      </div>
+      <div class="text">
+        <h3>Explore Schulich’s MBA & Master’s Programs</h3>
+        <p>
+          Unlock your future with globally recognized programs designed for real-world impact.  
+          Build your leadership. Embrace innovation. Become a business leader of tomorrow.
+        </p>
+        <p style="direction: rtl; font-family: Tahoma, sans-serif;">
+          📚 إفتح طريق النجاح مع برامج الماجستير و MBA من مدرسة شوليش للأعمال.  
+          التكوين عالي المستوى، مع فرص عمل دولية وقيادة مستقبلية.
+        </p>
+      </div>
+    </div>
+    <div class="cta">
+      <button onclick="window.open('https://schulich.yorku.ca/', '_blank')">Suivre / Follow Schulich</button>
+      <div class="sponsor-tag">#Sponsored</div>
+    </div>
+    <div class="footer">
+      <strong>🔹 تعليق محمد إلياس:</strong><br>
+      "الذكاء والتميز يبدأان من التكوين. شرف لي أن أكون ضمن شبكة Schulich لتوسيع الأفق وتطوير المهارات."
+    </div>
+  </div>
+</body>
+</html>
