@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>IA22 COOPKIT LOGIC</title>
+    <style>
+        body { font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: #f2f2f2; }
+        h1 { color: #333; }
+        button { padding: 10px 20px; font-size: 16px; background-color: #007BFF; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+    </style>
+</head>
+<body>
+    <h1>IA22 COOPKIT LOGIC</h1>
+    <button onclick="alert('IA22 CoopKit Logic lancé !')">Lancer IA CoopKit</button>
+</body>
+</html>
+
+
+
+""",
+    "README.md": """
+# IA22 COOPKIT LOGIC
+
+## Description
+Version WebView IA APK de démonstration pour IA22 CoopKit Logic.
+
+- Auteur : Zoubirou Mohammed Ilyes
+- ORCID : https://orcid.org/0009-0007-7571-3178
+
+## Installation
+Scannez le QR code fourni pour télécharger et installer l'APK IA22 CoopKit Logic.
+
+## Licence
+Projet NetSecurePro - Tous droits réservés.
+""",
+    "PDF_PUBLICATION_IA22.pdf": "PDF publication simulé (placeholder)",
+    "QR_CODE_IA22_COOPKIT_LOGIC.png": "QR code simulé (placeholder)",
+    "logo_netsecurepro.png": "Logo NetSecurePro simulé (placeholder)"
+}
+
+# Création du fichier ZIP
+with zipfile.ZipFile(zip_filename, 'w') as zipf:
+    for filename, content in files_to_include.items():
+        if filename.endswith('.apk') or filename.endswith('.pdf') or filename.endswith('.png'):
+            # Fichiers binaires placeholders
+            zipf.writestr(filename, b"Placeholder content for binary file.")
+        else:
+            zipf.writestr(filename, content)
+
+zip_filename
