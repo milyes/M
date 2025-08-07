@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>IA22 Logic – Formulaire</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #eef2f3;
+      padding: 40px;
+      text-align: center;
+    }
+    h1 {
+      color: #2c3e50;
+    }
+    form {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      display: inline-block;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    #resultat {
+      margin-top: 20px;
+      font-weight: bold;
+      color: #27ae60;
+    }
+  </style>
+</head>
+<body>
+  <h1>Formulaire IA22 Logic</h1>
+  <form id="formulaire">
+    <label for="nom">Nom :</label>
+    <input type="text" id="nom" name="nom" required>
+
+    <label for="email">Email :</label>
+    <input type="email" id="email" name="email" required>
+
+    <label for="module">Module IA préféré :</label>
+    <select id="module" name="module">
+      <option value="Sécurité">Sécurité</option>
+      <option value="Analyse">Analyse</option>
+      <option value="Prédiction">Prédiction</option>
+    </select>
+
+    <label for="commentaire">Commentaire :</label>
+    <textarea id="commentaire" name="commentaire" rows="4"></textarea>
+
+    <button type="submit">Envoyer</button>
+  </form>
+
+  <div id="resultat"></div>
+
+  <script>
+    document.getElementById("formulaire").addEventListener("submit", function(event) {
+      event.preventDefault(); // Empêche l'envoi réel
+
+      const nom = document.getElementById("nom").value;
+      const email = document.getElementById("email").value;
+      const module = document.getElementById("module").value;
+      const commentaire = document.getElementById("commentaire").value;
+
+      const message = `Merci ${nom} ! Vous avez choisi le module "${module}".`;
+      document.getElementById("resultat").innerText = message;
+    });
+  </script>
+</body>
+</html>
