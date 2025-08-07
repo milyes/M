@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Interface IA CLI</title>
+  <style>
+    body {
+      background-color: #1e1e1e;
+      color: #00ff99;
+      font-family: 'Courier New', Courier, monospace;
+      padding: 20px;
+    }
+    #terminal {
+      border: 2px solid #00ff99;
+      padding: 20px;
+      height: 400px;
+      overflow-y: auto;
+      background-color: #000;
+    }
+    #input {
+      width: 100%;
+      padding: 10px;
+      background-color: #111;
+      color: #00ff99;
+      border: none;
+      font-size: 16px;
+    }
+    .command {
+      color: #00ffff;
+    }
+    .output {
+      margin-left: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🧠 Interface IA CLI</h1>
+  <div id="terminal"></div>
+  <input type="text" id="input" placeholder="Tapez une commande...">
+
+  <script>
+    const terminal = document.getElementById('terminal');
+    const input = document.getElementById('input');
+
+    const modulesIA = [
+      { id: "core", nom: "Core Engine", status: "actif", description: "Moteur principal d'exécution logique" },
+      { id: "vision", nom: "Vision Module", status: "inactif", description: "Analyse d'image et reconnaissance visuelle" },
+      { id: "nlp", nom: "NLP Processor", status: "actif", description: "Traitement du langage naturel" },
+      { id: "security", nom: "Security Layer", status: "actif", description: "Gestion des accès et des permissions" },
+      { id: "learning", nom: "Learning Engine", status: "expérimental", description: "Apprentissage automatique en temps réel" },
+      { id: "network", nom: "Network Interface", status: "actif", description: "Communication inter-modules" }
+    ];
+
+    function afficher(message, classe = 'output') {
+      const ligne = document.createElement('div');
+      ligne.className = classe;
+      ligne.textContent = message;
+      terminal.appendChild(ligne);
+      terminal.scrollTop = terminal.scrollHeight;
+    }
+
+    function executerCommande(cmd) {
+      afficher(`> ${cmd}`, 'command');
+      const args = cmd.trim().split(' ');
+      const commande = args[0];
+      const filtre = args[1];
+
+      if (commande === 'list') {
+        const filtrés = filtre ? modulesIA.filter(m => m.status === filtre) : modulesIA;
+        if (filtrés.length === 0) {
+          afficher("Aucun module trouvé.");
+        } else {
+          filtrés.forEach(m => {
+            afficher(`🧩 ${m.nom} [${m.status}] - ${m.description}`);
+          });
+        }
+      } else if (commande === 'help') {
+        afficher("Commandes disponibles:");
+        afficher("list [statut] - Affiche les modules IA (optionnel: actif, inactif, expérimental)");
+        afficher("help - Affiche cette aide");
+        afficher("clear - Nettoie le terminal");
+      } else if (commande === 'clear') {
+        terminal.innerHTML = '';
+      } else {
+        afficher("Commande inconnue. Tapez 'help' pour la liste.");
+      }
+    }
+
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        executerCommande(input.value);
+        input.value = '';
+      }
+    });
+
+    // Message d'accueil
+    afficher("Bienvenue dans l'interface IA CLI. Tapez 'help' pour commencer.");
+  </script>
+
+</body>
+</html>
