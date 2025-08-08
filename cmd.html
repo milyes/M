@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Commandes IA – NetSecurePro</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f5f5f5;
+      color: #333;
+    }
+
+    header {
+      background-color: #1a1a1a;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.8rem;
+    }
+
+    .container {
+      padding: 1.5rem;
+      max-width: 960px;
+      margin: auto;
+    }
+
+    .command-card {
+      background-color: white;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-left: 5px solid #007BFF;
+      border-radius: 6px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+      transition: transform 0.2s ease-in-out;
+    }
+
+    .command-card:hover {
+      transform: scale(1.01);
+    }
+
+    .command-title {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #007BFF;
+    }
+
+    .command-description {
+      margin-top: 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 600px) {
+      .command-title {
+        font-size: 1rem;
+      }
+      .command-description {
+        font-size: 0.9rem;
+      }
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.8rem;
+      color: #888;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 0.75rem;
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🧠 Commandes IA – NetSecurePro</h1>
+    <p>Interface interactive des commandes intelligentes disponibles</p>
+  </header>
+
+  <div class="container">
+    <input type="text" id="searchBox" class="search-input" placeholder="🔍 Rechercher une commande..." onkeyup="filterCommands()"/>
+
+    <div class="command-card">
+      <div class="command-title">analyse_reseau</div>
+      <div class="command-description">Analyse complète du réseau local pour détecter les vulnérabilités, ports ouverts et anomalies.</div>
+    </div>
+
+    <div class="command-card">
+      <div class="command-title">lancer_proxy_ia</div>
+      <div class="command-description">Démarre le proxy IA sécurisé local avec tunnel intelligent (Cloudflare ou Ngrok).</div>
+    </div>
+
+    <div class="command-card">
+      <div class="command-title">scanner_usb</div>
+      <div class="command-description">Scanne tous les périphériques USB connectés et génère un rapport détaillé.</div>
+    </div>
+
+    <div class="command-card">
+      <div class="command-title">verrouillage_ia</div>
+      <div class="command-description">Active le verrouillage IA du système NetSecurePro avec mot-clé de sécurité.</div>
+    </div>
+
+    <!-- Vous pouvez facilement ajouter d'autres blocs ici -->
+
+  </div>
+
+  <footer>
+    © 2025 Zoubirou Mohammed Ilyes – NetSecurePro | ORCID : <a href="https://orcid.org/0009-0007-7571-3178" target="_blank">0009-0007-7571-3178</a>
+  </footer>
+
+  <script>
+    function filterCommands() {
+      const input = document.getElementById("searchBox").value.toLowerCase();
+      const cards = document.querySelectorAll(".command-card");
+
+      cards.forEach(card => {
+        const title = card.querySelector(".command-title").textContent.toLowerCase();
+        const description = card.querySelector(".command-description").textContent.toLowerCase();
+        if (title.includes(input) || description.includes(input)) {
+          card.style.display = "block";
+        } else {
+          card.style.display = "none";
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>
