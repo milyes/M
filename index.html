@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Commandes IA – NetSecurePro</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #0f172a;
+      color: #f8fafc;
+    }
+
+    header {
+      background-color: #1e293b;
+      padding: 1rem;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.8rem;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 1rem;
+    }
+
+    .search-box {
+      margin-bottom: 1rem;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 0.7rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      outline: none;
+      background-color: #1e293b;
+      color: #f8fafc;
+    }
+
+    .command-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .command-item {
+      background-color: #1e293b;
+      margin-bottom: 1rem;
+      padding: 1rem;
+      border-left: 4px solid #38bdf8;
+      border-radius: 8px;
+      transition: transform 0.2s;
+    }
+
+    .command-item:hover {
+      transform: scale(1.01);
+    }
+
+    .command-title {
+      font-weight: bold;
+      font-size: 1.2rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .command-description {
+      font-size: 0.95rem;
+      color: #cbd5e1;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.8rem;
+      margin-top: 2rem;
+      color: #94a3b8;
+    }
+
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 1.4rem;
+      }
+
+      .command-title {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>📜 Commandes IA – NetSecurePro</h1>
+  </header>
+
+  <div class="container">
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="🔍 Rechercher une commande IA...">
+    </div>
+
+    <ul class="command-list" id="commandList">
+      <li class="command-item">
+        <div class="command-title">🔐 secure_launch</div>
+        <div class="command-description">Démarre le système IA avec protocole de sécurité intégré.</div>
+      </li>
+      <li class="command-item">
+        <div class="command-title">🌐 deploy_proxy</div>
+        <div class="command-description">Lance un tunnel distant sécurisé avec Cloudflare.</div>
+      </li>
+      <li class="command-item">
+        <div class="command-title">📦 package_iso</div>
+        <div class="command-description">Génère un fichier ISO bootable avec l’environnement IA complet.</div>
+      </li>
+      <li class="command-item">
+        <div class="command-title">🤖 gpt_cli_start</div>
+        <div class="command-description">Lance le mode GPT CLI local interactif.</div>
+      </li>
+      <li class="command-item">
+        <div class="command-title">📂 zip_release</div>
+        <div class="command-description">Crée une archive complète de tous les fichiers du projet IA.</div>
+      </li>
+      <!-- Ajouter d'autres commandes ici -->
+    </ul>
+  </div>
+
+  <footer>
+    <p>NetSecurePro IA – par <strong>Zoubirou Mohammed Ilyes</strong> – ORCID : <a href="https://orcid.org/0009-0007-7571-3178" style="color: #38bdf8;">0009-0007-7571-3178</a></p>
+  </footer>
+
+  <script>
+    const searchInput = document.getElementById('searchInput');
+    const commandList = document.getElementById('commandList');
+    const items = commandList.getElementsByClassName('command-item');
+
+    searchInput.addEventListener('keyup', () => {
+      const filter = searchInput.value.toLowerCase();
+      Array.from(items).forEach(item => {
+        const title = item.querySelector('.command-title').textContent.toLowerCase();
+        const description = item.querySelector('.command-description').textContent.toLowerCase();
+        if (title.includes(filter) || description.includes(filter)) {
+          item.style.display = '';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    });
+  </script>
+</body>
+</html>
