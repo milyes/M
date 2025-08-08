@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>OCR Médical – NetSecurePro IA</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      color: #333;
+      padding: 20px;
+    }
+    h1 {
+      color: #0077cc;
+    }
+    .container {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      max-width: 600px;
+      margin: auto;
+    }
+    input[type="file"] {
+      margin-top: 10px;
+      margin-bottom: 20px;
+    }
+    textarea {
+      width: 100%;
+      height: 300px;
+      padding: 10px;
+      font-family: monospace;
+      background: #f0f0f0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      background: #0077cc;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin-top: 10px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #005fa3;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>OCR Médical – Analyse de documents</h1>
+    <p>Sélectionnez un fichier médical (image ou PDF) :</p>
+    <input type="file" id="fileInput" accept="image/*,.pdf" />
+    <button onclick="lancerOCR()">Lancer l'OCR</button>
+
+    <h2>🧾 Résultat de l’analyse :</h2>
+    <textarea id="output" readonly placeholder="Texte médical extrait…"></textarea>
+  </div>
+
+  <script>
+    async function lancerOCR() {
+      const fileInput = document.getElementById('fileInput');
+      const output = document.getElementById('output');
+      const file = fileInput.files[0];
+
+      if (!file) {
+        alert("Veuillez sélectionner un fichier.");
+        return;
+      }
+
+      // Envoi vers un backend local (Flask, Node.js, etc.)
+      const formData = new FormData();
+      formData.append('file', file);
+
+      output.value = "Traitement en cours...";
+
+      try {
+        const response = await fetch('/ocr-medical', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!response.ok) {
+          throw new Error("Erreur du serveur OCR.");
+        }
+
+        const result = await response.json();
+        output.value = result.text || "Aucun texte détecté.";
+      } catch (err) {
+        output.value = "Erreur : " + err.message;
+      }
+    }
+  </script>
+
+</body>
+</html>
