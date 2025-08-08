@@ -18,13 +18,10 @@
       padding: 60px 20px;
       text-align: center;
     }
-    header h1 {
-      font-size: 2.5em;
-      margin-bottom: 10px;
-    }
-    header p {
-      font-size: 1.2em;
-      margin-bottom: 30px;
+    .language-selector {
+      position: absolute;
+      top: 20px;
+      right: 20px;
     }
     .cta-button {
       background-color: #ffcc00;
@@ -35,6 +32,161 @@
       border-radius: 5px;
       cursor: pointer;
       text-decoration: none;
+    }
+    section {
+      padding: 40px 20px;
+      max-width: 900px;
+      margin: auto;
+    }
+    h2 {
+      color: #0057b8;
+      margin-bottom: 20px;
+    }
+    .features-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .features-table td, .features-table th {
+      border: 1px solid #ccc;
+      padding: 12px;
+    }
+    .testimonials {
+      font-style: italic;
+      margin-top: 20px;
+    }
+    footer {
+      background-color: #222;
+      color: #aaa;
+      text-align: center;
+      padding: 20px;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+
+<div class="language-selector">
+  <label for="lang">🌐 Langue:</label>
+  <select id="lang" onchange="switchLang(this.value)">
+    <option value="fr">Français</option>
+    <option value="en">English</option>
+    <option value="dz">Darija</option>
+  </select>
+</div>
+
+<header>
+  <h1 id="title">Résume intelligemment. Gagne du temps.</h1>
+  <p id="subtitle">LEXI-MIND transforme vos documents longs en résumés clairs et adaptés à votre contexte.</p>
+  <a href="https://forms.gle/ton-lien-ici" class="cta-button" id="cta">Tester la version bêta</a>
+</header>
+
+<section>
+  <h2 id="why-title">Pourquoi LEXI-MIND ?</h2>
+  <p id="why-text">Trop d’infos, pas assez de temps. Lire, comprendre, résumer… ça prend des heures. LEXI-MIND lit pour vous, comprend le contenu, et vous livre l’essentiel — en quelques secondes.</p>
+  <ul id="use-cases">
+    <li>📚 Étudiants : résumés de cours et articles scientifiques</li>
+    <li>📰 Journalistes : synthèse de rapports et communiqués</li>
+    <li>💼 Pros : lecture rapide de documents internes</li>
+  </ul>
+</section>
+
+<section>
+  <h2 id="features-title">Fonctionnalités clés</h2>
+  <table class="features-table" id="features-table">
+    <tr><th>Fonctionnalité</th><th>Description</th></tr>
+    <tr><td>🔍 Résumé intelligent</td><td>Comprend le contexte et extrait l’essentiel</td></tr>
+    <tr><td>🎯 Ton adapté</td><td>Formel, neutre ou vulgarisé selon besoin</td></tr>
+    <tr><td>📄 Multi-format</td><td>PDFs, Word, pages web, etc.</td></tr>
+    <tr><td>🌐 Multilingue</td><td>Français, anglais, arabe…</td></tr>
+    <tr><td>🔒 Sécurisé</td><td>Vos documents restent confidentiels</td></tr>
+  </table>
+</section>
+
+<section>
+  <h2 id="testimonials-title">Ce qu’ils en pensent</h2>
+  <div class="testimonials" id="testimonials">
+    <p>“LEXI-MIND m’a permis de gagner 3h par semaine sur mes lectures académiques.” — Nadia, étudiante en droit</p>
+    <p>“Enfin un outil qui comprend vraiment le contenu, pas juste un résumé automatique.” — Karim, journaliste tech</p>
+  </div>
+</section>
+
+<section>
+  <h2 id="final-title">Prêt à tester ?</h2>
+  <p id="final-text">Participe à notre version bêta et donne ton avis.</p>
+  <a href="https://forms.gle/ton-lien-ici" class="cta-button" id="final-cta">Remplir le questionnaire</a>
+</section>
+
+<footer>
+  <p>© 2025 LEXI-MIND. Tous droits réservés.</p>
+  <p>Contact : contact@leximind.ai</p>
+</footer>
+
+<script>
+  const translations = {
+    en: {
+      title: "Summarize smart. Save time.",
+      subtitle: "LEXI-MIND turns long documents into clear, context-aware summaries.",
+      cta: "Try the beta version",
+      whyTitle: "Why LEXI-MIND?",
+      whyText: "Too much info, not enough time. Reading, understanding, summarizing… it takes hours. LEXI-MIND reads for you and delivers the essentials — in seconds.",
+      useCases: [
+        "📚 Students: summarize courses and academic papers",
+        "📰 Journalists: synthesize reports and press releases",
+        "💼 Professionals: fast reading of internal documents"
+      ],
+      featuresTitle: "Key Features",
+      featuresTable: [
+        ["🔍 Smart Summary", "Understands context and extracts key points"],
+        ["🎯 Adaptive Tone", "Formal, neutral, or simplified as needed"],
+        ["📄 Multi-format", "PDFs, Word, web pages, etc."],
+        ["🌐 Multilingual", "French, English, Arabic…"],
+        ["🔒 Secure", "Your documents stay confidential"]
+      ],
+      testimonialsTitle: "What people say",
+      testimonials: [
+        "“LEXI-MIND saved me 3 hours a week on academic reading.” — Nadia, law student",
+        "“Finally a tool that truly understands content, not just auto-summary.” — Karim, tech journalist"
+      ],
+      finalTitle: "Ready to try?",
+      finalText: "Join our beta and share your feedback.",
+      finalCta: "Take the survey"
+    },
+    dz: {
+      title: "لخص بذكاء و ربح الوقت",
+      subtitle: "LEXI-MIND يلخصلك الدوكيمون الطويلين بطريقة مفهومة و ذكية.",
+      cta: "جرب النسخة التجريبية",
+      whyTitle: "علاش LEXI-MIND؟",
+      whyText: "بزاف ديال المعلومات و الوقت ما يكفيش. تقرا، تفهم، تلخص… ياخذ وقت. LEXI-MIND يديرها عليك و يعطيك الزبدة في ثواني.",
+      useCases: [
+        "📚 الطلبة: تلخيص الدروس و المقالات العلمية",
+        "📰 الصحافيين: تلخيص التقارير و البلاغات",
+        "💼 المهنيين: قراءة سريعة للوثائق الداخلية"
+      ],
+      featuresTitle: "الخصائص الرئيسية",
+      featuresTable: [
+        ["🔍 تلخيص ذكي", "يفهم السياق و يعطيك المهم"],
+        ["🎯 نبرة مناسبة", "رسمية، محايدة، أو مبسطة حسب الحاجة"],
+        ["📄 صيغ متعددة", "PDF، Word، صفحات ويب..."],
+        ["🌐 متعدد اللغات", "فرنسية، إنجليزية، عربية..."],
+        ["🔒 آمن", "الوثائق تبقى سرية"]
+      ],
+      testimonialsTitle: "آراء الناس",
+      testimonials: [
+        "“LEXI-MIND وفرلي 3 ساعات في الأسبوع في القراية.” — نادية، طالبة قانون",
+        "“أخيرا أداة تفهم المحتوى بصح، ماشي غير تلخيص آلي.” — كريم، صحافي تقني"
+      ],
+      finalTitle: "تحب تجرب؟",
+      finalText: "شارك في النسخة التجريبية و عطينا رأيك.",
+      finalCta: "جاوب على الاستبيان"
+    }
+  };
+
+  function switchLang(lang) {
+    const t = translations[lang];
+    document.getElementById("title").textContent = t.title;
+    document.getElementById("subtitle").textContent = t.subtitle;
+    document.getElementById("cta").textContent = t.cta;
+    document.getElementById("why-title      text-decoration: none;
     }
     section {
       padding: 40px 20px;
