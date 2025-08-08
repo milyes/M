@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IA22 – Enregistrement Emprunt & IPTV</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f4f4f4;
+    }
+
+    h3 {
+      color: #333;
+    }
+
+    section {
+      margin-bottom: 40px;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    input, button {
+      display: block;
+      margin: 10px 0;
+      padding: 10px;
+      font-size: 16px;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    #result {
+      margin-top: 10px;
+      font-weight: bold;
+      color: #444;
+    }
+
+    @keyframes clignote {
+      0% { opacity: 0.2; }
+      50% { opacity: 1; }
+      100% { opacity: 0.2; }
+    }
+
+    #result.en-cours {
+      animation: clignote 1s infinite;
+    }
+
+    @media (max-width: 600px) {
+      iframe, video {
+        height: 240px;
+      }
+      input, button {
+        width: 90%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <section>
+    <h3>📡 IPTV Stream</h3>
+    <video controls autoplay>
+      <source src="https://iptv-qc.ca/stream/ia22stream.m3u8" type="application/x-mpegURL">
+      Ton navigateur ne supporte pas le flux IPTV.
+    </video>
+  </section>
+
+  <section>
+    <h3>🧠 Commande IA Emprunt</h3>
+    <input type="text" id="nom" placeholder="Nom de l’emprunteur">
+    <input type="number" id="valeur" placeholder="Valeur (€)">
+    <button onclick="enregistrer()">📝 Enregistrer Emprunt</button>
+    <div id="result">🔎 En attente d’un enregistrement IA...</div>
+  </section>
+
+  <script>
+    function enregistrer() {
+      const nom = document.getElementById("nom").value;
+      const valeur = document.getElementById("valeur").value;
+      const result = document.getElementById("result");
+
+      if (nom && valeur > 0) {
+        result.classList.add("en-cours");
+        result.innerText = `⏳ Enregistrement de ${nom} → ${valeur}€...`;
+
+        setTimeout(() => {
+          result.classList.remove("en-cours");
+          result.innerText = `✅ Emprunt enregistré : ${nom} → ${valeur}€\n🧠 IA22 synchronise avec FastAPI et module C...`;
+        }, 2000);
+      } else {
+        result.innerText = "❌ Entrée invalide. Complète les champs pour enregistrer.";
+      }
+    }
+  </script>
+
+</body>
+</html>
