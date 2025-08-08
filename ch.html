@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>IA Médicale – ChatGPT + Coopkit</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f6f8fa;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 750px;
+      margin: auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      color: #0077cc;
+      text-align: center;
+    }
+
+    #chat {
+      background-color: #f0f0f0;
+      border-radius: 5px;
+      padding: 15px;
+      height: 400px;
+      overflow-y: scroll;
+      white-space: pre-wrap;
+      border: 1px solid #ccc;
+    }
+
+    textarea {
+      width: 100%;
+      height: 80px;
+      margin-top: 15px;
+      padding: 10px;
+      font-size: 1em;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      resize: none;
+    }
+
+    button {
+      margin-top: 10px;
+      background-color: #0077cc;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      float: right;
+    }
+
+    button:hover {
+      background-color: #005fa3;
+    }
+
+    small {
+      color: #999;
+      display: block;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>🧠 ChatGPT + Coopkit – Assistant IA Médical</h1>
+
+    <div id="chat">
+      <strong>IA :</strong> Bonjour, je suis votre assistant médical. Posez votre question ou collez un texte OCR.
+    </div>
+
+    <textarea id="input" placeholder="Ex : Analyse cette ordonnance..."></textarea>
+    <button onclick="envoyer()">Envoyer</button>
+
+    <small>⚠️ Ce système IA est informatif. Ne remplace pas un avis médical.</small>
+  </div>
+
+  <script>
+    const apiKey = "VOTRE_CLE_API_OPENAI"; // Remplacez ici
+
+    async function envoyer() {
+      const input = document.getElementById("input").value.trim();
+      if (!input) return;
+
+      const chatBox = document.getElementById("chat");
+      chatBox.innerHTML += `\n\n👤 Vous : ${input}`;
+
+      // Envoi à l’API OpenAI
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+          model: "gpt-4",
+          messages: [
+            { role: "system", content: "Tu es un assistant IA médical qui analyse les textes OCR, les rapports médicaux, les prescriptions et peut recommander des actions Coopkit si nécessaire." },
+            { role: "user", content: input }
+          ],
+          temperature: 0.3
+        })
+      });
+
+      const data = await response.json();
+      const message = data.choices[0].message.content;
+      chatBox.innerHTML += `\n\n🤖 IA : ${message}`;
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      // Si réponse contient une commande Coopkit, on l’envoie
+      const match = message.match(/DÉCLENCHE_COOPKIT\s*:\s*(.+)/i);
+      if (match) {
+        const commande = match[1];
+        const coopkit = await fetch("/exec", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ command: commande })
+        });
+        const result = await coopkit.text();
+        chatBox.innerHTML += `\n\n🛠️ Coopkit : ${result}`;
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+
+      document.getElementById("input").value = "";
+    }
+  </script>
+
+</body>
+</html>
