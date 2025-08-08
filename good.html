@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NetSecurePro IA – Commandes Vocales & QR</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #0f172a;
+      color: #f8fafc;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #1e293b;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.7rem;
+    }
+
+    .container {
+      padding: 1rem;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .command {
+      background: #1e293b;
+      border-left: 4px solid #38bdf8;
+      margin-bottom: 1rem;
+      padding: 1rem;
+      border-radius: 10px;
+    }
+
+    .command-title {
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    .command-description {
+      font-size: 0.95rem;
+      color: #cbd5e1;
+    }
+
+    .btn-group {
+      margin-top: 0.5rem;
+    }
+
+    button {
+      padding: 0.5rem 1rem;
+      margin-right: 0.5rem;
+      border: none;
+      border-radius: 6px;
+      background-color: #38bdf8;
+      color: #000;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    canvas {
+      margin-top: 0.5rem;
+    }
+
+    #micButton {
+      background-color: #10b981;
+      color: white;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.8rem;
+      color: #94a3b8;
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🎙️ NetSecurePro IA – Interface Commandes & Voix</h1>
+</header>
+
+<div class="container">
+  <button id="micButton">🎤 Démarrer commande vocale</button>
+
+  <div class="command">
+    <div class="command-title">🔐 secure_launch</div>
+    <div class="command-description">Démarre l’IA locale avec protocole sécurisé.</div>
+    <div class="btn-group">
+      <button onclick="runShell('./secure_launch.sh')">▶️ Exécuter</button>
+      <canvas id="qr_secure_launch" width="100" height="100"></canvas>
+    </div>
+  </div>
+
+  <div class="command">
+    <div class="command-title">🤖 gpt_cli_start</div>
+    <div class="command-description">Lance le module IA GPT local (offline).</div>
+    <div class="btn-group">
+      <button onclick="runPython('gpt_cli_start.py')">▶️ Démarrer IA</button>
+      <canvas id="qr_gpt_cli_start" width="100" height="100"></canvas>
+    </div>
+  </div>
+
+  <div class="command">
+    <div class="command-title">📦 package_iso</div>
+    <div class="command-description">Crée un ISO bootable avec l’environnement NetSecurePro IA.</div>
+    <div class="btn-group">
+      <button onclick="runShell('./package_iso.sh')">🖥️ Compiler ISO</button>
+      <canvas id="qr_package_iso" width="100" height="100"></canvas>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>NetSecurePro IA – Zoubirou Mohammed Ilyes | <a style="color:#38bdf8" href="https://orcid.org/0009-0007-7571-3178">ORCID</a></p>
+</footer>
+
+<script>
+  // 🎤 Détection vocale (Web Speech API)
+  const micButton = document.getElementById('micButton');
+  micButton.onclick = () => {
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = 'fr-FR';
+    recognition.start();
+    recognition.onresult = function(event) {
+      const command = event.results[0][0].transcript.toLowerCase();
+      if (command.includes("lancer secure")) runShell('./secure_launch.sh');
+      else if (command.includes("lancer gpt")) runPython('gpt_cli_start.py');
+      else if (command.includes("compiler iso")) runShell('./package_iso.sh');
+      else alert("Commande non reconnue : " + command);
+    };
+  };
+
+  // 📟 QR code générateur
+  const makeQR = (id, content) => {
+    const qr = new QRious({
+      element: document.getElementById(id),
+      value: content,
+      size: 100,
+    });
+  };
+  makeQR("qr_secure_launch", "termux-open ./secure_launch.sh");
+  makeQR("qr_gpt_cli_start", "python gpt_cli_start.py");
+  makeQR("qr_package_iso", "bash ./package_iso.sh");
+
+  // 🧠 Simulation des appels locaux (à adapter selon l’environnement réel)
+  function runShell(scriptPath) {
+    alert('Simuler : bash ' + scriptPath);
+    // En WebView + Termux : termux-open || fetch pour appeler local
+  }
+
+  function runPython(scriptName) {
+    alert('Simuler : python ' + scriptName);
+    // En environnement local Python embarqué : appeler subprocess local
+  }
+</script>
+
+</body>
+</html>
