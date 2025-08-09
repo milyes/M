@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Lancer IA</title>
+ <style>
+ body {
+ font-family: Arial, sans-serif;
+ text-align: center;
+}
+#resultat {
+ margin-top: 20px;
+}
+ </style>
+</head>
+<body>
+ <h1>Lancer IA</h1>
+ <button id="lancer-ia">Lancer l'IA</button>
+ <div id="resultat"></div>
+ <script>
+class NetSecurePro {
+ async initialiser() {
+ console.log('Initialisation de l\'IA...');
+ await this.chargerModelesDeLangage();
+ await this.initialiserSystemesDeSecurite();
+ await this.lancerAnalysesDeSecurite();
+ document.getElementById('resultat').innerHTML = 'IA lancée avec succès !';
+ }
+ async chargerModelesDeLangage() {
+ console.log('Chargement des modèles de langage...');
+ }
+ async initialiserSystemesDeSecurite() {
+ console.log('Initialisation des systèmes de sécurité...');
+ }
+ async lancerAnalysesDeSecurite() {
+ console.log('Lancement des analyses de sécurité...');
+ }
+}
+const ia = new NetSecurePro();
+document.getElementById('lancer-ia').addEventListener('click', async () => {
+ try {
+ await ia.initialiser();
+ } catch (erreur) {
+ console.error('Erreur lors du lancement de l\'IA :', erreur);
+ document.getElementById('resultat').innerHTML = 'Erreur lors du lancement de l\'IA';
+ }
+ });
+ </script>
+</body>
+</html>
+
+
+
