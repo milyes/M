@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Localisation, ASCII Art & SHA-256</title>
+<style>
+  body { font-family: monospace, monospace; background:#111; color:#eee; padding:20px; }
+  button { font-size:1.2em; padding:10px 20px; margin-bottom:20px; cursor:pointer; }
+  pre { background:#222; padding:15px; border-radius:5px; white-space: pre-wrap; }
+  #ascii { font-family: monospace; line-height:1.1em; }
+</style>
+</head>
+<body>
+
+<h2>Localisation + ASCII Art + SHA-256</h2>
+
+<button id="startBtn">Obtenir position et générer</button>
+
+<div>
+  <h3>Message texte :</h3>
+  <pre id="message">Cliquer sur le bouton pour commencer.</pre>
+</div>
+
+<div>
+  <h3>ASCII Art simple :</h3>
+  <pre id="ascii"></pre>
+</div>
+
+<div>
+  <h3>Hash SHA-256 :</h3>
+  <pre id="hash"></pre>
+</div>
+
+<script>
+// Fonction simple ASCII art "bannière" (lettres majuscules simples)
+function asciiArt(text) {
+  // Map lettres à "ASCII art" simplifié (1 lettre = 3 lignes)
+  const letters = {
+    A:["  /\\  "," /  \\ ","/____\\"],
+    B:["|‾‾\\ ","|--< ","|__/ "],
+    C:[" /‾‾\\","|    "," \\__/"],
+    D:["|‾‾\\ ","|   |","|__/ "],
+    E:["|‾‾‾","|-- ","|___"],
+    F:["|‾‾‾","|-- ","|   "],
+    G:[" /‾‾\\","|  _ "," \\__/"],
+    H:["|  |","|--|","|  |"],
+    I:["‾|‾"," | ","_|_"],
+    J:["  |","  |","\\_|"],
+    K:["| /","|< ","| \\ "],
+    L:["|   ","|   ","|___"],
+    M:["|\\/|","|  |","|  |"],
+    N:["|\\ |","| \\|","|  |"],
+    O:[" /\\ ","|  |"," \\/ "],
+    P:["|‾‾\\","|__/","|   "],
+    Q:[" /\\ ","|  |"," \\/\\ "],
+    R:["|‾‾\\","|__/","| \\ "],
+    S:[" /‾‾","\\__ ","___\\"],
+    T:["‾|‾"," | "," | "],
+    U:["|  |","|  |"," \\/ "],
+    V:["|  |","|  |"," \\/ "],
+    W:["|  |","|  |"," \\/\\"],
+    X:["\\ /"," X ","/ \\"],
+    Y:["\\ /"," | "," | "],
+    Z:["‾‾/"," / ","/__"],
+    " ":[ "   ","   ","   "],
+    ":":[ "   "," . "," . "],
+    ".":[ "   ","   "," . "],
+    ",":[ "   ","   "," , "],
+    "0":[" /\\ ","|  |"," \\/ "],
+    "1":[" | "," | ","_|_"],
+    "2":[" /‾\\","  _/","_/ "],
+    "3":[" /‾\\","  _|"," \\_ "],
+    "4":["|  |","|__|","   |"],
+    "5":["|‾‾ ","|__ "," __|"],
+    "6":[" /‾ ","|__ "," \\_|"],
+    "7":["‾‾/ "," /  ","/   "],
+    "8":[" /‾\\","(__)"," \\/ "],
+    "9":[" /‾\\"," \\_|","   |"],
+    "+":["   "," | ","---"],
+    "-":["   ","---","   "],
+    "=":["---","---","---"],
+    "!":[" | "," | "," . "],
+    "?":[" /\\ ","  / "," .  "],
+    "/":["  /"," / "," / "],
+    "\\":["\\  "," \\ ","  \\"]
+  };
+
+  text = text.toUpperCase();
+  let lines = ["", "", ""];
+  for(let ch of text) {
+    if(letters[ch]) {
+      lines[0] += letters[ch][0] + "  ";
+      lines[1] += letters[ch][1] + "  ";
+      lines[2] += letters[ch][2] + "  ";
+    } else {
+      // caractère inconnu → espace
+      lines[0] += "    ";
+      lines[1] += "    ";
+      lines[2] += "    ";
+    }
+  }
+  return lines.join("\n");
+}
+
+// Fonction SHA-256 asynchrone
+async function sha256(message) {
+  const msgBuffer = new TextEncoder().encode(message);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2,'0')).join('');
+  return hashHex;
+}
+
+// Gestion clic bouton
+document.getElementById('startBtn').addEventListener('click', () => {
+  if (!navigator.geolocation) {
+    alert("Géolocalisation non supportée !");
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(async (pos) => {
+    const lat = pos.coords.latitude.toFixed(6);
+    const lon = pos.coords.longitude.toFixed(6);
+    const acc = pos.coords.accuracy.toFixed(1);
+    const message = `Position: lat:${lat}, lon:${lon}, précision ±${acc}m`;
+
+    document.getElementById('message').textContent = message;
+
+    // ASCII art
+    document.getElementById('ascii').textContent = asciiArt(message);
+
+    // SHA-256 hash
+    const hash = await sha256(message);
+    document.getElementById('hash').textContent = hash;
+
+  }, (err) => {
+    alert("Erreur localisation: " + err.message);
+  }, { enableHighAccuracy:false, timeout:10000, maximumAge:60000 });
+});
+</script>
+
+</body>
+</html>
