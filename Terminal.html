@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Carte mentale AITERMINAL</title>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true });
+  </script>
+  <style>
+    body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
+    .mermaid { background: white; padding: 20px; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <h1>Carte mentale – AITERMINAL</h1>
+  <div class="mermaid">
+    mindmap
+      root
+        Analyse réseau
+          nmap
+          netstat
+          ip a
+        Sécurité
+          ufw
+          iptables
+          fail2ban
+        Gestion des processus
+          top
+          htop
+          ps aux
+        Fichiers & Système
+          ls
+          cp
+          mv
+          rm
+          df -h
+          free -m
+          uname -a
+  </div>
+</body>
+</html>
