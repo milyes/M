@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Prototype UNIVERSAL CHAT</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    max-width: 600px;
+    margin: 30px auto;
+    background: #f7f7f7;
+    padding: 20px;
+    border-radius: 8px;
+  }
+  h1 {
+    text-align: center;
+    color: #333;
+  }
+  #chat {
+    border: 1px solid #ccc;
+    background: #fff;
+    height: 400px;
+    overflow-y: auto;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+  }
+  .message {
+    margin-bottom: 10px;
+  }
+  .user {
+    text-align: right;
+    color: #1a73e8;
+  }
+  .bot {
+    text-align: left;
+    color: #555;
+  }
+  #inputArea {
+    display: flex;
+  }
+  #inputMessage {
+    flex-grow: 1;
+    padding: 10px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 4px 0 0 4px;
+  }
+  #sendBtn {
+    padding: 10px 20px;
+    border: none;
+    background-color: #1a73e8;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 0 4px 4px 0;
+  }
+  #sendBtn:hover {
+    background-color: #155ab6;
+  }
+</style>
+</head>
+<body>
+
+<h1>Prototype UNIVERSAL CHAT</h1>
+
+<div id="chat"></div>
+
+<div id="inputArea">
+  <input type="text" id="inputMessage" placeholder="Votre message ici..." autofocus />
+  <button id="sendBtn">Envoyer</button>
+</div>
+
+<script>
+  const chat = document.getElementById('chat');
+  const inputMessage = document.getElementById('inputMessage');
+  const sendBtn = document.getElementById('sendBtn');
+
+  const history = [];
+
+  function appendMessage(text, sender) {
+    const msgDiv = document.createElement('div');
+    msgDiv.classList.add('message', sender);
+    msgDiv.textContent = text;
+    chat.appendChild(msgDiv);
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  async function sendMessage() {
+    const userInput = inputMessage.value.trim();
+    if (!userInput) return;
+
+    appendMessage(userInput, 'user');
+    inputMessage.value = '';
+    history.push({ role: "user", content: userInput });
+
+    appendMessage("...Chargement...", 'bot');
+
+    try {
+      // Simule une réponse IA locale
+      const response = await mockApiCall(history);
+
+      chat.lastChild.remove();
+
+      appendMessage(response, 'bot');
+      history.push({ role: "assistant", content: response });
+
+    } catch (error) {
+      chat.lastChild.textContent = "Erreur serveur. Réessayez.";
+      console.error(error);
+    }
+  }
+
+  function mockApiCall(history) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const lastUserMsg = history[history.length - 1].content;
+        // Réponse simple simulée : echo + texte fixe
+        resolve("Réponse IA simulée à : " + lastUserMsg);
+      }, 1200);
+    });
+  }
+
+  sendBtn.addEventListener('click', sendMessage);
+  inputMessage.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') sendMessage();
+  });
+</script>
+
+</body>
+</html>
