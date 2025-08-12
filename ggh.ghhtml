@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Universal Chat - Prototype NetSecurePro</title>
+<meta name="description" content="Prototype UNIVERSAL CHAT - Prototype autonome pour NetSecurePro (Zoubirou Mohammed Ilyes)" />
+<style>
+  :root{
+    --maxw:900px;
+    --accent:#1a73e8;
+    --bg:#f5f7fb;
+    --card:#ffffff;
+    --muted:#6b7280;
+  }
+  html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;}
+  body{background:var(--bg);display:flex;align-items:center;justify-content:center;padding:28px;}
+  .container{width:100%;max-width:var(--maxw);background:linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.9));box-shadow:0 8px 30px rgba(20,20,40,0.08);border-radius:14px;padding:18px;box-sizing:border-box;}
+  header{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+  .logo{width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#1454b8);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:18px;}
+  h1{margin:0;font-size:20px;color:#0f172a;}
+  p.lead{margin:6px 0 0;color:var(--muted);font-size:13px;}
+  .chat-area{display:flex;gap:16px;}
+  .panel{flex:1;min-height:420px;background:var(--card);border-radius:10px;padding:12px;box-sizing:border-box;border:1px solid rgba(15,23,42,0.04);}
+  #messages{height:420px;overflow:auto;padding:8px;display:flex;flex-direction:column;gap:8px;}
+  .msg{max-width:82%;padding:8px 10px;border-radius:10px;line-height:1.3;box-shadow:0 1px 0 rgba(0,0,0,0.02);}
+  .msg.user{margin-left:auto;background:var(--accent);color:#fff;border-bottom-right-radius:2px;}
+  .msg.bot{margin-right:auto;background:#f1f5f9;color:#0f172a;}
+  .meta{font-size:12px;color:var(--muted);margin-bottom:8px;}
+  .controls{display:flex;gap:8px;margin-top:10px;}
+  input[type="text"]{flex:1;padding:10px;border-radius:8px;border:1px solid rgba(2,6,23,0.06);font-size:14px;}
+  button.primary{background:var(--accent);color:#fff;border:none;padding:10px 14px;border-radius:8px;cursor:pointer;font-weight:600;}
+  button.ghost{background:transparent;border:1px solid rgba(2,6,23,0.06);padding:10px 12px;border-radius:8px;cursor:pointer;}
+  footer{margin-top:12px;font-size:12px;color:var(--muted);display:flex;justify-content:space-between;align-items:center;}
+  .small{font-size:12px;color:var(--muted);}
+  pre{white-space:pre-wrap;word-break:break-word;}
+  @media(max-width:720px){.chat-area{flex-direction:column}.panel{padding:10px}#messages{height:320px}}
+</style>
+</head>
+<body>
+  <main class="container" role="main" aria-labelledby="title">
+    <header>
+      <div class="logo">NSP</div>
+      <div>
+        <h1 id="title">Universal Chat — Prototype</h1>
+        <p class="lead">Prototype autonome pour tests locaux — NetSecurePro • Z. M. Ilyes</p>
+      </div>
+    </header>
+
+    <section class="chat-area" aria-label="Zone de chat">
+      <div class="panel" aria-live="polite">
+        <div class="meta">Conversation (local)</div>
+        <div id="messages" role="log" aria-atomic="false" aria-relevant="additions"></div>
+
+        <div class="controls" style="margin-top:12px;">
+          <input id="inputText" type="text" placeholder="Tapez votre message et appuyez sur Entrée ou Envoyer..." aria-label="Message utilisateur" />
+          <button id="sendBtn" class="primary" title="Envoyer">Envoyer</button>
+          <button id="clearBtn" class="ghost" title="Effacer l'historique">Effacer</button>
+        </div>
+
+        <footer>
+          <div class="small">Prototype — hors ligne / simulation IA</div>
+          <div class="small">NetSecurePro_IA • by Zoubirou Mohammed Ilyes</div>
+        </footer>
+      </div>
+    </section>
+  </main>
+
+<script>
+/*
+  Universal Chat - Prototype autonome (client-side)
+  - Fonctionne 100% côté client (simulation IA)
+  - Historique stocké dans localStorage sous "universal_chat_history"
+  - Instructions pour connecter à un backend : voir README.md
+*/
+
+const input = document.getElementById('inputText');
+const sendBtn = document.getElementById('sendBtn');
+const clearBtn = document.getElementById('clearBtn');
+const messages = document.getElementById('messages');
+
+const LS_KEY = 'universal_chat_history_v1';
+
+// Charge l'historique depuis localStorage
+function loadHistory(){
+  try{
+    const raw = localStorage.getItem(LS_KEY);
+    if(!raw) return [];
+    return JSON.parse(raw);
+  }catch(e){ console.warn('Erreur lecture localStorage', e); return []; }
+}
+
+// Sauvegarde l'historique
+function saveHistory(hist){
+  try{ localStorage.setItem(LS_KEY, JSON.stringify(hist)); }catch(e){ console.warn('Erreur save', e); }
+}
+
+// Affiche un message
+function addMessage(text, who='bot'){
+  const el = document.createElement('div');
+  el.className = 'msg ' + (who === 'user' ? 'user' : 'bot');
+  el.textContent = text;
+  messages.appendChild(el);
+  messages.scrollTop = messages.scrollHeight;
+}
+
+// Rendu complet de l'historique
+function renderHistory(){
+  messages.innerHTML = '';
+  const hist = loadHistory();
+  hist.forEach(item => addMessage(item.content, item.role === 'user' ? 'user' : 'bot'));
+}
+
+// Simulation simple / fonction IA simulée
+function simulateAIResponse(userText){
+  // Logique simple : écho + heuristiques
+  userText = (userText || '').trim();
+  if(!userText) return "Désolé, je n'ai pas reçu de texte.";
+  // Exemples de réponses conditionnelles
+  const low = userText.toLowerCase();
+  if(low.includes('bonjour') || low.includes('salut')) return "Bonjour ! Comment puis-je vous aider aujourd'hui ?";
+  if(low.includes('linkedin') || low.includes('impression')) return "Je peux analyser vos métriques LinkedIn si vous fournissez les données (CSV / XLSX). Voulez-vous exporter vos statistiques ?";
+  if(low.includes('prototype') || low.includes('universal')) return "Le prototype Universal Chat supporte multi-canaux : Web, Mobile (WebView), CLI. Voulez-vous un package (ZIP) ou les instructions de déploiement ?";
+  // Réponse par défaut : echo + suggestion
+  return `IA simulée : j'ai reçu "${userText}". Souhaitez-vous que je génère un plan d'action ou du code pour cette demande ?`;
+}
+
+// Envoi du message (local)
+function handleSend(){
+  const txt = input.value.trim();
+  if(!txt) return;
+  // Ajout utilisateur
+  const hist = loadHistory();
+  const userEntry = { role: 'user', content: txt, ts: new Date().toISOString() };
+  hist.push(userEntry);
+  saveHistory(hist);
+  addMessage(txt, 'user');
+  input.value = '';
+  input.focus();
+
+  // Affiche "..." de chargement
+  const loader = document.createElement('div');
+  loader.className = 'msg bot';
+  loader.textContent = '...';
+  messages.appendChild(loader);
+  messages.scrollTop = messages.scrollHeight;
+
+  // Simule délai d'appel IA
+  setTimeout(() => {
+    // retire loader
+    if(loader && loader.parentNode) loader.parentNode.removeChild(loader);
+    const reply = simulateAIResponse(txt);
+    const botEntry = { role: 'assistant', content: reply, ts: new Date().toISOString() };
+    const hist2 = loadHistory();
+    hist2.push(botEntry);
+    saveHistory(hist2);
+    addMessage(reply, 'bot');
+  }, 900 + Math.random()*800);
+}
+
+// Effacer l'historique
+function handleClear(){
+  if(confirm('Effacer tout l\'historique local ?')) {
+    localStorage.removeItem(LS_KEY);
+    renderHistory();
+  }
+}
+
+// Event listeners
+sendBtn.addEventListener('click', handleSend);
+input.addEventListener('keydown', (e) => { if(e.key === 'Enter') handleSend(); });
+clearBtn.addEventListener('click', handleClear);
+
+// On démarre
+renderHistory();
+input.focus();
+</script>
+</body>
+</html>
