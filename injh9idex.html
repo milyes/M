@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>IA22_LOGIC - Terminal IA</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: monospace;
+      background-color: #0c0c0c;
+      color: #00ff88;
+      padding: 20px;
+      margin: 0;
+    }
+    h1 {
+      animation: flicker 2s infinite;
+      text-shadow: 0 0 5px #00ff88;
+      text-align: center;
+    }
+    @keyframes flicker {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+    .terminal {
+      background-color: #000;
+      border: 2px solid #00ff88;
+      padding: 20px;
+      margin-top: 20px;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    button {
+      background-color: #222;
+      color: #00ff88;
+      border: 1px solid #00ff88;
+      padding: 10px 15px;
+      margin: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s ease-in-out;
+    }
+    button:hover {
+      background-color: #00ff88;
+      color: #000;
+    }
+    .output {
+      margin-top: 15px;
+      white-space: pre-wrap;
+      background-color: #111;
+      padding: 15px;
+      border: 1px dashed #00ff88;
+      min-height: 150px;
+      font-size: 14px;
+    }
+    .tag {
+      color: #ff88dd;
+    }
+    @media screen and (max-width: 600px) {
+      button { font-size: 12px; padding: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+<h1>🧠 IA22_LOGIC - Terminal IA Futuriste</h1>
+
+<div class="terminal">
+  <h3>Commandes disponibles :</h3>
+  <div>
+    <button onclick="execute('analyse système', 'bash')">Analyse Système</button>
+    <button onclick="execute('diagnostic sécurité', 'json')">Diagnostic Sécurité</button>
+    <button onclick="execute('mise à jour IA', 'html')">Mise à Jour IA</button>
+    <button onclick="execute('scan périphériques', 'bash')">Scan Périphériques</button>
+    <button onclick="execute('générer rapport sécurité', 'json')">Rapport Sécurité</button>
+    <button onclick="execute('prédire prochaine action utilisateur', 'python')">Prédire Utilisateur</button>
+    <button onclick="execute('analyse sentiment texte', 'json')">Analyse Sentiment</button>
+    <button onclick="execute('corrige cette phrase', 'python')">Correction Texte</button>
+    <button onclick="execute('générer mot de passe fort', 'bash')">Mot de Passe Fort</button>
+    <button onclick="execute('scan vulnérabilités', 'json')">Scan Vulnérabilités</button>
+    <button onclick="execute('analyse ports réseau', 'bash')">Analyse Ports</button>
+    <button onclick="execute('ifconfig', 'bash')">ifconfig</button>
+    <button onclick="execute('curl https://example.com', 'html')">curl example.com</button>
+  </div>
+
+  <div class="output" id="output">
+    🔧 [IA22_LOGIC boot en cours...]<br><br>
+  </div>
+</div>
+
+<script>
+function execute(command, format) {
+  const output = document.getElementById('output');
+  output.innerHTML += `▶ Exécution : <strong>${command}</strong><br>`;
+  setTimeout(() => {
+    let result = '';
+    switch (format) {
+      case 'json':
+        result = `{\n  "commande": "${command}",\n  "status": "success",\n  "data": "Simulation IA terminée."\n}`;
+        break;
+      case 'bash':
+        result = `$ ${command}\n✔️ OK - commande exécutée avec succès.`;
+        break;
+      case 'python':
+        result = `def ${command.replace(/ /g, "_")}():\n    return "Résultat simulé"\n\nprint(${command.replace(/ /g, "_")}())`;
+        break;
+      case 'html':
+        result = `&lt;div&gt;Commande "${command}" exécutée avec succès.&lt;/div&gt;`;
+        break;
+      default:
+        result = "Format inconnu.";
+    }
+    output.innerHTML += `<span class="tag">[${format.toUpperCase()}]</span><br>${result}<br><br>`;
+    output.scrollTop = output.scrollHeight;
+  }, 500);
+}
+</script>
+
+</body>
+</html>
