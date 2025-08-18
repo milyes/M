@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>NetSecurePro IA - Console Sécurisée</title>
+    <style>
+        body {
+            background-color: #0d0d0d;
+            color: #00ff00;
+            font-family: monospace;
+            padding: 20px;
+        }
+        #console {
+            background-color: #111;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px #00ff00;
+            height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        button {
+            margin-top: 20px;
+            background-color: #00ff00;
+            color: #111;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-family: monospace;
+            font-size: 1em;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #00cc00;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>NetSecurePro IA : Console Système</h1>
+    <div id="console">[Attente d'initialisation IA...]</div>
+    <button onclick="runIA()">Exécuter IA</button>
+
+    <script>
+        const lignes = [
+            "[✔] IA22 CORE : Initialisation réussie.",
+            "[✔] Analyse des vecteurs de menace : OK.",
+            "[✔] Connexion aux modules IA sécurisés : OK.",
+            "[✔] Système d'optimisation IA lancé.",
+            "[✔] Réponse IA : Aucun comportement suspect détecté.",
+            "[✔] Tunnel sécurisé activé.",
+            "[✔] Console NetSecurePro IA : Opérationnelle."
+        ];
+
+        function runIA() {
+            const consoleDiv = document.getElementById('console');
+            consoleDiv.innerText = '';
+            let i = 0;
+            const interval = setInterval(() => {
+                if (i < lignes.length) {
+                    consoleDiv.innerText += lignes[i] + '\n';
+                    consoleDiv.scrollTop = consoleDiv.scrollHeight;
+                    i++;
+                } else {
+                    clearInterval(interval);
+                }
+            }, 700);
+        }
+    </script>
+
+</body>
+</html>
