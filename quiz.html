@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz IA22 – C vs Python</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f4f4f4; }
+    h1 { color: #333; }
+    .question { margin-bottom: 20px; }
+    .question h3 { margin-bottom: 10px; }
+    button { padding: 10px 20px; font-size: 16px; }
+    #result { margin-top: 20px; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>🧪 Quiz IA22 – C vs Python</h1>
+  <form id="quizForm">
+    <div class="question">
+      <h3>1. Quel langage est considéré comme bas niveau, proche du matériel ?</h3>
+      <label><input type="radio" name="q1" value="B"> C</label><br>
+      <label><input type="radio" name="q1" value="A"> Python</label><br>
+      <label><input type="radio" name="q1" value="C"> Java</label><br>
+      <label><input type="radio" name="q1" value="D"> Rust</label>
+    </div>
+
+    <div class="question">
+      <h3>2. Lequel des deux langages utilise un garbage collector pour gérer la mémoire ?</h3>
+      <label><input type="radio" name="q2" value="B"> Python</label><br>
+      <label><input type="radio" name="q2" value="A"> C</label><br>
+      <label><input type="radio" name="q2" value="C"> Assembly</label><br>
+      <label><input type="radio" name="q2" value="D"> Go</label>
+    </div>
+
+    <div class="question">
+      <h3>3. Quel langage est le plus adapté pour les systèmes embarqués et les OS ?</h3>
+      <label><input type="radio" name="q3" value="C"> C</label><br>
+      <label><input type="radio" name="q3" value="A"> Python</label><br>
+      <label><input type="radio" name="q3" value="B"> JavaScript</label><br>
+      <label><input type="radio" name="q3" value="D"> Ruby</label>
+    </div>
+
+    <div class="question">
+      <h3>4. Quelle est une des forces principales de Python selon le tableau ?</h3>
+      <label><input type="radio" name="q4" value="B"> Syntaxe intuitive et haut niveau</label><br>
+      <label><input type="radio" name="q4" value="A"> Contrôle manuel de la mémoire</label><br>
+      <label><input type="radio" name="q4" value="C"> Compilation rapide</label><br>
+      <label><input type="radio" name="q4" value="D"> Utilisation de pointeurs</label>
+    </div>
+
+    <div class="question">
+      <h3>5. Pourquoi apprendre C peut être bénéfique dans le contexte IA22 ?</h3>
+      <label><input type="radio" name="q5" value="B"> Pour comprendre les bases du calcul machine</label><br>
+      <label><input type="radio" name="q5" value="A"> Pour créer des interfaces web</label><br>
+      <label><input type="radio" name="q5" value="C"> Pour manipuler des bases de données</label><br>
+      <label><input type="radio" name="q5" value="D"> Pour faire du design graphique</label>
+    </div>
+
+    <button type="button" onclick="calculateScore()">Voir le score</button>
+  </form>
+
+  <div id="result"></div>
+
+  <script>
+    function calculateScore() {
+      const answers = {
+        q1: "B",
+        q2: "B",
+        q3: "C",
+        q4: "B",
+        q5: "B"
+      };
+      let score = 0;
+      for (let q in answers) {
+        const selected = document.querySelector(`input[name="${q}"]:checked`);
+        if (selected && selected.value === answers[q]) score++;
+      }
+      document.getElementById("result").innerText = `✅ Ton score : ${score}/5`;
+    }
+  </script>
+</body>
+</html>
