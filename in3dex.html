@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>📘 NetSecurePro_IA22 — Guide & Console des Commandes IA / IA22_LOGIC</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Guide officiel NetSecurePro_IA22 : commandes IA & IA22_LOGIC, nouvelles requêtes, recherche, copie et export CSV.">
+<meta name="theme-color" content="#0b1020">
+<link rel="icon" href="data:,">
+
+<!-- Open Graph / Twitter -->
+<meta property="og:title" content="NetSecurePro_IA22 — Commandes IA & IA22_LOGIC">
+<meta property="og:description" content="Guide officiel NetSecurePro_IA22 : commandes IA, IA22_LOGIC et nouvelles requêtes en direct.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- JSON-LD (organisation / projet) -->
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"SoftwareApplication",
+  "name":"NetSecurePro_IA22",
+  "applicationCategory":"SecurityApplication",
+  "operatingSystem":"Linux, Android (Termux), Web",
+  "producer":{"@type":"Organization","name":"NetSecurePro","url":"https://github.com/"},
+  "author":{"@type":"Person","name":"Zoubirou Mohammed Ilyes","identifier":"https://orcid.org/0009-0007-7571-3178"},
+  "description":"Guide & Console des Commandes IA / IA22_LOGIC et flux des requêtes."
+}
+</script>
+
+<style>
+  :root{
+    --bg:#0b1020; --fg:#e6eef8; --muted:#97a6b3; --card:#0f1724; --stroke:#1b2740;
+    --accent:#06b6d4; --accent2:#00ff88; --warn:#f59e0b; --err:#ef4444;
+  }
+  @media (prefers-color-scheme: light) {
+    :root{ --bg:#f7f9fc; --fg:#0b1020; --muted:#5b6b7a; --card:#ffffff; --stroke:#e7eef7; }
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 Inter,system-ui,Segoe UI,Arial,sans-serif}
+  a{color:var(--accent);text-decoration:none}
+  .wrap{max-width:1200px;margin:0 auto;padding:18px}
+  header{display:flex;gap:14px;align-items:center;justify-content:space-between;padding:14px 0}
+  .brand{display:flex;gap:10px;align-items:center}
+  .logo{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2))}
+  h1{font-size:1.25rem;margin:0}
+  .subtitle{color:var(--muted);font-size:.95rem}
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 16px}
+  .search{flex:1;min-width:240px;padding:10px 12px;border-radius:12px;border:1px solid var(--stroke);background:var(--card);color:inherit}
+  .btn{padding:10px 12px;border-radius:12px;border:1px solid var(--stroke);background:var(--card);color:inherit;cursor:pointer;font-weight:600}
+  .btn.primary{background:var(--accent);color:#001018;border-color:transparent}
+  .btn.ghost{background:transparent}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media (max-width:980px){ .grid{grid-template-columns:1fr} }
+  .card{background:var(--card);border:1px solid var(--stroke);border-radius:16px;padding:14px}
+  .card h2{font-size:1.05rem;margin:0 0 8px}
+  .meta{color:var(--muted);font-size:.9rem;margin-bottom:10px}
+  .table{width:100%;border-collapse:collapse}
+  .table th,.table td{padding:10px;border-bottom:1px solid var(--stroke);vertical-align:top}
+  .table th{text-align:left;font-size:.9rem;color:var(--muted)}
+  .cmd{font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; white-space:nowrap; overflow:auto; background:rgba(255,255,255,.03); padding:6px 8px; border-radius:8px}
+  .row{display:flex;gap:8px;align-items:center}
+  .tag{display:inline-block;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.04);color:var(--muted);font-weight:700;font-size:.8rem}
+  .actions{display:flex;gap:6px}
+  .ok{color:var(--accent2);font-weight:700}
+  .warn{color:var(--warn)}
+  .err{color:var(--err)}
+  .small{font-size:.9rem;color:var(--muted)}
+  footer{margin:16px 0 8px;text-align:center;color:var(--muted);font-size:.9rem}
+  .statusbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:8px}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  .tabs{display:flex;gap:6px;margin:6px 0}
+  .tab{padding:8px 10px;border-radius:10px;border:1px solid var(--stroke);background:var(--card);cursor:pointer}
+  .tab.active{background:linear-gradient(135deg,rgba(6,182,212,.22),rgba(0,255,136,.15)); border-color:transparent}
+</style>
+</head>
+<body>
+<div class="wrap" role="main">
+  <header>
+    <div class="brand" aria-label="Identité du projet">
+      <div class="logo" aria-hidden="true"></div>
+      <div>
+        <h1>NetSecurePro_IA22 — Guide & Console</h1>
+        <div class="subtitle">Commandes IA • IA22_LOGIC • Requêtes en direct</div>
+      </div>
+    </div>
+    <div class="row" aria-label="Infos publication">
+      <span class="tag">Officiel</span>
+      <span class="tag">Version 1.0</span>
+      <a class="tag" href="https://orcid.org/0009-0007-7571-3178" target="_blank" rel="noopener">ORCID</a>
+    </div>
+  </header>
+
+  <div class="toolbar" role="search">
+    <input id="q" class="search" type="search" placeholder="Rechercher (commande, description, catégorie…)" aria-label="Recherche">
+    <button id="clearBtn" class="btn ghost" aria-label="Effacer la recherche">Effacer</button>
+    <button id="exportBtn" class="btn" aria-label="Exporter en CSV">Exporter CSV</button>
+    <button id="refreshBtn" class="btn primary" aria-label="Rafraîchir maintenant">Rafraîchir</button>
+  </div>
+
+  <div class="tabs" role="tablist" aria-label="Sections">
+    <button class="tab active" data-tab="ia" role="tab" aria-selected="true" aria-controls="panel-ia">IA</button>
+    <button class="tab" data-tab="ia22" role="tab" aria-selected="false" aria-controls="panel-ia22">IA22_LOGIC</button>
+    <button class="tab" data-tab="req" role="tab" aria-selected="false" aria-controls="panel-req">Requêtes</button>
+  </div>
+
+  <div class="grid">
+    <section id="panel-ia" class="card" role="tabpanel" aria-labelledby="IA">
+      <h2>Commandes IA</h2>
+      <div class="meta">Source : <code id="src-ia">/api/list</code></div>
+      <table class="table" id="table-ia" aria-describedby="src-ia">
+        <thead><tr><th style="width:28%">Commande</th><th>Description</th><th style="width:1%">Actions</th></tr></thead>
+        <tbody><tr><td colspan="3" class="small">Chargement…</td></tr></tbody>
+      </table>
+    </section>
+
+    <section id="panel-ia22" class="card" role="tabpanel" aria-labelledby="IA22_LOGIC" hidden>
+      <h2>Commandes IA22_LOGIC</h2>
+      <div class="meta">Source : <code id="src-ia22">/api/list_ia22</code></div>
+      <table class="table" id="table-ia22" aria-describedby="src-ia22">
+        <thead><tr><th style="width:28%">Commande</th><th>Description</th><th style="width:1%">Actions</th></tr></thead>
+        <tbody><tr><td colspan="3" class="small">Chargement…</td></tr></tbody>
+      </table>
+    </section>
+
+    <section id="panel-req" class="card" role="tabpanel" aria-labelledby="Requêtes" hidden>
+      <h2>📡 Nouvelles requêtes</h2>
+      <div class="meta">Source : <code id="src-req">/api/requests</code></div>
+      <table class="table" id="table-req" aria-describedby="src-req">
+        <thead><tr><th style="width:18%">Horodatage</th><th style="width:28%">Commande</th><th>Paramètres</th><th style="width:16%">Utilisateur</th></tr></thead>
+        <tbody><tr><td colspan="4" class="small">Chargement…</td></tr></tbody>
+      </table>
+    </section>
+  </div>
+
+  <div class="statusbar" role="status" aria-live="polite">
+    <span id="status-msg" class="small">Prêt.</span>
+    <span class="small">•</span>
+    <span class="small">Dernier rafraîchissement : <span id="last-ts">—</span></span>
+    <span class="small">•</span>
+    <span class="small">Intervalle auto : 10 s</span>
+  </div>
+
+  <footer>
+    © 2025 NetSecurePro • Licence MIT • <a href="https://github.com/" target="_blank" rel="noopener">GitHub</a>
+  </footer>
+</div>
+
+<script>
+/* ========= Configuration =========
+   Change uniquement BASE_API si ton backend est sur un autre domaine/port.
+   Exemple : const BASE_API = "https://example.com"; */
+const BASE_API = ""; // même origine (GitHub Pages ne peut appeler que des APIs CORS-compatibles)
+const ENDPOINTS = {
+  ia: "/api/list",
+  ia22: "/api/list_ia22",
+  req: "/api/requests"
+};
+const REFRESH_MS = 10000;
+
+/* ======== Utilitaires UI ======== */
+const $ = sel => document.querySelector(sel);
+const tableIA = $("#table-ia tbody");
+const tableIA22 = $("#table-ia22 tbody");
+const tableREQ = $("#table-req tbody");
+const q = $("#q"); const clearBtn = $("#clearBtn"); const exportBtn = $("#exportBtn"); const refreshBtn=$("#refreshBtn");
+const statusMsg = $("#status-msg"); const lastTs = $("#last-ts");
+const tabs = document.querySelectorAll(".tab");
+const panels = { ia: $("#panel-ia"), ia22: $("#panel-ia22"), req: $("#panel-req") };
+
+tabs.forEach(t=>{
+  t.addEventListener("click", ()=>{
+    tabs.forEach(x=>{ x.classList.remove("active"); x.setAttribute("aria-selected","false"); });
+    Object.values(panels).forEach(p=> p.hidden = true);
+    t.classList.add("active"); t.setAttribute("aria-selected","true");
+    const id = t.dataset.tab; panels[id].hidden = false;
+  });
+});
+
+function nowISO(){ const d=new Date(); return d.toLocaleString(); }
+function setStatus(msg, cls){ statusMsg.textContent = msg; statusMsg.className = "small " + (cls||""); lastTs.textContent = nowISO(); }
+function esc(s){ return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;"); }
+function copyText(text, btn){
+  navigator.clipboard.writeText(text).then(()=>{
+    btn.textContent="Copié ✓"; btn.classList.add("ok");
+    setTimeout(()=>{ btn.textContent="Copier"; btn.classList.remove("ok"); },1500);
+  });
+}
+
+/* ======== Rendu des lignes ======== */
+function renderCommands(tbody, items){
+  if(!Array.isArray(items) || items.length===0){ tbody.innerHTML = `<tr><td colspan="3" class="small warn">Aucune commande trouvée.</td></tr>`; return; }
+  const rows = [];
+  items.forEach(it=>{
+    // it = { name, desc, cmd? }
+    const name = it.name ?? it.cmd ?? "—";
+    const desc = it.desc ?? "";
+    const raw = it.cmd ?? it.name ?? "";
+    rows.push(
+      `<tr>
+        <td><span class="cmd" title="${esc(raw)}">${esc(name)}</span></td>
+        <td>${esc(desc)}</td>
+        <td class="actions">
+          <button class="btn" data-copy="${encodeURIComponent(raw||name)}" aria-label="Copier la commande">Copier</button>
+        </td>
+      </tr>`
+    );
+  });
+  tbody.innerHTML = rows.join("");
+  tbody.querySelectorAll("[data-copy]").forEach(btn=>{
+    btn.addEventListener("click",()=> copyText(decodeURIComponent(btn.dataset.copy), btn));
+  });
+}
+
+function renderRequests(tbody, items){
+  if(!Array.isArray(items) || items.length===0){ tbody.innerHTML = `<tr><td colspan="4" class="small warn">Aucune requête récente.</td></tr>`; return; }
+  const rows = [];
+  items.forEach(it=>{
+    // it = { time, command, params, user }
+    rows.push(
+      `<tr>
+        <td>${esc(it.time ?? "")}</td>
+        <td><span class="cmd" title="${esc(it.command ?? "")}">${esc(it.command ?? "")}</span></td>
+        <td>${esc(typeof it.params==="string" ? it.params : JSON.stringify(it.params ?? {}))}</td>
+        <td>${esc(it.user ?? "")}</td>
+      </tr>`
+    );
+  });
+  tbody.innerHTML = rows.join("");
+}
+
+/* ======== Fetch générique (avec CORS friendly) ======== */
+async function fetchJSON(path){
+  const url = (BASE_API ? BASE_API : "") + path;
+  const res = await fetch(url, { headers: { "Accept":"application/json" } });
+  if(!res.ok) throw new Error(`HTTP ${res.status} sur ${path}`);
+  return res.json();
+}
+
+/* ======== Filtrage (recherche) ======== */
+let cache = { ia: [], ia22: [], req: [] };
+
+function doFilter(){
+  const needle = q.value.trim().toLowerCase();
+  const match = (s)=> String(s||"").toLowerCase().includes(needle);
+  const fIA = cache.ia.filter(i=> match(i.name||i.cmd)||match(i.desc));
+  const fIA22 = cache.ia22.filter(i=> match(i.name||i.cmd)||match(i.desc));
+  const fREQ = cache.req.filter(i=> match(i.time)||match(i.command)||match(i.user)||match(JSON.stringify(i.params||{})));
+  renderCommands(tableIA, needle? fIA : cache.ia);
+  renderCommands(tableIA22, needle? fIA22 : cache.ia22);
+  renderRequests(tableREQ, needle? fREQ : cache.req);
+}
+
+q.addEventListener("input", doFilter);
+clearBtn.addEventListener("click", ()=>{ q.value=""; doFilter(); });
+
+/* ======== Export CSV (commandes visibles) ======== */
+function exportCSV(){
+  const rows = [["section","name","command","description"]];
+  const pushItems = (section, arr)=> arr.forEach(i=> rows.push([section, i.name??"", i.cmd??i.name??"", i.desc??""]));
+  const needle = q.value.trim();
+  if(needle){
+    const m = (s)=> String(s||"").toLowerCase().includes(needle.toLowerCase());
+    pushItems("IA", cache.ia.filter(i=> m(i.name||i.cmd)||m(i.desc)));
+    pushItems("IA22_LOGIC", cache.ia22.filter(i=> m(i.name||i.cmd)||m(i.desc)));
+  } else {
+    pushItems("IA", cache.ia);
+    pushItems("IA22_LOGIC", cache.ia22);
+  }
+  const csv = rows.map(r=> r.map(c=> `"${String(c).replaceAll('"','""')}"`).join(",")).join("\n");
+  const blob = new Blob([csv], {type:"text/csv;charset=utf-8"});
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "NetSecurePro_IA22_commands.csv";
+  document.body.appendChild(a); a.click(); a.remove();
+}
+exportBtn.addEventListener("click", exportCSV);
+
+/* ======== Rafraîchissement ======== */
+async function refreshAll(){
+  try{
+    setStatus("Chargement…");
+    const [ia, ia22, req] = await Promise.all([
+      fetchJSON(ENDPOINTS.ia).catch(()=>[]),
+      fetchJSON(ENDPOINTS.ia22).catch(()=>[]),
+      fetchJSON(ENDPOINTS.req).catch(()=>[])
+    ]);
+
+    // Normalisation souple : accepter [{name,desc,cmd}] ou ["cmd"].
+    cache.ia = Array.isArray(ia) ? ia.map(x=> typeof x==="string"?({name:x,cmd:x,desc:""}):x ) : [];
+    cache.ia22 = Array.isArray(ia22) ? ia22.map(x=> typeof x==="string"?({name:x,cmd:x,desc:""}):x ) : [];
+    cache.req = Array.isArray(req) ? req : [];
+
+    doFilter();
+    setStatus("Données à jour.", "ok");
+  }catch(e){
+    setStatus("Erreur de chargement : " + e.message, "err");
+  }
+}
+refreshBtn.addEventListener("click", refreshAll);
+
+let timer = null;
+function startAuto(){
+  if(timer) clearInterval(timer);
+  timer = setInterval(refreshAll, REFRESH_MS);
+}
+refreshAll(); startAuto();
+</script>
+
+<!--
+Notes de sécurité (publication officielle) :
+- Cette page N’EXÉCUTE AUCUNE COMMANDE côté client. Elle lit uniquement des endpoints en lecture : /api/list, /api/list_ia22, /api/requests.
+- Pour exposer une exécution distante, créez un endpoint POST /api/execute sécurisé (API key/JWT, CORS, rate-limit, whitelist) — NE PAS l’appeler directement depuis GitHub Pages sans proxy sécurisé.
+- Assurez-vous d’activer CORS sur le backend si BASE_API pointe vers un autre domaine.
+-->
+</body>
+</html>
