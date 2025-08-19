@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>IA22 LogicVMQEM – Moteur de règles</title>
+  <style>
+    body {
+      background-color: #1e1e1e;
+      color: #00ffcc;
+      font-family: monospace;
+      padding: 40px;
+      max-width: 800px;
+      margin: auto;
+    }
+    h1 {
+      color: #ffffff;
+      text-align: center;
+    }
+    form {
+      margin-top: 30px;
+      background-color: #2a2a2a;
+      padding: 20px;
+      border-radius: 8px;
+    }
+    input, select, button {
+      margin: 10px 0;
+      padding: 8px;
+      font-size: 1em;
+      width: 100%;
+      box-sizing: border-box;
+      background-color: #121212;
+      color: #00ffcc;
+      border: 1px solid #00ffcc;
+      border-radius: 4px;
+    }
+    button {
+      cursor: pointer;
+      background-color: #00ffcc;
+      color: #121212;
+      font-weight: bold;
+    }
+    .result {
+      margin-top: 30px;
+      background-color: #2a2a2a;
+      padding: 20px;
+      border-radius: 8px;
+      color: #ffcc00;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧠 IA22 – Moteur logique embarqué</h1>
+
+  <form id="userForm">
+    <label>Âge :</label>
+    <input type="number" name="age" required>
+
+    <label>Rôle :</label>
+    <select name="role">
+      <option value="user">Utilisateur</option>
+      <option value="admin">Administrateur</option>
+    </select>
+
+    <label>Abonnement :</label>
+    <select name="subscription">
+      <option value="free">Gratuit</option>
+      <option value="premium">Premium</option>
+    </select>
+
+    <button type="submit">Évaluer les règles IA22</button>
+  </form>
+
+  <div class="result" id="ia22-results"></div>
+
+  <script>
+    const rules = [
+      {
+        id: "R1",
+        condition: ctx => ctx.age < 18,
+        action: "deny_access",
+        reason: "IA22 refuse l'accès aux mineurs"
+      },
+      {
+        id: "R2",
+        condition: ctx => ctx.role === "admin",
+        action: "grant_access",
+        reason: "Accès administrateur autorisé"
+      },
+      {
+        id: "R3",
+        condition: ctx => ctx.subscription === "premium",
+        action: "grant_features",
+        reason: "Fonctionnalités premium activées"
+      }
+    ];
+
+    function evaluateRules(context) {
+      return rules
+        .filter(rule => rule.condition(context))
+        .map(rule => ({
+          id: rule.id,
+          action: rule.action,
+          reason: rule.reason
+        }));
+    }
+
+    function displayResults(results) {
+      const container = document.getElementById("ia22-results");
+      if (results.length === 0) {
+        container.innerHTML = "<p>✅ Aucun blocage détecté. Accès autorisé.</p>";
+      } else {
+        container.innerHTML = results.map(r =>
+          `<p>🔹 Règle ${r.id} → <strong>${r.action}</strong><br>${r.reason}</p>`
+        ).join("");
+      }
+    }
+
+    document.getElementById("userForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const context = {
+        age: parseInt(formData.get("age")),
+        role: formData.get("role"),
+        subscription: formData.get("subscription")
+      };
+      const results = evaluateRules(context);
+      displayResults(results);
+    });
+  </script>
+</body>
+</html>
