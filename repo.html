@@ -1,40 +1,251 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<title>NetSecurePro IA22 CLI & Dashboard</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>NetSecurePro IA22 — CLI, Dashboard & Actions</title>
 <style>
-body { font-family: monospace; background:#111; color:#0f0; margin:0; padding:0; }
-#cli, #dashboard { padding:10px; }
-#cli { height:50vh; overflow-y:auto; border-bottom:2px solid #0f0; }
-#input { width:100%; padding:10px; background:#222; color:#0f0; border:none; outline:none; }
-#dashboard { display:flex; justify-content:space-around; background:#000; color:#0f0; height:40vh; }
-.module, .ia22 { border:1px solid #0f0; padding:10px; width:48%; overflow-y:auto; }
-h2 { margin:0 0 5px 0; font-size:1em; }
+  :root { --bg:#0b0b0f; --panel:#12121a; --text:#d7ffe7; --accent:#00ffaa; --muted:#6fe3c0; }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:ui-monospace, Menlo, Consolas, monospace;background:var(--bg);color:var(--text)}
+  .wrap{display:grid;grid-template-rows:auto auto 1fr;gap:10px;max-width:1200px;margin:0 auto;padding:10px}
+  /* CLI */
+  #cli{height:36vh;min-height:250px;overflow:auto;border:1px solid #1f1f2a;background:var(--panel);
+       padding:12px;border-radius:12px}
+  #input{width:100%;padding:12px;border:1px solid #1f1f2a;border-radius:10px;background:#0e0e14;color:var(--text)}
+  #input:focus{outline:none;border-color:var(--accent)}
+  /* Actions toolbar */
+  .toolbar{display:grid;gap:8px;background:var(--panel);border:1px solid #1f1f2a;border-radius:12px;padding:10px}
+  .toolbar h2{margin:0 0 6px 0;font-size:14px;color:var(--muted)}
+  .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:8px}
+  @media (max-width:900px){ .grid{grid-template-columns:repeat(6,1fr)} }
+  @media (max-width:640px){ .grid{grid-template-columns:repeat(2,1fr)} }
+  .card{grid-column:span 3;background:#0e0e14;border:1px solid #1f1f2a;border-radius:12px;padding:10px}
+  .card h3{margin:0 0 6px 0;font-size:13px;color:var(--muted)}
+  .row{display:flex;gap:6px;align-items:center;margin-top:6px}
+  .row input[type="text"]{flex:1;min-width:0;padding:8px;border:1px solid #262636;border-radius:8px;background:#0a0a10;color:var(--text)}
+  button{cursor:pointer;border:none;border-radius:10px;padding:9px 12px;background:var(--accent);color:#003322;font-weight:700}
+  button.secondary{background:#1e293b;color:#c8ffe6;border:1px solid #2b3a50}
+  button.ghost{background:transparent;border:1px dashed #2b3a50;color:#9fe7cd}
+  /* Dashboard panels */
+  .dash{display:grid;gap:10px;grid-template-columns:2fr 2fr 1fr}
+  @media (max-width:900px){ .dash{grid-template-columns:1fr} }
+  .panel{background:var(--panel);border:1px solid #1f1f2a;border-radius:12px;padding:10px;min-height:220px}
+  .panel h2{margin:0 0 8px 0;font-size:14px;color:var(--muted)}
+  ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+  li{padding:6px 8px;background:#0e0e14;border:1px solid #1f1f2a;border-radius:8px}
+  #qrCode {display:flex;align-items:center;justify-content:center;height:180px;background:#0e0e14;border:1px solid #1f1f2a;border-radius:12px}
+  #qrCode img, #qrCode canvas{max-width:100%;height:auto}
+  .hint{font-size:12px;color:#92ffd8;opacity:.8;margin-top:6px}
 </style>
 </head>
 <body>
-<div id="cli"></div>
-<input type="text" id="input" placeholder="Tapez une commande..." autofocus>
-<div id="dashboard">
-    <div class="module">
-        <h2>Modules actifs</h2>
-        <ul id="moduleList"></ul>
+<div class="wrap">
+
+  <!-- CLI -->
+  <div id="cli">Bienvenue dans <strong>NetSecurePro IA22</strong> — CLI & Dashboard.
+Tapez <code>help</code> pour la liste des commandes. Déverrouillez avec <code>unlock_ai &lt;motclé&gt;</code>.
+  </div>
+  <input id="input" type="text" placeholder="Tapez une commande... (Entrée pour exécuter)" autofocus />
+
+  <!-- Toolbar Actions -->
+  <div class="toolbar">
+    <h2>Actions rapides (Administrateur autorisé)</h2>
+    <div class="grid">
+
+      <div class="card">
+        <h3>Verrouillage</h3>
+        <div class="row">
+          <input id="keyInput" type="text" placeholder="mot-clé (ex: unlock_ai)" />
+          <button id="btnUnlock">Déverrouiller</button>
+        </div>
+        <div class="row">
+          <button id="btnLock" class="secondary">Verrouiller</button>
+          <button id="btnStatus" class="ghost">Status IA</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Modules</h3>
+        <div class="row">
+          <input id="modName" type="text" placeholder="Nom du module" />
+          <button id="btnLoad">Charger</button>
+        </div>
+        <div class="row">
+          <input id="modName2" type="text" placeholder="Nom du module" />
+          <button id="btnUnload" class="secondary">Décharger</button>
+        </div>
+        <div class="row">
+          <input id="modName3" type="text" placeholder="Nom du module" />
+          <button id="btnRestart" class="ghost">Redémarrer</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Tunnel distant</h3>
+        <div class="row">
+          <button id="btnTunnelStart">Start</button>
+          <button id="btnTunnelStop" class="secondary">Stop</button>
+        </div>
+        <div class="hint">Cloudflare/Ngrok (simulation côté client)</div>
+      </div>
+
+      <div class="card">
+        <h3>IA22 LOGIC</h3>
+        <div class="row">
+          <input id="iaTopic" type="text" placeholder="Sujet (ex: Sécurité réseau)" />
+          <button id="btnIAReq">Recommander</button>
+        </div>
+        <div class="row">
+          <button id="btnIAAuto">Exécution autonome</button>
+          <button id="btnHelp" class="ghost">Help</button>
+        </div>
+      </div>
+
     </div>
-    <div class="ia22">
-        <h2>IA22 LOGIC</h2>
-        <ul id="iaList"></ul>
+  </div>
+
+  <!-- Dashboard -->
+  <div class="dash">
+    <div class="panel">
+      <h2>Modules actifs</h2>
+      <ul id="moduleList"></ul>
     </div>
+    <div class="panel">
+      <h2>IA22 LOGIC — Requêtes & Actions</h2>
+      <ul id="iaList"></ul>
+    </div>
+    <div class="panel">
+      <h2>QR — Dernière action</h2>
+      <div id="qrCode"></div>
+      <div class="hint">Scannez pour partager/archiver l’action.</div>
+    </div>
+  </div>
+
 </div>
 
+<!-- Lib QR -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
-const output = document.getElementById('cli');
-const input = document.getElementById('input');
-const moduleList = document.getElementById('moduleList');
-const iaList = document.getElementById('iaList');
+  const cli = document.getElementById('cli');
+  const input = document.getElementById('input');
 
-let locked = true; // verrouillage initial
-let modules = [];
+  const moduleList = document.getElementById('moduleList');
+  const iaList = document.getElementById('iaList');
+  const qrDiv = document.getElementById('qrCode');
+  let qr = new QRCode(qrDiv, { text:"", width:170, height:170 });
+
+  // Toolbar elements
+  const keyInput = document.getElementById('keyInput');
+  const modName = document.getElementById('modName');
+  const modName2 = document.getElementById('modName2');
+  const modName3 = document.getElementById('modName3');
+  const iaTopic = document.getElementById('iaTopic');
+
+  const btnUnlock = document.getElementById('btnUnlock');
+  const btnLock = document.getElementById('btnLock');
+  const btnStatus = document.getElementById('btnStatus');
+  const btnLoad = document.getElementById('btnLoad');
+  const btnUnload = document.getElementById('btnUnload');
+  const btnRestart = document.getElementById('btnRestart');
+  const btnTunnelStart = document.getElementById('btnTunnelStart');
+  const btnTunnelStop = document.getElementById('btnTunnelStop');
+  const btnIAReq = document.getElementById('btnIAReq');
+  const btnIAAuto = document.getElementById('btnIAAuto');
+  const btnHelp = document.getElementById('btnHelp');
+
+  // State
+  let locked = true;
+  let modules = ["NetSecurePro_Core","USB_RemoteAccess","PowerShell_CL8","OCR_Command"];
+  let iaLogs = [];
+
+  // Core helpers
+  function log(text){ cli.innerHTML += `\n${text}`; cli.scrollTop = cli.scrollHeight; }
+  function updateQR(text){ qr.makeCode(text || ""); }
+  function updateModules(){
+    moduleList.innerHTML = modules.map(m=>`<li>${m}</li>`).join('') || '<li>Aucun module</li>';
+  }
+  function updateIA(){
+    iaList.innerHTML = iaLogs.slice(-12).map(l=>`<li>${l}</li>`).join('') || '<li>Aucun log</li>';
+  }
+
+  // Commands
+  const commands = {
+    help: () => `Commandes: help, unlock_ai <key>, lock_ai, status_ai, list_modules, load_module <m>, unload_module <m>, restart_module <m>, remote_access <start|stop>, ia22_request <sujet>, ia22_auto`,
+    unlock_ai: (k) => { if(!k) return "Erreur: mot-clé requis"; locked=false; updateQR("IA déverrouillée"); return `IA déverrouillée (clé: ${k})`; },
+    lock_ai: () => { locked=true; updateQR("IA verrouillée"); return "IA verrouillée."; },
+    status_ai: () => `Modules: ${modules.join(', ')}\nVerrouillage: ${locked?'ON':'OFF'}`,
+    list_modules: () => modules.join(', '),
+    load_module: (m) => { if(!m) return "Nom de module requis"; if(!modules.includes(m)) modules.push(m); updateModules(); updateQR(`Load ${m}`); return `Module chargé: ${m}`; },
+    unload_module: (m) => { if(!m) return "Nom de module requis"; modules = modules.filter(x=>x!==m); updateModules(); updateQR(`Unload ${m}`); return `Module déchargé: ${m}`; },
+    restart_module: (m) => { if(!m) return "Nom de module requis"; updateQR(`Restart ${m}`); return `Module redémarré: ${m}`; },
+    remote_access: (mode) => { if(!['start','stop'].includes(mode||'')) return "Paramètre requis: start|stop"; updateQR(`Tunnel ${mode}`); return `Tunnel distant ${mode}.`; },
+    ia22_request: (topic) => {
+      if(!topic) return "Sujet requis";
+      const msg = `[IA22] Recommandation pour "${topic}":\n- Analyse modules actifs\n- Vérif compatibilité IA22\n- Plan d'action proposé (auto)\n- Journalisation & QR`;
+      iaLogs.push(msg); updateIA(); updateQR(`IA22:${topic}`); return msg;
+    },
+    ia22_auto: () => {
+      const synth = `=== IA22 AUTONOME ===
+• Audit modules: ${modules.length} détectés
+• Actions: AutoMonitor chargé, optimisation périodique
+• Sécurité: surveillance réseau proactive
+=======================`;
+      if(!modules.includes("AutoMonitor")) modules.push("AutoMonitor");
+      updateModules(); iaLogs.push(synth); updateIA(); updateQR("IA22 Auto");
+      return synth;
+    }
+  };
+
+  // CLI input
+  input.addEventListener('keydown', async (e)=>{
+    if(e.key==='Enter'){
+      const line = input.value.trim(); if(!line) return;
+      input.value = "";
+      log(`> ${line}`);
+      const parts = line.split(' ');
+      const cmd = (parts.shift()||"").toLowerCase();
+      try{
+        let out = "Commande inconnue. Tapez help.";
+        if(cmd==="help") out = commands.help();
+        else if(cmd==="unlock_ai") out = commands.unlock_ai(parts[0]);
+        else if(cmd==="lock_ai") out = commands.lock_ai();
+        else if(cmd==="status_ai") out = commands.status_ai();
+        else if(cmd==="list_modules") out = commands.list_modules();
+        else if(cmd==="load_module") out = commands.load_module(parts.join(' '));
+        else if(cmd==="unload_module") out = commands.unload_module(parts.join(' '));
+        else if(cmd==="restart_module") out = commands.restart_module(parts.join(' '));
+        else if(cmd==="remote_access") out = commands.remote_access(parts[0]);
+        else if(cmd==="ia22_request") out = commands.ia22_request(parts.join(' '));
+        else if(cmd==="ia22_auto") out = commands.ia22_auto();
+        log(out);
+      }catch(err){ log("Erreur: "+err.message); }
+    }
+  });
+
+  // Toolbar bindings
+  btnUnlock.onclick = ()=>{ const k = keyInput.value.trim(); log("> unlock_ai "+k); log(commands.unlock_ai(k)); };
+  btnLock.onclick   = ()=>{ log("> lock_ai"); log(commands.lock_ai()); };
+  btnStatus.onclick = ()=>{ log("> status_ai"); log(commands.status_ai()); };
+
+  btnLoad.onclick   = ()=>{ const m = modName.value.trim(); if(!m) return; log("> load_module "+m); log(commands.load_module(m)); };
+  btnUnload.onclick = ()=>{ const m = modName2.value.trim(); if(!m) return; log("> unload_module "+m); log(commands.unload_module(m)); };
+  btnRestart.onclick= ()=>{ const m = modName3.value.trim(); if(!m) return; log("> restart_module "+m); log(commands.restart_module(m)); };
+
+  btnTunnelStart.onclick = ()=>{ log("> remote_access start"); log(commands.remote_access("start")); };
+  btnTunnelStop.onclick  = ()=>{ log("> remote_access stop");  log(commands.remote_access("stop"));  };
+
+  btnIAReq.onclick  = ()=>{ const t = iaTopic.value.trim(); if(!t) return; log("> ia22_request "+t); log(commands.ia22_request(t)); };
+  btnIAAuto.onclick = ()=>{ log("> ia22_auto"); log(commands.ia22_auto()); };
+  btnHelp.onclick   = ()=>{ log("> help"); log(commands.help()); };
+
+  // Boot
+  updateModules(); updateIA(); updateQR("Prêt — NetSecurePro IA22");
+  // Autonomie périodique: toutes les 60s si déverrouillé
+  setInterval(()=>{ if(!locked){ log(commands.ia22_auto()); } }, 60000);
+</script>
+</body>
+</html>let modules = [];
 let iaLogs = [];
 
 // Définition des commandes IA
