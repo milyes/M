@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>IPTV Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f0f0f0; margin: 0; padding: 20px; }
+        h1 { text-align: center; color: #333; }
+        .container { max-width: 900px; margin: auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 15px rgba(0,0,0,0.2); }
+        input, button { padding: 10px; margin: 5px 0; width: 100%; border-radius: 5px; border: 1px solid #ccc; }
+        button { background: #007BFF; color: #fff; cursor: pointer; border: none; }
+        button:hover { background: #0056b3; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background: #007BFF; color: #fff; }
+        .status-active { color: green; font-weight: bold; }
+        .status-dead { color: red; font-weight: bold; }
+        pre { background: #eee; padding: 10px; border-radius: 5px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>IPTV Dashboard</h1>
+        
+        <h2>Connexion</h2>
+        <input type="text" id="username" placeholder="Username" value="milyes.github.io">
+        <input type="password" id="password" placeholder="Password" value="1776">
+        <button onclick="login()">Connexion Auto</button>
+        
+        <h2>Actions</h2>
+        <button onclick="downloadM3U()">Télécharger M3U</button>
+        <button onclick="downloadEPG()">Télécharger EPG</button>
+        <button onclick="verifyStreams()">Vérifier les Flux</button>
+        <button onclick="generateReports()">Générer Rapports CSV + HTML</button>
+        
+        <h2>Résultats</h2>
+        <div id="output">
+            <pre id="log">Logs et résultats ici...</pre>
+        </div>
+        
+        <h2>Flux IPTV</h2>
+        <table id="streamsTable">
+            <thead>
+                <tr>
+                    <th>Nom du Flux</th>
+                    <th>URL</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Les flux seront insérés ici dynamiquement -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        const logEl = document.getElementById("log");
+        const tableBody = document.querySelector("#streamsTable tbody");
+        let streams = [];
+
+        function log(msg) { logEl.textContent += "\n" + msg; logEl.scrollTop = logEl.scrollHeight; }
+
+        function login() {
+            const user = document.getElementById("username").value;
+            const pass = document.getElementById("password").value;
+            log(`Connexion avec ${user} / ${pass} ...`);
+            // Ici tu peux ajouter ton appel API réel
+            setTimeout(() => log("Connexion réussie ✅"), 500);
+        }
+
+        function downloadM3U() {
+            log("Téléchargement M3U...");
+            // Simuler téléchargement
+            streams = [
+                { name: "Chaîne 1", url: "http://example.com/stream1.m3u8", status: "unknown" },
+                { name: "Chaîne 2", url: "http://example.com/stream2.m3u8", status: "unknown" }
+            ];
+            renderStreams();
+            log("M3U téléchargé ✅");
+        }
+
+        function downloadEPG() {
+            log("Téléchargement EPG...");
+            setTimeout(() => log("EPG téléchargé ✅"), 500);
+        }
+
+        function verifyStreams() {
+            log("Vérification des flux...");
+            streams.forEach((s, i) => {
+                // Simuler la vérification
+                s.status = Math.random() > 0.5 ? "active" : "dead";
+            });
+            renderStreams();
+            log("Vérification terminée ✅");
+        }
+
+        function generateReports() {
+            log("Génération des rapports CSV + HTML...");
+            let csv = "Nom,URL,Status\n" + streams.map(s => `${s.name},${s.url},${s.status}`).join("\n");
+            log("CSV:\n" + csv);
+            let htmlReport = "<table><tr><th>Nom</th><th>URL</th><th>Status</th></tr>" +
+                             streams.map(s => `<tr><td>${s.name}</td><td>${s.url}</td><td>${s.status}</td></tr>`).join("") +
+                             "</table>";
+            log("HTML Report généré ✅\n" + htmlReport);
+        }
+
+        function renderStreams() {
+            tableBody.innerHTML = "";
+            streams.forEach(s => {
+                const row = document.createElement("tr");
+                row.innerHTML = `<td>${s.name}</td>
+                                 <td>${s.url}</td>
+                                 <td class="${s.status==='active'?'status-active':'status-dead'}">${s.status}</td>`;
+                tableBody.appendChild(row);
+            });
+        }
+    </script>
+</body>
+</html>
