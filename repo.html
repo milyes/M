@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>NetSecurePro IA22 CLI & Dashboard</title>
+<style>
+body { font-family: monospace; background:#111; color:#0f0; margin:0; padding:0; }
+#cli, #dashboard { padding:10px; }
+#cli { height:50vh; overflow-y:auto; border-bottom:2px solid #0f0; }
+#input { width:100%; padding:10px; background:#222; color:#0f0; border:none; outline:none; }
+#dashboard { display:flex; justify-content:space-around; background:#000; color:#0f0; height:40vh; }
+.module, .ia22 { border:1px solid #0f0; padding:10px; width:48%; overflow-y:auto; }
+h2 { margin:0 0 5px 0; font-size:1em; }
+</style>
+</head>
+<body>
+<div id="cli"></div>
+<input type="text" id="input" placeholder="Tapez une commande..." autofocus>
+<div id="dashboard">
+    <div class="module">
+        <h2>Modules actifs</h2>
+        <ul id="moduleList"></ul>
+    </div>
+    <div class="ia22">
+        <h2>IA22 LOGIC</h2>
+        <ul id="iaList"></ul>
+    </div>
+</div>
+
+<script>
+const output = document.getElementById('cli');
+const input = document.getElementById('input');
+const moduleList = document.getElementById('moduleList');
+const iaList = document.getElementById('iaList');
+
+let locked = true; // verrouillage initial
+let modules = [];
+let iaLogs = [];
+
+// Définition des commandes IA
+const commands = {
+    help: async () => "Commandes disponibles: help, unlock_ai, load_module, unload_module, restart_module, remote_access, ia22_request, show_modules",
+    unlock_ai: async () => { locked=false; return "IA déverrouillée, autonome activée."; },
+    load_module: async (args) => { modules.push(args[0]); updateModules(); return `Module ${args[0]} chargé.`; },
+    unload_module: async (args) => { modules = modules.filter(m=>m!==args[0]); updateModules(); return `Module ${args[0]} déchargé.`; },
+    restart_module: async (args) => { return `Module ${args[0]} redémarré.`; },
+    remote_access: async (args) => { return `Tunnel distant ${args[0]} lancé.`; },
+    ia22_request: async (args) => { 
+        const msg = `[Recommandation IA22] Pour "${args.join(' ')}": Analyse complète générée.`; 
+        iaLogs.push(msg); updateIA(); 
+        return msg; 
+    },
+    ia22_auto: () => { 
+        const msg = "[IA22 LOGIC] Action autonome effectuée."; 
+        iaLogs.push(msg); updateIA(); 
+        return msg; 
+    },
+    show_modules: () => modules.join(', ') || "Aucun module actif"
+};
+
+// Affichage et interaction CLI
+input.addEventListener('keydown', async (e) => {
+    if(e.key==='Enter'){
+        const commandText = input.value.trim();
+        input.value='';
+        output.innerHTML += `\n> ${commandText}`;
+        const result = await processCommand(commandText);
+        output.innerHTML += `\n${result}`;
+        output.scrollTop = output.scrollHeight;
+    }
+});
+
+async function processCommand(commandText){
+    const args = commandText.split(' ');
+    const cmd = args.shift().toLowerCase();
+    if(commands[cmd]){
+        try{
+            return await commands[cmd](args);
+        } catch(e){
+            return 'Erreur d\'exécution: '+e.message;
+        }
+    } else {
+        return `Commande inconnue: ${cmd}. Tapez "help" pour la liste.`;
+    }
+}
+
+// Mise à jour dashboard
+function updateModules(){
+    moduleList.innerHTML = modules.map(m=>`<li>${m}</li>`).join('');
+}
+function updateIA(){
+    iaList.innerHTML = iaLogs.slice(-10).map(l=>`<li>${l}</li>`).join('');
+}
+
+// IA22 LOGIC autonome toutes les 60 secondes si déverrouillée
+setInterval(() => {
+    if(!locked){
+        const autoMsg = commands.ia22_auto();
+        output.innerHTML += `\n${autoMsg}`;
+        output.scrollTop = output.scrollHeight;
+    }
+}, 60000);
+
+</script>
+</body>
+</html>
