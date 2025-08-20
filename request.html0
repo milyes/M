@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NetSecurePro IA Admin CLI Autonome</title>
+<style>
+body { font-family: monospace; background-color: #1e1e2f; color: #d4d4d4; margin:0; padding:0; }
+#cli-container { max-width:1000px; margin:20px auto; background-color:#2a2a3d; border-radius:10px; padding:20px; box-shadow:0 0 20px rgba(0,0,0,0.5); }
+#output { min-height:500px; border:1px solid #444; padding:15px; margin-bottom:10px; background-color:#1b1b2b; overflow-y:auto; white-space:pre-wrap; }
+#command-input { width:calc(100% - 20px); padding:10px; border:1px solid #444; border-radius:5px; background-color:#1b1b2b; color:#d4d4d4; }
+#command-input:focus { outline:none; border-color:#00ffcc; }
+.prompt { color:#00ffcc; }
+button { display:none; }
+</style>
+</head>
+<body>
+<div id="cli-container">
+    <div id="output">Bienvenue dans NetSecurePro IA - CLI Administrateur Autonome
+Tapez "help" pour la liste des commandes autorisées.
+La CLI peut générer automatiquement des requêtes IA22 LOGIC et agir souverainement.</div>
+    <input type="text" id="command-input" placeholder="Entrez une commande..." autofocus />
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+const output = document.getElementById('output');
+const input = document.getElementById('command-input');
+
+let modulesLoaded = ["NetSecurePro_Core", "USB_RemoteAccess", "PowerShell_CL8", "OCR_Command"];
+let locked = true;
+
+// Commandes administrateur + IA22 LOGIC autonome
+const commands = {
+    help: () => {
+        return `Commandes IA administrateur autonome:
+- unlock_ai [motclé]
+- lock_ai
+- status_ai
+- list_modules
+- load_module [nom_module]
+- unload_module [nom_module]
+- restart_module [nom_module]
+- remote_access [start|stop]
+- qr_generate [texte|url]
+- pdf_generate [nom_fichier]
+- ia22_request [sujet]
+- ia22_auto
+- exit`;
+    },
+    unlock_ai: (args) => { if(!args[0]) return 'Erreur: mot-clé requis'; locked=false; return `Interface IA déverrouillée avec le mot-clé: ${args[0]}`; },
+    lock_ai: () => { locked=true; return 'Interface IA verrouillée.'; },
+    status_ai: () => { return `Modules IA actifs: ${modulesLoaded.join(', ')}\nVerrouillage IA: ${locked ? 'ON' : 'OFF'}`; },
+    list_modules: () => `Modules installés:\n- ${modulesLoaded.join('\n- ')}`,
+    load_module: (args) => { if(!args[0]) return 'Erreur: nom du module requis'; if(!modulesLoaded.includes(args[0])){ modulesLoaded.push(args[0]); return `Module chargé: ${args[0]}`;} return `Module déjà actif: ${args[0]}`; },
+    unload_module: (args) => { if(!args[0]) return 'Erreur: nom du module requis'; if(modulesLoaded.includes(args[0])){ modulesLoaded=modulesLoaded.filter(m=>m!==args[0]); return `Module déchargé: ${args[0]}`;} return `Module non trouvé: ${args[0]}`; },
+    restart_module: (args) => { if(!args[0]) return 'Erreur: nom du module requis'; return modulesLoaded.includes(args[0]) ? `Module redémarré: ${args[0]}` : `Module non trouvé: ${args[0]}`; },
+    remote_access: (args) => { if(args[0]==='start') return 'Tunnel sécurisé activé.'; if(args[0]==='stop') return 'Tunnel sécurisé désactivé.'; return 'Paramètre requis: start ou stop'; },
+    qr_generate: async (args) => { if(!args[0]) return 'Erreur: texte ou URL requis'; let qrText=args.join(' '); try{ const dataUrl=await QRCode.toDataURL(qrText); return `QR code généré:\n${dataUrl}`; } catch(e){ return 'Erreur génération QR code: '+e.message; } },
+    pdf_generate: (args) => { const { jsPDF } = window.jspdf; let fileName=args[0]||'NetSecurePro_Admin.pdf'; const doc=new jsPDF(); doc.text(`NetSecurePro IA - Admin CLI Autonome\nModules actifs: ${modulesLoaded.join(', ')}\nVerrouillage IA: ${locked ? 'ON':'OFF'}`,10,20); doc.save(fileName); return `PDF généré: ${fileName}`; },
+    ia22_request: (args) => {
+        if(!args[0]) return 'Erreur: sujet requis pour la requête IA22 LOGIC.';
+        let sujet = args.join(' ');
+        let response = `--- IA22 LOGIC REQUÊTE ---\nSujet: ${sujet}\nRecommandations:\n1. Analyser l'écosystème et les modules actifs.\n2. Vérifier compatibilité IA22.\n3. Proposer intégration intelligente avec les modules:\n   ${modulesLoaded.join(', ')}\n4. Générer plan d'action automatisé.\n--- FIN ---`;
+        return response;
+    },
+    ia22_auto: () => {
+        // Génération autonome de requêtes et actions
+        let sujets=["Sécurité réseau","Modules IA","Tunnel distant","Plan automatisé"];
+        let actions = sujets.map(s => commands.ia22_request([s])).join("\n\n");
+        // Simulation actions souveraines
+        modulesLoaded.includes("AutoMonitor") || modulesLoaded.push("AutoMonitor");
+        return `=== IA22 LOGIC AUTONOME ===\nModules analysés: ${modulesLoaded.join(', ')}\n\n${actions}\nActions autonomes appliquées: Module AutoMonitor chargé.\n=== FIN ===`;
+    }
+};
+
+input.addEventListener('keydown', function(e){
+    if(e.key==='Enter'){
+        const commandText = input.value.trim();
+        if(commandText==='') return;
+        processCommand(commandText);
+        input.value='';
+    }
+});
+
+async function processCommand(commandText){
+    appendOutput(`> ${commandText}`);
+    const args=commandText.split(' ');
+    const cmd=args.shift();
+    if(commands[cmd]){
+        try{
+            const result=await commands[cmd](args);
+            appendOutput(result);
+        }catch(err){
+            appendOutput('Erreur: '+err.message);
+        }
+    } else {
+        appendOutput(`Commande inconnue: ${cmd}. Tapez "help" pour la liste.`);
+    }
+}
+
+function appendOutput(text){
+    output.textContent += `\n${text}`;
+    output.scrollTop = output.scrollHeight;
+}
+
+// Optionnel: exécution autonome initiale
+setTimeout(()=>{ appendOutput(commands.ia22_auto()); }, 2000);
+</script>
+</body>
+</html>
