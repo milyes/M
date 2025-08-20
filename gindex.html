@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AIMEDIXAL - Diagnostic IA</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f0f4f8;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #005f73;
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+    nav {
+      background-color: #0a9396;
+      padding: 10px;
+      text-align: center;
+    }
+    nav a {
+      color: white;
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    section {
+      padding: 30px;
+      max-width: 1000px;
+      margin: auto;
+      background-color: white;
+      margin-top: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #005f73;
+    }
+    ul {
+      list-style-type: square;
+      padding-left: 20px;
+    }
+    .image-gallery {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .image-gallery img {
+      width: 100%;
+      max-width: 300px;
+      border-radius: 8px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.2);
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-top: 20px;
+    }
+    input, textarea {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1em;
+    }
+    button {
+      background-color: #005f73;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 1em;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0a9396;
+    }
+    .external-link {
+      background-color: #e0f7fa;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+    footer {
+      background-color: #005f73;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>AIMEDIXAL</h1>
+  <p>Application IA pour le diagnostic des troubles moteurs</p>
+</header>
+
+<nav>
+  <a href="#objectif">Objectif</a>
+  <a href="#fonctionnalites">Fonctionnalités</a>
+  <a href="#test">Test Personnel</a>
+  <a href="#images">Captures</a>
+  <a href="#orcid">Ressources</a>
+  <a href="#contact">Contact</a>
+</nav>
+
+<section id="objectif">
+  <h2>🎯 Objectif du Projet</h2>
+  <p>AIMEDIXAL est une application d’intelligence artificielle conçue pour assister les professionnels de santé dans le diagnostic des troubles moteurs, notamment la maladie de Parkinson. Elle permet une analyse rapide et fiable des symptômes à partir de données cliniques.</p>
+</section>
+
+<section id="fonctionnalites">
+  <h2>⚙️ Fonctionnalités Clés</h2>
+  <ul>
+    <li>Analyse de données cliniques via fichiers CSV</li>
+    <li>Prédiction automatisée avec RandomForest</li>
+    <li>Interface intuitive et responsive</li>
+    <li>Exportation de rapports médicaux</li>
+    <li>Support multilingue (Français / Anglais)</li>
+  </ul>
+</section>
+
+<section id="test">
+  <h2>🧪 Test Personnel</h2>
+  <p>En tant que patient classé en <strong>Classe 2</strong>, j’ai testé AIMEDIXAL pour suivre l’évolution de mes symptômes. Les résultats obtenus sont cohérents avec mon état clinique et m’ont permis d’anticiper certaines phases critiques.</p>
+</section>
+
+<section id="images">
+  <h2>🖼️ Captures d’écran & Résultats</h2>
+  <div class="image-gallery">
+    <img src="file_0000000050c461f9972be876247c7689 (2).png" alt="Interface AIMEDIXAL">
+    <img src="resultat_prediction.png" alt="Résultat de prédiction">
+    <img src="graphique_evolution.png" alt="Graphique d’évolution">
+    <img src="nsjZcaSDvoPf5uyFeSZjR.jpeg" alt="ORCID Research Integrity">
+  </div>
+</section>
+
+<section id="orcid">
+  <h2>🔗 Ressources Externes</h2>
+  <div class="external-link">
+    <p>📚 Vous pouvez consulter les replays et les supports de présentation de la série <strong>Research Integrity</strong> proposée par ORCID :</p>
+    <ul>
+      <li>Featuring Infolinx</li>
+      <li>ORCID Privacy Policy</li>
+      <li>Featuring Signals</li>
+      <li>Featuring TCC Africa</li>
+      <li>Featuring STM Solutions</li>
+    </ul>
+    <p>👉 <a href="https://info.orcid.org/orcid-on-demand/" target="_blank">Accéder à ORCID On-Demand</a></p>
+  </div>
+</section>
+
+<section id="contact">
+  <h2>📬 Contact & Proposition</h2>
+  <p>Je propose de tester AIMEDIXAL dans un cadre exploratoire pour évaluer son utilité clinique. N’hésitez pas à me contacter pour une démonstration ou un échange :</p>
+  <form action="mailto:ilyes@example.com" method="post" enctype="text/plain">
+    <input type="text" name="Nom" placeholder="Votre nom" required>
+    <input type="email" name="Email" placeholder="Votre email" required>
+    <textarea name="Message" rows="5" placeholder="Votre message..." required></textarea>
+    <button type="submit">Envoyer</button>
+  </form>
+</section>
+
+<footer>
+  &copy; 2025 Mohammed Ilyes Zoubirou — Tous droits réservés
+</footer>
+
+</body>
+</html>
