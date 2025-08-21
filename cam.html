@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Rapport Détection Caméras - NetSecurePro</title>
+    <meta http-equiv="refresh" content="30"> <!-- Rafraîchit la page toutes les 30s -->
+    <style>
+        body { font-family: Arial, sans-serif; background:#f8f9fa; margin:20px; }
+        h1 { color:#d32f2f; }
+        table { border-collapse: collapse; width:100%; margin-top:20px; }
+        th, td { border:1px solid #ddd; padding:10px; text-align:left; }
+        th { background:#333; color:#fff; }
+        tr:nth-child(even) { background:#f2f2f2; }
+        a { color:#1565c0; text-decoration:none; }
+        a:hover { text-decoration:underline; }
+        .status { margin-top:15px; font-size:0.9em; color:#555; }
+    </style>
+</head>
+<body>
+    <h1>Rapport Détection Caméras (Réseau 192.168.2.0/24)</h1>
+    <p class="status">Dernier scan : 2025-08-21 12:00:00 | Rafraîchissement automatique toutes les 30 secondes.</p>
+    <table>
+        <tr>
+            <th>Adresse IP</th>
+            <th>Port</th>
+            <th>Détails</th>
+        </tr>
+        <tr>
+            <td>192.168.2.10</td>
+            <td>8080</td>
+            <td><a href="http://192.168.2.10:8080" target="_blank">Android Camera détectée</a></td>
+        </tr>
+        <tr>
+            <td>192.168.2.15</td>
+            <td>554</td>
+            <td><a href="http://192.168.2.15:554" target="_blank">Service ouvert</a></td>
+        </tr>
+        <tr>
+            <td>192.168.2.22</td>
+            <td>80</td>
+            <td><a href="http://192.168.2.22" target="_blank">Android Camera détectée</a></td>
+        </tr>
+    </table>
+    <p style="margin-top:20px; font-size:0.9em; color:#666;">
+        Généré automatiquement par <b>NetSecurePro</b>
+    </p>
+</body>
+</html>
