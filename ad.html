@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Flux Audio Direct</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1e1e1e;
+            color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        audio {
+            margin-top: 20px;
+            width: 80%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lecture du Flux Audio Direct</h1>
+
+    <audio id="audioPlayer" controls autoplay></audio>
+
+    <script>
+        // URL du flux audio avec authentification basique
+        const username = "fox";
+        const password = "1776";
+        const url = "http://192.168.2.21:8080/audio.wav";
+
+        // Crée un token Base64 pour l'authentification
+        const authToken = btoa(username + ":" + password);
+
+        // Fonction pour charger le flux audio
+        async function loadAudio() {
+            try {
+                const response = await fetch(url, {
+                    method: "GET",
+                    headers: {
+                        "Authorization": "Basic " + authToken,
+                        "Accept": "audio/wav"
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error("Erreur HTTP: " + response.status);
+                }
+
+                const blob = await response.blob();
+                const audioURL = URL.createObjectURL(blob);
+                const audioElement = document.getElementById("audioPlayer");
+                audioElement.src = audioURL;
+                audioElement.play();
+
+                console.log("[INFO] Flux audio chargé et lecture en cours.");
+
+            } catch (error) {
+                console.error("[ERREUR] Impossible de lire le flux :", error);
+            }
+        }
+
+        // Charger le flux audio toutes les 5 secondes pour simuler le streaming
+        loadAudio();
+        setInterval(loadAudio, 5000);
+    </script>
+</body>
+</html>
