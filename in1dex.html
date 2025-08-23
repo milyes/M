@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Modèle IA22 – DNS & Sécurité Réseau</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --bg-light: #f4f6f8;
+      --bg-dark: #1e1e2f;
+      --text-light: #1E2A38;
+      --text-dark: #f0f0f0;
+      --accent: #FF9900;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: var(--bg-light);
+      color: var(--text-light);
+      transition: background-color 0.5s ease, color 0.5s ease;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: var(--bg-dark);
+        color: var(--text-dark);
+      }
+      .container {
+        background-color: #2b2b3c;
+      }
+    }
+
+    .container {
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      padding: 30px;
+      max-width: 800px;
+      margin: auto;
+      animation: fadeIn 1s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      text-align: center;
+      color: var(--accent);
+      margin-bottom: 30px;
+    }
+
+    .section {
+      margin-bottom: 25px;
+    }
+
+    .section h2 {
+      color: var(--accent);
+      border-bottom: 2px solid #eee;
+      padding-bottom: 5px;
+    }
+
+    ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    li {
+      margin-bottom: 10px;
+      line-height: 1.6;
+    }
+
+    li i {
+      margin-right: 8px;
+      color: var(--accent);
+    }
+
+    .footer {
+      font-size: 0.9em;
+      text-align: center;
+      margin-top: 40px;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1><i class="fas fa-shield-alt"></i> Modèle IA22 – Zone DNS Souveraine</h1>
+
+    <div class="section">
+      <h2><i class="fas fa-globe"></i> Informations du Domaine</h2>
+      <ul>
+        <li><i class="fas fa-link"></i> <strong>Domaine :</strong> examplecloud.net</li>
+        <li><i class="fas fa-id-badge"></i> <strong>Identifiant IA :</strong> X92alpha7</li>
+        <li><i class="fas fa-calendar-alt"></i> <strong>Export de zone :</strong> 2025-08-19 12:00:00</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2><i class="fas fa-server"></i> Infrastructure DNS</h2>
+      <ul>
+        <li><i class="fas fa-network-wired"></i> <strong>Serveurs DNS :</strong> ns1.exampledns.com, ns2.exampledns.com</li>
+        <li><i class="fas fa-map-marker-alt"></i> <strong>IP associées :</strong> 192.0.2.10 à 192.0.2.13</li>
+        <li><i class="fas fa-cogs"></i> <strong>SOA Record :</strong> ns1.exampledns.com admin@example.net</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2><i class="fas fa-envelope"></i> Sécurité Email</h2>
+      <ul>
+        <li><i class="fas fa-key"></i> <strong>SPF :</strong> v=spf1 ip4:192.0.2.0/24 include:mail.example.net -all</li>
+        <li><i class="fas fa-lock"></i> <strong>DMARC :</strong> v=DMARC1; p=quarantine; rua=mailto:dmarc@example.net</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2><i class="fas fa-cloud"></i> Services Intégrés</h2>
+      <ul>
+        <li><i class="fas fa-envelope-open-text"></i> Webmail sécurisé</li>
+        <li><i class="fas fa-users"></i> Plateforme collaborative</li>
+        <li><i class="fas fa-cloud-upload-alt"></i> Accès cloud chiffré</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2><i class="fas fa-code-branch"></i> Interopérabilité</h2>
+      <ul>
+        <li><i class="fab fa-github"></i> <strong>Challenge GitHub :</strong> abc123xyz456</li>
+        <li><i class="fas fa-exchange-alt"></i> <strong>CNAME :</strong> verify.examplecloud.net</li>
+      </ul>
+    </div>
+
+    <div class="footer">
+      ⚠️ Ce modèle est une version générique inspirée d’un projet confidentiel. Toute reproduction commerciale est interdite sans autorisation.
+    </div>
+  </div>
+</body>
+</html>
