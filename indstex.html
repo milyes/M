@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Lecture IA22STREAM</title>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <style>
+    body { background-color: #111; color: #fff; text-align: center; }
+    video { width: 80%; max-width: 800px; margin-top: 50px; border: 2px solid #00ffcc; }
+  </style>
+</head>
+<body>
+  <h1>Flux IA22STREAM</h1>
+  <video id="video" controls autoplay></video>
+
+  <script>
+    const video = document.getElementById('video');
+    const videoSrc = 'IA22STREAM.M3U8'; // Remplace par l'URL complète si nécessaire
+
+    if (Hls.isSupported()) {
+      const hls = new Hls();
+      hls.loadSource(videoSrc);
+      hls.attachMedia(video);
+      hls.on(Hls.Events.MANIFEST_PARSED, function () {
+        video.play();
+      });
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = videoSrc;
+      video.addEventListener('loadedmetadata', function () {
+        video.play();
+      });
+    }
+  </script>
+</body>
+</html>
