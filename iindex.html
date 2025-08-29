@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>IA22_LOGIC Terminal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background-color: #000;
+      color: #00ff00;
+      font-family: 'Courier New', monospace;
+      padding: 20px;
+    }
+    h1 {
+      color: #00ffff;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    .section {
+      margin-bottom: 30px;
+    }
+    .prompt-button {
+      background-color: #00aaff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin: 5px 0;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .prompt-button:hover {
+      background-color: #0088cc;
+    }
+    footer {
+      margin-top: 40px;
+      font-size: 12px;
+      color: #888;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🧠 IA22_LOGIC • Terminal Souverain</h1>
+
+  <div class="section">
+    <p>Bienvenue dans le moteur IA22_LOGIC. Chaque commande est une unité autonome, activable à la demande.</p>
+    <p>Modules disponibles :</p>
+    <ul>
+      <li>🔐 <strong>IA_ANALYSE_BASH</strong> — Analyse CLI des scripts Bash</li>
+      <li>🧪 <strong>IA_WEBVIEW_LAUNCH</strong> — Interface IA hors-ligne dans APK</li>
+      <li>📺 <strong>IA22STREAM_PLAYER</strong> — Lecture et analyse de flux M3U8</li>
+      <li>🎓 <strong>IA_RESEARCH_SYNC</strong> — Synchronisation ORCID / Elsevier Pure</li>
+      <li>🌐 <strong>IA_PROXY_CLOUD</strong> — Tunnel IA via Cloudflare</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <button class="prompt-button" onclick="launchPrompt('IA_ANALYSE_BASH --scan /etc')">🔍 Lancer Scan Bash</button>
+    <button class="prompt-button" onclick="launchPrompt('IA_WEBVIEW_LAUNCH --apk interface.apk')">🧪 Lancer WebView Locale</button>
+    <button class="prompt-button" onclick="launchPrompt('IA22STREAM_PLAYER --source IA22STREAM.M3U8')">📺 Lancer Flux IA22</button>
+    <button class="prompt-button" onclick="launchPrompt('IA_RESEARCH_SYNC --orcid 0009-0007-7571-3178')">🎓 Lancer Sync ORCID</button>
+    <button class="prompt-button" onclick="launchPrompt('IA_PROXY_CLOUD --cloudflare --port 8080')">🌐 Lancer Tunnel IA Cloud</button>
+  </div>
+
+  <footer>
+    IA22_LOGIC • NetSecurePro IA • Zoubirou Mohammed Ilyes © 2025
+  </footer>
+
+  <script>
+    function launchPrompt(command) {
+      alert("Commande IA lancée : " + command);
+      // Intégration réelle ici : appel IA ou bridge WebView natif
+    }
+  </script>
+
+</body>
+</html>
