@@ -1,0 +1,20 @@
+<!-- menu.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Studio IA22 – Commandes</title>
+</head>
+<body>
+  <h1>🧠 IA22_LOGICIELLE – Menu de Commandes</h1>
+  <button onclick="runCommand('ia22.status')">📊 Vérifier le statut</button>
+  <button onclick="runCommand('ia22.modules')">📦 Modules injectés</button>
+  <button onclick="runCommand('ia22.project.new IA_MetaSync')">🆕 Nouveau projet</button>
+  <button onclick="runCommand('ia22.scenario meta_bridge')">🤖 Lancer scénario Meta</button>
+  <script>
+    function runCommand(cmd) {
+      alert("Commande exécutée : " + cmd);
+      // Intégration backend à venir
+    }
+  </script>
+</body>
+</html>
