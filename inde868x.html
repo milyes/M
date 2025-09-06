@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Meta AI x SYSTEMEOSIA – Interface Souveraine</title>
+  <style>
+    body { font-family: sans-serif; background-color: #f0f4f8; padding: 40px; color: #333; }
+    h1 { color: #004080; }
+    .module { background: #fff; padding: 20px; margin-bottom: 20px; border-left: 5px solid #0074D9; }
+    button { background-color: #0074D9; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+  <h1>🧠 SYSTEMEOSIA – Interface Meta AI</h1>
+  <p>Interopérabilité cognitive entre SYSTEMEOSIA et les environnements Meta AI (Llama 3, Messenger, WebView).</p>
+
+  <div class="module">
+    <h2>📄 Générer une attestation IA22</h2>
+    <input type="text" id="userName" placeholder="Nom complet">
+    <button onclick="generatePDF()">Exporter PDF souverain</button>
+    <div id="pdfStatus"></div>
+  </div>
+
+  <div class="module">
+    <h2>🧪 Tester un module Meta AI</h2>
+    <textarea id="metaPrompt" rows="4" placeholder="Exemple : Génère une synthèse IA sur la souveraineté cognitive..."></textarea>
+    <button onclick="sendToMeta()">Envoyer à Meta AI</button>
+    <div id="metaResponse"></div>
+  </div>
+
+  <script>
+    function generatePDF() {
+      const name = document.getElementById("userName").value;
+      document.getElementById("pdfStatus").innerHTML = `📄 Attestation IA22 générée pour ${name} (PDF souverain simulé).`;
+    }
+
+    function sendToMeta() {
+      const prompt = document.getElementById("metaPrompt").value;
+      document.getElementById("metaResponse").innerHTML = `🧠 Réponse simulée de Meta AI : "${prompt}" analysé avec Llama 3.`;
+    }
+  </script>
+
+</body>
+</html>
