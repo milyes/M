@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commandes IA Disponibles</title>
+    <!-- Ajout de Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Styles personnalisés */
+        body {
+            font-family: sans-serif;
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 20px;
+        }
+        .command-card {
+            margin-bottom: 20px;
+            border: none;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+        .command-card:hover {
+            transform: translateY(-5px);
+        }
+        .card-header {
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+            padding: 15px;
+            border-bottom: none;
+        }
+        .card-body {
+            padding: 20px;
+        }
+        .command-description {
+            color: #555;
+        }
+        .command-example {
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Commandes IA Disponibles</h1>
+        <p class="lead">Voici la liste des commandes d'intelligence artificielle que vous pouvez utiliser :</p>
+
+        <div class="row">
+            <!-- Exemple de commande (à répéter pour chaque commande) -->
+            <div class="col-md-6">
+                <div class="card command-card">
+                    <div class="card-header">
+                        Commande : IA_WEBVIEW_LAUNCH
+                    </div>
+                    <div class="card-body">
+                        <p class="command-description">
+                            Lance une application WebView avec des paramètres spécifiques.
+                        </p>
+                        <p><strong>Paramètres:</strong></p>
+                        <ul>
+                            <li><code>--apk &lt;nom_apk&gt;</code>: Spécifie le fichier APK à lancer.</li>
+                            <li><code>--mode &lt;online|offline&gt;</code>: Définit le mode de fonctionnement (en ligne ou hors ligne).</li>
+                            <li><code>--theme &lt;light|dark&gt;</code>: Choisit le thème de l'interface (clair ou sombre).</li>
+                        </ul>
+                        <p class="command-example">
+                            Exemple: <code>IA_WEBVIEW_LAUNCH --apk interface.apk --mode offline --theme dark</code>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Répéter ce bloc pour chaque commande IA -->
+             <div class="col-md-6">
+                <div class="card command-card">
+                    <div class="card-header">
+                        Commande : AUTRE_COMMANDE_IA
+                    </div>
+                    <div class="card-body">
+                        <p class="command-description">
+                           Description de l'autre commande IA.
+                        </p>
+                        <p><strong>Paramètres:</strong></p>
+                        <ul>
+                            <li><code>--param1 &lt;valeur&gt;</code>: Description du paramètre 1.</li>
+                            <li><code>--param2 &lt;valeur&gt;</code>: Description du paramètre 2.</li>
+                        </ul>
+                        <p class="command-example">
+                            Exemple: <code>AUTRE_COMMANDE_IA --param1 valeur1 --param2 valeur2</code>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ajout de Bootstrap JS et Popper.js (nécessaires pour certaines fonctionnalités de Bootstrap) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
