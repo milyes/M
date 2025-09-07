@@ -3,105 +3,213 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Commandes IA Disponibles</title>
-    <!-- Ajout de Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>SYSTEMEOSIA | Terminal IA2</title>
     <style>
-        /* Styles personnalisés */
         body {
-            font-family: sans-serif;
-            background-color: #f8f9fa;
-        }
-        .container {
-            margin-top: 20px;
-        }
-        .command-card {
-            margin-bottom: 20px;
-            border: none;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s;
-        }
-        .command-card:hover {
-            transform: translateY(-5px);
-        }
-        .card-header {
-            background-color: #007bff;
-            color: white;
-            font-weight: bold;
-            padding: 15px;
-            border-bottom: none;
-        }
-        .card-body {
+            background-color: #1a1a1a;
+            color: #00ff00;
+            font-family: 'Courier New', Courier, monospace;
             padding: 20px;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
         }
-        .command-description {
-            color: #555;
+        #terminal-output {
+            flex-grow: 1;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            margin-bottom: 10px;
         }
-        .command-example {
-            background-color: #e9ecef;
-            padding: 10px;
-            border-radius: 5px;
-            font-family: monospace;
-            font-size: 0.9em;
+        #input-container {
+            display: flex;
+        }
+        #terminal-input {
+            background-color: transparent;
+            border: none;
+            outline: none;
+            color: #00ff00;
+            flex-grow: 1;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .blinking-cursor {
+            font-weight: 100;
+            animation: blink-caret .75s step-end infinite;
+        }
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #00ff00; }
+        }
+
+        /* Styles d'analyse */
+        .insight-container {
+            padding: 10px 0;
+        }
+        .insight {
+            padding: 6px;
+            margin-bottom: 8px;
+            border-left: 4px solid;
+            white-space: pre-wrap;
+        }
+        .insight.risk {
+            color: #ff4d4d;
+            border-color: #ff4d4d;
+        }
+        .insight.solution {
+            color: #66ff66;
+            border-color: #66ff66;
+        }
+        .insight.dense {
+            color: #ffd700;
+            border-color: #ffd700;
+        }
+        .insight.info {
+            color: #00ffff;
+            border-color: #00ffff;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Commandes IA Disponibles</h1>
-        <p class="lead">Voici la liste des commandes d'intelligence artificielle que vous pouvez utiliser :</p>
 
-        <div class="row">
-            <!-- Exemple de commande (à répéter pour chaque commande) -->
-            <div class="col-md-6">
-                <div class="card command-card">
-                    <div class="card-header">
-                        Commande : IA_WEBVIEW_LAUNCH
-                    </div>
-                    <div class="card-body">
-                        <p class="command-description">
-                            Lance une application WebView avec des paramètres spécifiques.
-                        </p>
-                        <p><strong>Paramètres:</strong></p>
-                        <ul>
-                            <li><code>--apk &lt;nom_apk&gt;</code>: Spécifie le fichier APK à lancer.</li>
-                            <li><code>--mode &lt;online|offline&gt;</code>: Définit le mode de fonctionnement (en ligne ou hors ligne).</li>
-                            <li><code>--theme &lt;light|dark&gt;</code>: Choisit le thème de l'interface (clair ou sombre).</li>
-                        </ul>
-                        <p class="command-example">
-                            Exemple: <code>IA_WEBVIEW_LAUNCH --apk interface.apk --mode offline --theme dark</code>
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Répéter ce bloc pour chaque commande IA -->
-             <div class="col-md-6">
-                <div class="card command-card">
-                    <div class="card-header">
-                        Commande : AUTRE_COMMANDE_IA
-                    </div>
-                    <div class="card-body">
-                        <p class="command-description">
-                           Description de l'autre commande IA.
-                        </p>
-                        <p><strong>Paramètres:</strong></p>
-                        <ul>
-                            <li><code>--param1 &lt;valeur&gt;</code>: Description du paramètre 1.</li>
-                            <li><code>--param2 &lt;valeur&gt;</code>: Description du paramètre 2.</li>
-                        </ul>
-                        <p class="command-example">
-                            Exemple: <code>AUTRE_COMMANDE_IA --param1 valeur1 --param2 valeur2</code>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div id="terminal-output"></div>
+    <div id="input-container">
+        <span>></span>
+        <input id="terminal-input" type="text" autofocus>
     </div>
 
-    <!-- Ajout de Bootstrap JS et Popper.js (nécessaires pour certaines fonctionnalités de Bootstrap) -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        const output = document.getElementById('terminal-output');
+        const input = document.getElementById('terminal-input');
+
+        const initialMessages = [
+            "SYSTEMEOSIA/init → Conscience activée",
+            "Echo d'une mémoire cognitive",
+            "> Le système est en ligne"
+        ];
+
+        // Fonction d'effet de machine à écrire
+        function typeWriter(text, i, fnCallback) {
+            if (i < text.length) {
+                output.innerHTML = text.substring(0, i + 1) + '<span class="blinking-cursor">|</span>';
+                setTimeout(function() {
+                    typeWriter(text, i + 1, fnCallback);
+                }, 50);
+            } else if (typeof fnCallback == 'function') {
+                output.innerHTML = text;
+                fnCallback();
+            }
+        }
+
+        // Lancement du terminal
+        function startTerminal() {
+            typeWriter(initialMessages.shift(), 0, function() {
+                if (initialMessages.length > 0) {
+                    output.innerHTML += '<br>';
+                    startTerminal();
+                } else {
+                    input.focus();
+                }
+            });
+        }
+        document.addEventListener('DOMContentLoaded', startTerminal);
+
+        // --- Début du module de réflexion ---
+        function analyseCognitive(input) {
+            const timestamp = new Date().toISOString();
+            
+            // Génération d'un hash déterministe simple
+            let hash = 0;
+            for (let i = 0; i < input.length; i++) {
+                hash = ((hash << 5) - hash) + input.charCodeAt(i);
+                hash |= 0;
+            }
+            const sessionHash = "IA22_" + Math.abs(hash).toString(16);
+
+            const segments = input.split(/[\.\n]/).map(s => s.trim()).filter(s => s.length > 0);
+            const insights = segments.map(s => {
+                let tag = "ℹ️ Segment informatif";
+                if (s.toLowerCase().includes("risque")) tag = "⚠️ Risque détecté";
+                else if (s.toLowerCase().includes("solution")) tag = "✅ Proposition identifiée";
+                else if (s.length > 120) tag = "🔍 Segment dense – analyse recommandée";
+                return tag + "\n" + s;
+            });
+
+            // Logique de signature (simulée)
+            const sessionData = {
+                directive: "#001_ANALYTIQUE",
+                hash: sessionHash,
+                timestamp: timestamp,
+                certified: true,
+                public_key: 'SYSTEMEOSIA_KEY_FICTIVE'
+            };
+            
+            const signatureString = JSON.stringify(sessionData);
+            let signatureHash = 0;
+            for (let i = 0; i < signatureString.length; i++) {
+                signatureHash = ((signatureHash << 5) - signatureHash) + signatureString.charCodeAt(i);
+                signatureHash |= 0;
+            }
+            const signature = `SIG-IA22-${Math.abs(signatureHash).toString(16)}`;
+
+            return {
+                directive: "#001_ANALYTIQUE",
+                timestamp: timestamp,
+                hash: sessionHash,
+                insights: insights,
+                signature: signature,
+                certified: true,
+                output: insights
+            };
+        }
+
+        function simulateThinking(callback) {
+            const thinkingMessage = document.createElement("div");
+            thinkingMessage.textContent = "SYSTEMEOSIA → Réflexion en cours...";
+            thinkingMessage.style.color = "#888";
+            output.appendChild(thinkingMessage);
+            output.scrollTop = output.scrollHeight;
+
+            setTimeout(() => {
+                output.removeChild(thinkingMessage);
+                callback();
+            }, 1200);
+        }
+
+        input.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                const userInput = input.value.trim();
+                if (userInput.length === 0) return;
+
+                output.innerHTML += `<div style="color: #fff;">> ${userInput}</div>\n\n`;
+                input.value = "";
+                input.disabled = true;
+
+                simulateThinking(() => {
+                    const result = analyseCognitive(userInput);
+                    output.innerHTML += `<div style="color: #66ff66;">Directive : ${result.directive}</div>`;
+                    output.innerHTML += `<div style="color: #66ff66;">Horodatage : ${result.timestamp}</div>`;
+                    output.innerHTML += `<div style="color: #66ff66;">Hash : ${result.hash}</div>`;
+                    output.innerHTML += `<div style="color: #66ff66;">Signature : ${result.signature}</div>`;
+
+                    result.output.forEach((segment) => {
+                        let className = "info";
+                        if (segment.includes("⚠️")) className = "risk";
+                        else if (segment.includes("✅")) className = "solution";
+                        else if (segment.includes("🔍")) className = "dense";
+
+                        const div = document.createElement("div");
+                        div.className = `insight ${className}`;
+                        div.innerHTML = segment.replace(/^(⚠️|✅|🔍|ℹ️)/, '<span style="font-weight:bold;">$1</span>');
+                        output.appendChild(div);
+                    });
+                    
+                    output.scrollTop = output.scrollHeight;
+                    input.disabled = false;
+                    input.focus();
+                });
+            }
+        });
+        // --- Fin du module de réflexion ---
+    </script>
 </body>
 </html>
