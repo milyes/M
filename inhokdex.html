@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>NetSecurePro — IA22_LOGIC Terminal (Autonome)</title>
+<style>
+  :root{
+    --bg:#071026; --panel:#0b1220; --muted:#94a3b8; --text:#dbeafe; --accent:#0a66c2;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
+    background:linear-gradient(180deg,var(--bg),#001027); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Courier New", monospace;
+    color:var(--text); padding:28px;
+  }
+  .wrap{width:100%; max-width:980px}
+  .header{display:flex; gap:12px; align-items:center; margin-bottom:14px}
+  .logo{
+    width:64px; height:64px; border-radius:12px; background:linear-gradient(135deg,var(--accent),#075089);
+    display:flex; align-items:center; justify-content:center; color:white; font-weight:800; font-size:18px;
+  }
+  h1{margin:0; font-size:20px}
+  .meta{color:var(--muted); font-size:13px}
+  .card{background:var(--panel); border-radius:12px; padding:14px; box-shadow:0 8px 30px rgba(2,6,23,0.6)}
+  .terminal{background:#000; border-radius:8px; padding:14px; min-height:360px; max-height:70vh; overflow:auto}
+  .line{white-space:pre-wrap; margin-bottom:8px; font-size:14px}
+  .prompt{color:#7dd3fc; font-weight:600; margin-right:8px}
+  .input-row{display:flex; gap:8px; align-items:center; margin-top:8px}
+  .input{flex:1; background:transparent; border:0; border-bottom:1px dashed #23303b; padding:8px; color:var(--text); outline:none; font-family:inherit}
+  .controls{display:flex; gap:8px; margin-top:12px; flex-wrap:wrap}
+  .btn{background:transparent; border:1px solid rgba(255,255,255,0.06); color:var(--text); padding:8px 12px; border-radius:8px; cursor:pointer}
+  .btn.primary{background:var(--accent); border:0; color:white}
+  .small{font-size:13px; color:var(--muted)}
+  .footer{display:flex; justify-content:space-between; align-items:center; margin-top:12px; gap:12px}
+  .qr{width:84px; height:84px; border-radius:8px; background:white; display:flex; align-items:center; justify-content:center; overflow:hidden}
+  .badge{display:flex; gap:10px; align-items:center}
+  @media (max-width:600px){
+    .header{flex-direction:column; align-items:flex-start}
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <div class="logo">NSP</div>
+      <div>
+        <h1>NetSecurePro — IA22_LOGIC Terminal (Autonome)</h1>
+        <div class="meta">Autonome • Offline • Souverain • v1.0 — Auteur : Zoubirou Mohammed Ilyes</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="terminal" id="terminal" aria-live="polite">
+        <div id="out" class="line">Bienvenue dans IA22 LOGIC Terminal. Tapez 'help' pour la liste des commandes.</div>
+
+        <div class="input-row" style="margin-top:8px;">
+          <span class="prompt">IA22&gt;</span>
+          <input id="cmd" class="input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Tapez une commande puis Entrée..." />
+        </div>
+
+        <div class="controls">
+          <button class="btn" id="b-help">help</button>
+          <button class="btn" id="b-list">list</button>
+          <button class="btn" id="b-info">info</button>
+          <button class="btn" id="b-clear">clear</button>
+          <button class="btn primary" id="b-download">Télécharger PDF officiel</button>
+        </div>
+
+        <div style="margin-top:12px;" class="small">Scripts embarqués : <strong>analysis, simulate, optimize, secure</strong></div>
+
+        <div class="footer">
+          <div class="badge small">
+            <svg width="18" height="18" viewBox="0 0 24 24" style="margin-right:6px"><path fill="#fff" d="M12 1L3 5v6c0 5 4 9.8 9 11 5-1.2 9-6 9-11V5l-9-4z"/></svg>
+            IA22_LOGIC • IA2_LOGIC_VISION
+          </div>
+
+          <!-- Inline SVG QR for ORCID (links to ORCID) -->
+          <div class="qr" title="ORCID: 0009-0007-7571-3178">
+            <a href="https://orcid.org/0009-0007-7571-3178" target="_blank" rel="noreferrer" style="display:block;width:100%;height:100%">
+              <!-- Simple stylized QR-like SVG (click opens ORCID) -->
+              <svg viewBox="0 0 100 100" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+                <rect x="4" y="4" width="24" height="24" fill="#0a66c2"/>
+                <rect x="4" y="36" width="24" height="24" fill="#0a66c2"/>
+                <rect x="36" y="4" width="24" height="24" fill="#0a66c2"/>
+                <rect x="72" y="72" width="24" height="24" fill="#0a66c2"/>
+                <rect x="56" y="36" width="8" height="8" fill="#0a66c2"/>
+                <rect x="36" y="56" width="8" height="8" fill="#0a66c2"/>
+                <rect x="56" y="56" width="8" height="8" fill="#0a66c2"/>
+                <text x="4" y="98" font-size="6" fill="#071026">ORCID</text>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+<script>
+/* IA22_LOGIC Terminal - single-file, offline */
+(function(){
+  const out = document.getElementById('out');
+  const input = document.getElementById('cmd');
+  const btnHelp = document.getElementById('b-help');
+  const btnList = document.getElementById('b-list');
+  const btnInfo = document.getElementById('b-info');
+  const btnClear = document.getElementById('b-clear');
+  const btnDownload = document.getElementById('b-download');
+
+  const scripts = ['analysis','simulate','optimize','secure'];
+
+  function append(text, opts){
+    const div = document.createElement('div');
+    div.className = 'line';
+    if(opts && opts.html) div.innerHTML = text;
+    else div.textContent = text;
+    out.parentNode.insertBefore(div, input.parentNode); // insert above input-row
+    out.parentNode.scrollTop = out.parentNode.scrollHeight;
+  }
+
+  function showHelp(){
+    append("Commandes disponibles :\n- help : Affiche cette aide\n- run [script] : Exécute un script IA typique\n- list : Liste des scripts IA disponibles\n- info : Informations sur IA22 LOGIC\n- clear : Nettoie le terminal");
+  }
+  function showList(){
+    append("Scripts IA22 disponibles :\n- " + scripts.join("\n- "));
+  }
+  function showInfo(){
+    append("IA22 LOGIC Terminal v1.0\nAuteur : Zoubirou Mohammed Ilyes\nhttps://orcid.org/0009-0007-7571-3178");
+  }
+  function runScript(name){
+    if(!name || !scripts.includes(name)){
+      append("Script invalide ou non spécifié. Tapez 'list' pour voir les scripts disponibles.");
+      return;
+    }
+    append("Exécution du script IA : " + name + " ...");
+    // simulate progress via timed dots then summary
+    let i=0;
+    const dots = setInterval(()=>{
+      append("[" + name + "] progression: " + ".".repeat(i%6));
+      i++;
+      if(i>6){
+        clearInterval(dots);
+        append("[" + name + "] Processus simulé terminé. Résumé : résultat simulé.");
+      }
+    },180);
+  }
+
+  function handleCommand(line){
+    const raw = (line||"").trim();
+    if(!raw) return;
+    append("IA22> " + raw);
+    const parts = raw.split(/\s+/);
+    const cmd = parts[0].toLowerCase();
+    if(cmd === 'help') return showHelp();
+    if(cmd === 'list') return showList();
+    if(cmd === 'info') return showInfo();
+    if(cmd === 'clear') {
+      // clear displayed lines (keep the initial welcome message)
+      // remove all .line elements except initial welcome
+      const lines = Array.from(document.querySelectorAll('.terminal .line'));
+      lines.forEach((el, idx) => {
+        if(idx > 0) el.remove(); // keep first welcome
+      });
+      return;
+    }
+    if(cmd === 'run'){
+      if(parts.length < 2) return append("Usage : run [script]");
+      return runScript(parts[1]);
+    }
+    append("Commande inconnue: " + cmd);
+  }
+
+  // key handling
+  input.addEventListener('keydown', function(e){
+    if(e.key === 'Enter'){
+      const v = input.value;
+      handleCommand(v);
+      input.value = '';
+    }
+  });
+
+  // quick buttons
+  btnHelp.addEventListener('click', ()=> handleCommand('help'));
+  btnList.addEventListener('click', ()=> handleCommand('list'));
+  btnInfo.addEventListener('click', ()=> handleCommand('info'));
+  btnClear.addEventListener('click', ()=> handleCommand('clear'));
+
+  // Generate a downloadable PDF file (basic text as PDF-like file)
+  btnDownload.addEventListener('click', function(){
+    const title = "NetSecurePro IA — IA22_LOGIC";
+    const lines = [
+      title,
+      "",
+      "Projet indépendant développé par Zoubirou Mohammed Ilyes – Développeur IA, fondateur NetSecurePro IA",
+      "",
+      "Annonce mondiale : Innovation IA + Cybersécurité",
+      "Modules:",
+      " - IA22_LOGIC : Noyau logique pour la cybersécurité par intelligence artificielle.",
+      " - IA2_LOGIC_VISION : Module de vision IA avancée.",
+      "",
+      "Objectifs et innovations: Sécuriser des environnements numériques complexes via IA.",
+      "",
+      "Auteur : Zoubirou Mohammed Ilyes",
+      "ORCID : https://orcid.org/0009-0007-7571-3178",
+      "",
+      "NetSecurePro — IA22"
+    ];
+    const content = lines.join("\n");
+    // create a blob and trigger download as .pdf (simple text-based PDF file; works as a shareable doc)
+    const blob = new Blob([content], {type: 'application/pdf'}); // many viewers accept this as downloadable file
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = "NetSecurePro_IA22_LOGIC.pdf";
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 1500);
+  });
+
+  // initial focus
+  setTimeout(()=> input.focus(), 200);
+})();
+</script>
+</body>
+</html>
