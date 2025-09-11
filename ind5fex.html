@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>NetSecurePro — IA22 Video Launcher</title>
+<style>
+  :root{--bg:#0f1724;--card:#0b1220;--muted:#9aa7b2;--accent:#2dd4bf;--white:#ecfdf5}
+  html,body{height:100%;margin:0;background:linear-gradient(180deg,#071023 0%,#06111a 100%);font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;margin:0;color:var(--white)}
+  .wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;box-sizing:border-box}
+  .card{background:rgba(255,255,255,0.03);backdrop-filter:blur(6px);border-radius:14px;padding:20px;max-width:920px;width:100%;box-shadow:0 8px 30px rgba(2,6,23,0.7)}
+  header{display:flex;gap:12px;align-items:center}
+  .logo{width:64px;height:64px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#04212a,#093036);box-shadow:inset 0 -6px 18px rgba(0,0,0,0.35)}
+  .title h1{margin:0;font-size:20px}
+  .title p{margin:0;color:var(--muted);font-size:13px}
+  .status{margin-top:14px;color:var(--muted);font-size:14px}
+  .viewer{margin-top:18px;border-radius:10px;overflow:hidden;background:#000;position:relative;padding-top:56.25%;height:0}
+  .viewer iframe,.viewer video{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
+  .controls{display:flex;gap:10px;margin-top:14px;align-items:center}
+  button{background:var(--accent);color:#042018;border:0;padding:10px 12px;border-radius:10px;font-weight:600;cursor:pointer}
+  .small{background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.04);padding:8px 10px;border-radius:8px}
+  .meta{margin-top:12px;color:var(--muted);font-size:13px}
+  .hidden{display:none}
+  /* responsive */
+  @media (max-width:700px){.card{padding:14px}.title h1{font-size:18px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card" role="main" aria-live="polite">
+    <header>
+      <div class="logo" aria-hidden="true">
+        <!-- Logo SVG embarqué (remplacer ici par votre propre SVG ou data-uri) -->
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect width="24" height="24" rx="6" fill="#002b2a"/>
+          <path d="M6 12h12M12 6v12" stroke="#2dd4bf" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="title">
+        <h1>NetSecurePro — IA22 Video Launcher</h1>
+        <p>Interface embarquée — lanceur de flux sécurisé (YouTube / PeerTube)</p>
+      </div>
+    </header>
+
+    <div class="status" id="status">Initialisation…</div>
+
+    <div class="viewer" id="viewer" aria-hidden="true">
+      <!-- Iframe inséré ici dynamiquement -->
+    </div>
+
+    <div class="controls">
+      <button id="openExternal" class="hidden small">Ouvrir le flux dans le lecteur externe</button>
+      <button id="restart" class="small">Relancer la détection</button>
+      <button id="showConfig" class="small">Afficher config</button>
+    </div>
+
+    <pre id="confView" class="hidden" style="margin-top:12px;background:#01070b;padding:12px;border-radius:8px;color:#cfeee6;overflow:auto;max-height:220px"></pre>
+
+    <div class="meta">
+      <strong>Auteur :</strong> Zoubirou Mohammed Ilyes — NetSecurePro<br/>
+      <span style="color:var(--muted)">Conseils : pour les vidéos privées YouTube, utilisez des URLs ou tokens autorisés côté serveur / OAuth. Voir notes intégrées dans le fichier.</span>
+    </div>
+  </div>
+</div>
+
+<!-- Configuration embarquée (modifie ici uniquement) -->
+<script id="ui-config" type="application/json">
+{
+  "flux": "youtube",
+  "youtube_url": "https://youtu.be/VOTRE_VIDEO_PRIVEE_ID",
+  "peertube_url": "https://peertube.exemple.com/objects/1234567890abcdef",
+  "autoplay": true,
+  "allow_fullscreen": true,
+  "youtube_privacy_mode": true,
+  "youtube_token": "",
+
+  "behavior": {
+    "prefer_embed": true,
+    "external_fallback": true,
+    "open_in_new_tab_if_embed_blocked": true
+  },
+
+  "notes": {
+    "private_youtube": "Les vidéos privées YouTube nécessitent authentification OAuth. Fournir un token dans 'youtube_token' dans ce fichier n'est pas suffisant pour YouTube - il faut gérer l'OAuth côté serveur ou utiliser des vidéos non répertoriées/avec accès direct.",
+    "peertube": "PeerTube autorise souvent l'embed direct via iframe si la politique CORS/le serveur le permet."
+  }
+}
+</script>
+
+<script>
+/*
+  IA22 — Video Launcher (single-file)
+  - Lire la config JSON dans <script id="ui-config">
+  - Support: YouTube (youtu.be, youtube.com/watch, youtube.com/shorts) & PeerTube (URLs directes)
+  - Fallback: ouverture externe si embed bloqué
+  - Langue: français (messages)
+*/
+(function(){
+  const statusEl = document.getElementById('status');
+  const viewer = document.getElementById('viewer');
+  const confView = document.getElementById('confView');
+  const btnExternal = document.getElementById('openExternal');
+  const btnRestart = document.getElementById('restart');
+  const btnShowConfig = document.getElementById('showConfig');
+
+  function logStatus(txt){ statusEl.textContent = txt; }
+
+  function parseConfig(){
+    try{
+      const cfgText = document.getElementById('ui-config').textContent.trim();
+      return JSON.parse(cfgText);
+    }catch(e){
+      console.error("Erreur lecture config:", e);
+      return null;
+    }
+  }
+
+  function extractYouTubeId(url){
+    if(!url) return null;
+    // formats supportés: youtu.be/ID, youtube.com/watch?v=ID, youtube.com/embed/ID, youtube.com/shorts/ID
+    try{
+      url = url.trim();
+      // support for bare id
+      if(!url.includes('http') && /^[A-Za-z0-9_-]{6,}/.test(url)) return url;
+      const u = new URL(url);
+      if(u.hostname.includes('youtu.be')){
+        return u.pathname.slice(1);
+      }
+      if(u.hostname.includes('youtube.com') || u.hostname.includes('youtube-nocookie.com')){
+        if(u.pathname.startsWith('/watch')) return u.searchParams.get('v');
+        if(u.pathname.startsWith('/embed/')) return u.pathname.split('/embed/')[1];
+        if(u.pathname.startsWith('/shorts/')) return u.pathname.split('/shorts/')[1];
+      }
+      // fallback: try to extract v= param
+      const v = u.searchParams.get('v');
+      if(v) return v;
+    }catch(e){
+      // not a valid url — maybe it's already an id
+      if(/^[A-Za-z0-9_-]{6,}$/.test(url)) return url;
+    }
+    return null;
+  }
+
+  function buildYouTubeEmbedUrl(id, cfg){
+    const base = cfg.youtube_privacy_mode ? 'https://www.youtube-nocookie.com/embed/' : 'https://www.youtube.com/embed/';
+    let url = base + encodeURIComponent(id) + '?rel=0';
+    if(cfg.autoplay) url += '&autoplay=1';
+    if(cfg.allow_fullscreen) url += '&fs=1';
+    // Note: youtube_token handling is not reliable for private content; OAuth needed server-side.
+    return url;
+  }
+
+  function buildPeerTubeEmbedUrl(url, cfg){
+    // PeerTube embed common patterns: /videos/watch/<id> or /w/<id> or full object URL
+    // We'll try to return the given URL but prefer embed/watch path if present
+    try{
+      const u = new URL(url);
+      // if already appears embeddable, return as-is
+      if(u.pathname.includes('/videos/watch') || u.pathname.includes('/w/') || u.pathname.includes('/embed/')){
+        return url;
+      }
+      // attempt common embed path
+      return url;
+    } catch(e){
+      return url; // return raw
+    }
+  }
+
+  function insertIframe(src, allowFullScreen){
+    viewer.innerHTML = '';
+    const iframe = document.createElement('iframe');
+    iframe.setAttribute('src', src);
+    iframe.setAttribute('allow', 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture');
+    if(allowFullScreen) iframe.setAttribute('allowfullscreen', 'true');
+    iframe.addEventListener('load', function(){
+      logStatus('Flux chargé dans l\'iframe.');
+      viewer.setAttribute('aria-hidden','false');
+      btnExternal.classList.add('hidden');
+    });
+    // small timeout to detect embed-block
+    iframe.addEventListener('error', function(){
+      console.warn('Erreur iframe.');
+      checkEmbedBlocked(src);
+    });
+    viewer.appendChild(iframe);
+
+    // After insertion, set a timeout to check if content loaded (heuristic)
+    setTimeout(()=> {
+      // if iframe height remains zero or blank, assume blocked — but we can't reliably check cross-origin
+      // Show external fallback after a short delay
+      checkEmbedBlocked(src);
+    }, 2500);
+  }
+
+  function checkEmbedBlocked(src){
+    // We cannot reliably detect cross-origin iframe blocking.
+    // Heuristic: if user agent is WebView and embed failed, offer open external.
+    // We'll always show external fallback button depending on behavior config.
+    const cfg = window.IA22cfg || {};
+    if(cfg.behavior && cfg.behavior.external_fallback){
+      btnExternal.classList.remove('hidden');
+      btnExternal.onclick = ()=> { window.open(src, '_blank'); };
+      logStatus('Embed peut être bloqué ou restreint — option d\'ouverture externe disponible.');
+    } else {
+      logStatus('Embed inséré — si le flux ne démarre pas, vérifiez la configuration ou le type de vidéo.');
+    }
+  }
+
+  function openExternalDirect(url){
+    // ouverture dans l'onglet / application externe
+    try{
+      window.open(url, '_blank');
+    }catch(e){
+      location.href = url;
+    }
+  }
+
+  function runDetection(){
+    const cfg = parseConfig();
+    if(!cfg){
+      logStatus('Impossible de lire la configuration. Vérifie le JSON intégré.');
+      return;
+    }
+    window.IA22cfg = cfg; // expose pour debug
+    confView.textContent = JSON.stringify(cfg,null,2);
+
+    logStatus('Configuration lue — détection du flux…');
+
+    // Decide based on 'flux' and presence of URLs
+    const fluxType = (cfg.flux || '').toLowerCase();
+    const youtubeCandidate = cfg.youtube_url || cfg.url || '';
+    const peertubeCandidate = cfg.peertube_url || '';
+
+    // Prefer explicit selection, else auto-detect from URLs
+    if(fluxType === 'youtube' || (!fluxType && youtubeCandidate)){
+      const id = extractYouTubeId(youtubeCandidate);
+      if(!id){
+        logStatus('URL YouTube invalide ou ID introuvable.');
+        if(cfg.behavior && cfg.behavior.external_fallback) openExternalDirect(youtubeCandidate);
+        return;
+      }
+      const embed = buildYouTubeEmbedUrl(id, cfg);
+      logStatus('Lecture YouTube (embed) — tentative de lecture automatique…');
+      if(cfg.behavior && cfg.behavior.prefer_embed) {
+        insertIframe(embed, cfg.allow_fullscreen);
+      } else {
+        openExternalDirect(youtubeCandidate);
+      }
+      // Set external fallback to the watch URL (original)
+      btnExternal.onclick = ()=> openExternalDirect(youtubeCandidate);
+      return;
+    }
+
+    if(fluxType === 'peertube' || (!fluxType && peertubeCandidate)){
+      const embed = buildPeerTubeEmbedUrl(peertubeCandidate, cfg);
+      logStatus('Lecture PeerTube (embed) — tentative de lecture automatique…');
+      if(cfg.behavior && cfg.behavior.prefer_embed){
+        insertIframe(embed, cfg.allow_fullscreen);
+      } else {
+        openExternalDirect(peertubeCandidate);
+      }
+      btnExternal.onclick = ()=> openExternalDirect(peertubeCandidate);
+      return;
+    }
+
+    // Auto-detect generic URL if provided
+    if(youtubeCandidate){
+      btnExternal.onclick = ()=> openExternalDirect(youtubeCandidate);
+      logStatus('URL détectée, ouverture externe proposée.');
+      btnExternal.classList.remove('hidden');
+      return;
+    }
+
+    logStatus('Aucun flux détecté dans la configuration. Modifie la section JSON "ui-config".');
+  }
+
+  // Buttons
+  btnRestart.addEventListener('click', function(){ logStatus('Relancement…'); runDetection(); });
+  btnShowConfig.addEventListener('click', function(){
+    if(confView.classList.contains('hidden')){ confView.classList.remove('hidden'); btnShowConfig.textContent = 'Masquer config'; }
+    else { confView.classList.add('hidden'); btnShowConfig.textContent = 'Afficher config'; }
+  });
+
+  // Initial run
+  runDetection();
+
+  // Accessibility: handle visibility for small screens
+  window.addEventListener('resize', ()=>{/* noop for now */});
+})();
+</script>
+</body>
+</html>
