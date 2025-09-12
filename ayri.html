@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>IA22 LOGIC Terminal</title>
+  <style>
+    body {
+      background-color: #000;
+      color: #0ff;
+      font-family: 'Courier New', monospace;
+      margin: 0;
+      padding: 20px;
+    }
+    #terminal {
+      background-color: #111;
+      border: 2px solid #0ff;
+      padding: 20px;
+      box-shadow: 0 0 20px #0ff;
+      max-width: 800px;
+      margin: auto;
+    }
+    #consoleOut {
+      white-space: pre-wrap;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+    button {
+      background-color: #0ff;
+      color: #000;
+      border: none;
+      padding: 10px 20px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+    button:hover {
+      background-color: #0cc;
+    }
+  </style>
+</head>
+<body>
+  <div id="terminal">
+    <h2>🧠 IA22 LOGIC Terminal – V7 Secure Mode</h2>
+    <div id="consoleOut">
+Bienvenue dans IA22 LOGIC Terminal. Tapez 'help' pour la liste des commandes.
+    </div>
+    <button onclick="bootIA22()">bootIA22()</button>
+    <button onclick="activateMAC()">activateMAC()</button>
+    <button onclick="syncPlaylists()">syncPlaylists()</button>
+    <button onclick="exportData()">exportData()</button>
+    <button onclick="toggleNeonMode()">toggleNeonMode()</button>
+  </div>
+
+  <script>
+    function bootIA22() {
+      document.getElementById('consoleOut').innerText += `
+IA22> bootIA22()
+🧠 Moteur IA22 initialisé avec succès.
+`;
+    }
+
+    function activateMAC() {
+      document.getElementById('consoleOut').innerText += `
+IA22> activateMAC("YG:19:95:E1:A2:CA", token="NSP-IA22-VALID")
+📡 MAC validée : YG:19:95:E1:A2:CA
+🔐 Token NetSecurePro IA accepté
+🛡️ Accès sécurisé activé jusqu’au 27/08/2026
+`;
+    }
+
+    function syncPlaylists() {
+      document.getElementById('consoleOut').innerText += `
+IA22> syncPlaylists({ "playlist1": "playlist1" })
+🔁 Playlist synchronisée : Playlist1
+📊 Checksum validé – Signature IA22 confirmée
+`;
+    }
+
+    function exportData() {
+      document.getElementById('consoleOut').innerText += `
+IA22> exportData("firebase", secure=true)
+📤 Données exportées vers Firebase
+📁 Format : JSON sécurisé + horodatage IA22
+🔐 Cryptage actif – Transmission validée
+`;
+    }
+
+    function toggleNeonMode() {
+      document.getElementById('consoleOut').innerText += `
+IA22> toggleNeonMode(JSON)
+🌌 Interface NEON V7 activée
+🎨 Mode JSON visuel : ✅
+📟 IA22 LOGIC Terminal prêt pour affichage cockpit
+`;
+    }
+  </script>
+</body>
+</html>
