@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NetSecurePro — IA22 CLI</title>
+<style>
+  body {
+    margin: 0;
+    padding: 10px;
+    background: #000;
+    color: #00ff7f;
+    font-family: monospace;
+    font-size: 14px;
+  }
+  #terminal {
+    white-space: pre-wrap;
+    overflow-y: auto;
+    height: 90vh;
+  }
+  #input {
+    width: 100%;
+    border: none;
+    outline: none;
+    background: #000;
+    color: #00ff7f;
+    font-family: monospace;
+    font-size: 14px;
+  }
+</style>
+</head>
+<body>
+<div id="terminal">IA22> Tapez 'boot IA22' pour initialiser le moteur.</div>
+<input id="input" autofocus autocomplete="off"/>
+
+<script>
+(function(){
+  const terminal = document.getElementById('terminal');
+  const input = document.getElementById('input');
+
+  function write(text) {
+    terminal.textContent += "\n" + text;
+    terminal.scrollTop = terminal.scrollHeight;
+  }
+
+  function parseCommand(str) {
+    return str.trim().replace(/^>+/, '').trim().toLowerCase();
+  }
+
+  const commands = {
+    "boot ia22": () => `Initialisation IA22 Equity Engine...
+Modules chargés :
+[✔] Représentation
+[✔] Salaire
+[✔] Formation IA
+[✔] Simulation
+[✔] Résumé dynamique
+[✔] Export CSV / PDF / JSON / HTML
+[✔] Scan IA22
+[✔] Commande graphique
+[✔] Transformation sociale
+
+Cockpit IA22 prêt.
+Tapez 'help' pour voir les commandes disponibles.`,
+    
+    "help": () => `Commandes disponibles :
+- boot IA22
+- help
+- export csv|pdf|json|html
+- scan ia22
+- cockpit
+- clear`,
+
+    "clear": () => {
+      terminal.textContent = "IA22> Session réinitialisée.";
+      return "";
+    },
+
+    "export csv": () => "Export CSV généré (simulation).",
+    "export pdf": () => "Export PDF généré (simulation).",
+    "export json": () => "Export JSON généré (simulation).",
+    "export html": () => "Export HTML généré (simulation).",
+    "scan ia22": () => "Scan IA22 terminé — aucun problème détecté.",
+    "cockpit": () => "Cockpit IA22 ouvert — interface graphique en préparation..."
+  };
+
+  function runCommand(raw) {
+    const cmd = parseCommand(raw);
+    if (commands[cmd]) {
+      return commands[cmd]();
+    }
+    return `Commande inconnue : ${raw}\nTapez 'help' pour la liste des commandes.`;
+  }
+
+  input.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      const val = input.value;
+      write(`IA22> ${val}`);
+      const output = runCommand(val);
+      if (output) write(output);
+      input.value = "";
+    }
+  });
+})();
+</script>
+</body>
+</html>
