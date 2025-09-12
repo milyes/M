@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>UPTV Terminal</title>
+  <style>
+    body {
+      background-color: #000;
+      color: #0f0;
+      font-family: monospace;
+      margin: 0;
+      padding: 20px;
+    }
+    .terminal {
+      animation: pulse 2s infinite;
+      padding: 20px;
+      border: 2px solid #0f0;
+      box-shadow: 0 0 10px #0f0;
+      border-radius: 4px;
+      white-space: pre-wrap;
+    }
+    @keyframes pulse {
+      0% { background-color: #000; color: #00f; }
+      50% { background-color: #020; color: #0f0; }
+      100% { background-color: #000; color: #00f; }
+    }
+    button {
+      background-color: #111;
+      color: #0f0;
+      border: 1px solid #0f0;
+      padding: 10px;
+      margin: 5px;
+      cursor: pointer;
+    }
+    #iptvPlayer {
+      display: none;
+      width: 100%;
+      border: 2px solid #0f0;
+      box-shadow: 0 0 10px #0f0;
+      margin-top: 20px;
+    }
+    @media screen and (max-width: 600px) {
+      #iptvPlayer {
+        height: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="consoleOut" class="terminal">
+    🎬 Bienvenue dans IA22 LOGIC Terminal  
+    Tapez 'bootIPTV()' pour initialiser le moteur.
+  </div>
+
+  <button onclick="bootIPTV()">bootIPTV()</button>
+  <button onclick="showliveTV()">showliveTV()</button>
+  <button onclick="changePlaylist()">changeplaylist()</button>
+  <button onclick="checkMAC()">checkMAC()</button>
+  <button onclick="migrateV2()">migrateV2()</button>
+  <button onclick="exportPlaylist()">exportPlaylist('json')</button>
+  <button onclick="clearConsole()">clear</button>
+
+  <video id="iptvPlayer" controls autoplay>
+    <source src="https://your-stream-url.m3u8" type="application/x-mpegURL">
+    Votre navigateur ne supporte pas la lecture IPTV.
+  </video>
+
+  <script>
+    function bootIPTV() {
+      document.getElementById('consoleOut').innerText = `
+✅ UPTV v2.2 initialisé  
+📡 MAC : YG:19:35:E1:A2:CA  
+🔐 Abonnement : POUR TOUJOURS  
+📺 Playlist active jusqu’au 27/08/2026  
+Tapez 'showliveTV()' pour afficher les chaînes disponibles.
+`;
+    }
+
+    function showliveTV() {
+      document.getElementById('consoleOut').innerText = `
+🎬 Lecture en direct :
+- Chaîne : UPTV News HD
+- Qualité : 1080p
+- Accès : Local
+- Expiration : 12/08/2026
+`;
+      document.getElementById('iptvPlayer').style.display = 'block';
+    }
+
+    function changePlaylist() {
+      document.getElementById('consoleOut').innerText = `
+🔄 Playlist changée :
+- Playlist 2 activée
+- Expiration : 10/08/2026
+`;
+    }
+
+    function checkMAC() {
+      document.getElementById('consoleOut').innerText = `
+📡 Vérification MAC :
+- Adresse : YG:19:35:E1:A2:CA
+- Système : Samsung
+- Version : 2.2.2
+- Statut : ✅ Activé
+`;
+    }
+
+    function migrateV2() {
+      document.getElementById('consoleOut').innerText = `
+🚀 Migration vers Android V2 :
+- Compatibilité : Samsung / LG
+- Statut : ✅ Réussi
+`;
+    }
+
+    function exportPlaylist() {
+      document.getElementById('consoleOut').innerText = `
+📦 Export JSON :
+{
+  "playlist": "UPTV Playlist 2",
+  "expires": "2026-08-10",
+  "channels": ["UPTV News HD", "UPTV Sports", "UPTV Culture"]
+}
+`;
+    }
+
+    function clearConsole() {
+      document.getElementById('consoleOut').innerText = '🎬 IA22 Terminal prêt.';
+      document.getElementById('iptvPlayer').style.display = 'none';
+    }
+  </script>
+
+</body>
+</html>
