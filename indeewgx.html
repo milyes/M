@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Filtre d'Actions - Momentum</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: #f0f0f0;
+      padding: 20px;
+    }
+    h1 {
+      color: #00ff99;
+    }
+    label, input {
+      margin-top: 10px;
+      font-size: 16px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      padding: 12px;
+      border: 1px solid #444;
+      text-align: center;
+    }
+    th {
+      background-color: #222;
+    }
+    tr:hover {
+      background-color: #333;
+    }
+    .buy {
+      color: #00ff99;
+      font-weight: bold;
+    }
+    .wait {
+      color: #ffcc00;
+    }
+  </style>
+</head>
+<body>
+  <h1>📈 Filtre d'Actions - Stratégie Momentum</h1>
+
+  <label for="rsiFilter">Filtrer par RSI minimum :</label>
+  <input type="number" id="rsiFilter" value="50" min="0" max="100" onchange="filterTable()">
+
+  <table id="stockTable">
+    <thead>
+      <tr>
+        <th>Symbole</th>
+        <th>Prix</th>
+        <th>SMA50</th>
+        <th>Volume</th>
+        <th>Vol. Moy. 20j</th>
+        <th>RSI</th>
+        <th>Signal</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>AVGO</td>
+        <td>875.20</td>
+        <td>860.45</td>
+        <td>3200000</td>
+        <td>2800000</td>
+        <td>62</td>
+        <td class="buy">Acheter</td>
+      </tr>
+      <tr>
+        <td>CLS</td>
+        <td>34.10</td>
+        <td>35.00</td>
+        <td>1100000</td>
+        <td>1300000</td>
+        <td>48</td>
+        <td class="wait">Attendre</td>
+      </tr>
+      <tr>
+        <td>RIO</td>
+        <td>67.80</td>
+        <td>66.50</td>
+        <td>2500000</td>
+        <td>2000000</td>
+        <td>55</td>
+        <td class="buy">Acheter</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <script>
+    function filterTable() {
+      const rsiMin = parseInt(document.getElementById("rsiFilter").value);
+      const rows = document.querySelectorAll("#stockTable tbody tr");
+
+      rows.forEach(row => {
+        const rsi = parseInt(row.cells[5].textContent);
+        row.style.display = rsi >= rsiMin ? "" : "none";
+      });
+    }
+  </script>
+</body>
+</html>
