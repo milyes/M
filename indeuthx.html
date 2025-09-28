@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLI Embarquée IA - Commandes Disponibles</title>
+    <style>
+        body {
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            font-family: 'Consolas', 'Monaco', monospace;
+            padding: 20px;
+            margin: 0;
+        }
+        .cli-container {
+            background-color: #000000;
+            border: 1px solid #00ff00;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+            max-width: 800px;
+            margin: auto;
+        }
+        .cli-prompt {
+            color: #00ff00;
+            margin-right: 5px;
+        }
+        .cli-line {
+            white-space: pre-wrap;
+            margin-bottom: 8px;
+        }
+        .cli-command {
+            color: #8be9fd; /* Cyan clair pour les commandes */
+            font-weight: bold;
+        }
+        .cli-description {
+            color: #f1fa8c; /* Jaune clair pour les descriptions */
+            margin-left: 20px;
+        }
+        .cli-category {
+            color: #ff79c6; /* Rose pour les catégories */
+            font-weight: bold;
+            margin-top: 15px;
+            border-bottom: 1px solid #ff79c6;
+            padding-bottom: 2px;
+        }
+        .output {
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+
+<div class="cli-container" id="cliOutput">
+    <div class="cli-line">
+        <span class="cli-prompt">root@embedded-ai-cli:~$</span> help
+    </div>
+    <div class="cli-line output">
+        Aide - Liste des Commandes IA Embarquées
+    </div>
+    <div class="cli-category">PROCESSUS & AUTO-ANALYSE</div>
+</div>
+
+<script>
+    const commands = [
+        {
+            category: "PROCESSUS & AUTO-ANALYSE",
+            command: "proc-analyze",
+            description: "Analyse en temps réel de l'utilisation CPU/RAM par l'IA."
+        },
+        {
+            category: "PROCESSUS & AUTO-ANALYSE",
+            command: "model-status",
+            description: "Affiche l'état de santé (drift, latence) du modèle IA embarqué."
+        },
+        {
+            category: "RÉSEAU",
+            command: "net-monitor",
+            description: "Surveille le trafic réseau pour détecter les anomalies basées sur l'IA."
+        },
+        {
+            category: "RÉSEAU",
+            command: "qos-optimize",
+            description: "Ajuste les paramètres réseau pour optimiser la Qualité de Service (QoS)."
+        },
+        {
+            category: "OCR & EXTRACTION",
+            command: "ocr-extract [file]",
+            description: "Extrait le texte structuré (JSON) d'un fichier image ou PDF via OCR."
+        },
+        {
+            category: "OCR & EXTRACTION",
+            command: "cmd-parse [ocr-output]",
+            description: "Analyse la sortie OCR pour identifier et extraire une commande système valide."
+        }
+    ];
+
+    const cliOutput = document.getElementById('cliOutput');
+
+    function displayCommands() {
+        let currentCategory = "";
+
+        commands.forEach(item => {
+            if (item.category !== currentCategory) {
+                // Si la catégorie change, insérer le titre de la nouvelle catégorie
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'cli-category';
+                categoryDiv.textContent = item.category;
+                cliOutput.appendChild(categoryDiv);
+                currentCategory = item.category;
+            }
+
+            // Afficher la commande et sa description
+            const lineDiv = document.createElement('div');
+            lineDiv.className = 'cli-line output';
+            
+            const commandSpan = document.createElement('span');
+            commandSpan.className = 'cli-command';
+            commandSpan.textContent = item.command.padEnd(20, ' '); // Alignement pour une meilleure lisibilité
+            
+            const descriptionSpan = document.createElement('span');
+            descriptionSpan.className = 'cli-description';
+            descriptionSpan.textContent = item.description;
+
+            lineDiv.appendChild(commandSpan);
+            lineDiv.appendChild(descriptionSpan);
+            cliOutput.appendChild(lineDiv);
+        });
+    }
+
+    // Exécuter l'affichage au chargement de la page
+    displayCommands();
+</script>
+
+</body>
+</html>
