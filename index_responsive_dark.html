@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GEMINI CORE 2.6 PRO - Documentation Officielle</title>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    // Initialiser Mermaid pour qu'il soit sensible au thème (clair/sombre)
+    mermaid.initialize({ 
+      startOnLoad: true, 
+      theme: 'default', // Thème par défaut
+      themeCSS: `
+        .mermaid { background-color: var(--bg-color) !important; color: var(--text-color); }
+        .node rect, .node circle { fill: var(--node-bg-color); stroke: var(--border-color); }
+        .node text { fill: var(--text-color); }
+      `
+    });
+  </script>
+  <style>
+    /* VARIABLES DE COULEUR PAR DÉFAUT (MODE CLAIR) */
+    :root {
+      --bg-color: #f5f5f5;
+      --card-bg-color: #ffffff;
+      --text-color: #212121;
+      --header-color: #006064;
+      --table-header-bg: #e0f7fa;
+      --border-color: #b0bec5;
+      --node-bg-color: #ffffff;
+    }
+
+    /* MODE SOMBRE - Appliqué si le système préfère le dark mode */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-color: #1a1a1a;
+        --card-bg-color: #2c2c2c;
+        --text-color: #e0e0e0;
+        --header-color: #4dd0e1; /* Cyan clair */
+        --table-header-bg: #004d40; /* Vert forêt foncé */
+        --border-color: #546e7a;
+        --node-bg-color: #2c2c2c;
+      }
+    }
+
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      margin: 2rem;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+    }
+    h1, h2, h3 {
+      color: var(--header-color);
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-bottom: 2rem;
+      background-color: var(--card-bg-color);
+    }
+    table, th, td {
+      border: 1px solid var(--border-color);
+    }
+    th, td {
+      padding: 0.8rem;
+      text-align: left;
+    }
+    th {
+      background-color: var(--table-header-bg);
+      color: var(--text-color);
+    }
+    .mermaid {
+      background-color: var(--card-bg-color);
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      margin-bottom: 2rem;
+      overflow-x: auto; /* IMPORTANT pour la responsivité du schéma */
+    }
+    .pdf-button {
+      display: inline-block;
+      padding: 0.8rem 1.2rem;
+      background-color: #4caf50;
+      color: white;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      margin-bottom: 2rem;
+      transition: background-color 0.3s;
+    }
+    .pdf-button:hover {
+      background-color: #388e3c;
+    }
+    
+    /* RESPONSIVITÉ MOBILE */
+    @media (max-width: 768px) {
+      body {
+        margin: 1rem;
+      }
+      table {
+        display: block;
+        overflow-x: auto;
+      }
+      th, td {
+        white-space: nowrap; /* Empêche les données des tableaux de se casser */
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>🔒 GEMINI CORE 2.6 PRO : Noyau Cognitif Souverain</h1>
+  <p>Documentation officielle et pipeline d’auto-certification pour le module <strong>GEMINI CORE 2.6 PRO</strong>.</p>
+
+  <h2>1. Fiche Technique Institutionnelle</h2>
+  <table>
+    <tr><th>Champ</th><th>Valeur Officielle</th></tr>
+    <tr><td>Nom du Module</td><td>GEMINI CORE 2.6 PRO</td></tr>
+    <tr><td>Version</td><td>2.6</td></tr>
+    <tr><td>Auteur Officiel</td><td>Zoubirou Mohammed Ilyes</td></tr>
+    <tr><td>ORCID Officiel</td><td><a href="https://orcid.org/0009-0007-7571-3178" target="_blank">0009-0007-7571-3178</a></td></tr>
+    <tr><td>État de Certification</td><td>Publication Officielle (Sceau Vérifié)</td></tr>
+  </table>
+
+  <h2>2. Artefacts Certifiés</h2>
+  <table>
+    <tr><th>Fichier / Élément</th><th>Format</th><th>Rôle</th></tr>
+    <tr><td>GEMINI_CORE_2.6_PRO_DOCS.zip</td><td>ZIP</td><td>Pack documentaire complet (SHA256)</td></tr>
+    <tr><td>METADATA.json</td><td>JSON</td><td>Référence machine-lisible pour intégrité</td></tr>
+    <tr><td>documentation_officielle.md</td><td>Markdown</td><td>Contenu officiel</td></tr>
+    <tr><td>GEMINI_CORE_2.6_PRO_DOCS_OFFICIEL_v2.6.pdf</td><td>PDF</td><td>Documentation institutionnelle officielle</td></tr>
+  </table>
+
+  <h2>3. Schéma du Pipeline CI/CD</h2>
+  <div class="mermaid">
+graph TD
+    classDef StartEnd fill:#e0f7fa,stroke:#00bcd4,stroke-width:3px;
+    classDef Success fill:#e8f5e9,stroke:#4caf50,stroke-width:2px;
+    classDef Tool fill:#fff3e0,stroke:#ff9800,stroke-width:2px;
+    classDef Fail fill:#ffebee,stroke:#f44336,stroke-width:2px;
+    classDef Data fill:#e3f2fd,stroke:#2196f3,stroke-width:2px;
+    classDef Commit fill:#e0f2f1,stroke:#009688,stroke-width:2px;
+
+    A[🚀 Déclenchement: Push main / Release]:::StartEnd
+    B{📚 Données: Code Source + METADATA.json}:::Data
+    C[3. 📦 Créer ZIP : create_zip.py]:::Tool
+    E(💾 Artefact: GEMINI_CORE_2.6_PRO_DOCS.zip)
+    D[4. 🔑 Calculer Hash : update_hash.py]:::Tool
+    F{📝 Mise à jour: SHA256 dans METADATA.json}:::Data
+    G[5. ✍️ Commit Auto: METADATA.json]:::Commit
+    H[6. ✅ Vérifier Intégrité : verify_core_v2.py]:::Tool
+    I{❓ Code de sortie: 0 ou 1}
+    J(📄 Rapport Audit: verification_result.json)
+    K[7. ⬆️ Upload Artefact JSON]:::Success
+    L[8. 🔍 Préparer Alerte]:::Tool
+    M[9. 🚨 Notification Slack / Échec]:::Fail
+    N[🏁 Fin du Pipeline]:::StartEnd
+
+    A --> B
+    B --> C
+    C --> E
+    E --> D
+    B --> D
+    D --> F
+    F --> G
+    G --> H
+    H --> I
+    I -- Code 0 (Succès) --> K
+    I -- Code 1 (Échec) --> L
+    H -- Génère --> J
+    J --> K
+    K --> N
+    L -- Analyse J --> M
+    M --> N
+  </div>
+
+  <h2>4. Télécharger le PDF Officiel</h2>
+  <a class="pdf-button" href="https://github.com/milyes/GEMINI_CORE_2.6_PRO/actions?query=workflow%3A%22Documentation+PDF+Generation+%28Final+Version+V5.0%29%22" target="_blank">📄 Télécharger PDF Officiel (Artefact)</a>
+
+  <h2>5. Instructions de Déploiement</h2>
+  <ul>
+    <li>Push sur <code>main</code> pour déclencher la certification et la génération du PDF.</li>
+    <li>Consultez l’onglet **Actions** pour télécharger l'artefact PDF.</li>
+    <li>Configurez le secret <code>SLACK_WEBHOOK_URL</code> pour les alertes de non-conformité.</li>
+  </ul>
+
+</body>
+</html>
