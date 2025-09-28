@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GEMINI CORE - Tableau de Bord Souverain</title>
+    <style>
+        /* Styles inspirés d'un terminal pour un look technique */
+        body {
+            background-color: #0d1117; /* Fond sombre GitHub */
+            color: #c9d1d9; /* Texte clair */
+            font-family: 'Consolas', 'Monaco', monospace;
+            padding: 20px;
+            margin: 0;
+            line-height: 1.6;
+        }
+        .dashboard-container {
+            background-color: #161b22; /* Conteneur légèrement plus clair */
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 25px;
+            max-width: 900px;
+            margin: 30px auto;
+            box-shadow: 0 0 15px rgba(0, 150, 255, 0.1);
+        }
+        h1 {
+            color: #58a6ff; /* Bleu éclatant pour le titre */
+            border-bottom: 2px solid #58a6ff;
+            padding-bottom: 10px;
+            font-size: 1.5em;
+        }
+        .section-title {
+            color: #af87ff; /* Violet pour les sections */
+            margin-top: 20px;
+            font-size: 1.2em;
+            text-transform: uppercase;
+        }
+        .status-line {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px dashed #21262d;
+        }
+        .status-key {
+            color: #8b949e; /* Clé en gris clair */
+        }
+        .status-value {
+            font-weight: bold;
+        }
+        .value-ok {
+            color: #3fb950; /* Vert pour OK */
+        }
+        .value-warn {
+            color: #d29922; /* Jaune pour Avertissement */
+        }
+        .value-error {
+            color: #f85149; /* Rouge pour Erreur */
+        }
+        .command-area {
+            background-color: #0d1117;
+            padding: 15px;
+            border: 1px solid #30363d;
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+        .command-prompt {
+            color: #58a6ff;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="dashboard-container">
+    <h1>GEMINI CORE 2.6 PRO — Tableau de Bord</h1>
+
+    <div class="section-title">État du Noyau Cognitif</div>
+    <div class="status-line">
+        <span class="status-key">Module:</span>
+        <span class="status-value">GEMINICORE2.6_</span>
+    </div>
+    <div class="status-line">
+        <span class="status-key">Version:</span>
+        <span class="status-value">2025-09-27 (Future)</span>
+    </div>
+    <div class="status-line">
+        <span class="status-key">Sceau de Vérification:</span>
+        <span class="status-value value-ok">VÉRIFIÉ (7f9a2c94e...)</span>
+    </div>
+
+    <div class="section-title">Performances & Auto-Analyse IA</div>
+    <div class="status-line">
+        <span class="status-key">Latence Moyenne (ms):</span>
+        <span class="status-value value-ok">4.2 ms</span>
+    </div>
+    <div class="status-line">
+        <span class="status-key">Dérive du Modèle (Drift):</span>
+        <span class="status-value value-ok">0.1% (Stable)</span>
+    </div>
+    <div class="status-line">
+        <span class="status-key">Charge CPU Embarquée:</span>
+        <span class="status-value value-warn">68%</span>
+    </div>
+
+    <div class="section-title">Statut Réseau & Sécurité</div>
+    <div class="status-line">
+        <span class="status-key">Anomalies Réseau Détectées (24h):</span>
+        <span class="status-value value-ok">0</span>
+    </div>
+    <div class="status-line">
+        <span class="status-key">FastAPI Capsule :</span>
+        <span class="status-value value-ok">Actif, Sécurisé</span>
+    </div>
+
+    <div class="section-title">Zone de Commandes (CLI Simulateur)</div>
+    <div class="command-area">
+        <div class="status-line">
+            <span class="command-prompt">root@core:~$</span>
+            <span class="status-value value-ok">proc-analyze</span>
+        </div>
+        <div class="status-line">
+            <span class="command-prompt">root@core:~$</span>
+            <span class="status-value value-ok">ocr-extract /docs/invoice_2025.jpg</span>
+        </div>
+        <div class="status-line">
+            <span class="command-prompt">root@core:~$</span>
+            <span class="status-value value-error">net-monitor --alert</span>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
