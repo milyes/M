@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>NetSecurePro - Audio Analyzer (single file)</title>
+  <style>
+    :root{--bg:#0f1724;--card:#0b1220;--accent:#06b6d4;--muted:#94a3b8;--text:#e6eef6}
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,#071027 0%, #081126 100%);color:var(--text);font-family:Inter,Segoe UI,Roboto,"Helvetica Neue",Arial;}
+    .wrap{max-width:1100px;margin:28px auto;padding:20px;border-radius:12px;background:rgba(8,12,20,0.6);box-shadow:0 6px 30px rgba(2,6,23,0.6);}
+    h1{margin:0 0 8px;font-size:20px}
+    p.lead{margin:0 0 18px;color:var(--muted)}
+    .grid{display:grid;grid-template-columns:1fr 380px;gap:16px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:14px;border-radius:10px;border:1px solid rgba(255,255,255,0.03)}
+    label{display:block;margin:8px 0 6px;font-size:13px;color:var(--muted)}
+    input[type=text], input[type=number]{width:100%;padding:8px;border-radius:6px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--text)}
+    button{background:var(--accent);color:#012; border:none;padding:10px 12px;border-radius:8px;font-weight:600;cursor:pointer}
+    button.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--text)}
+    canvas{width:100%;height:160px;border-radius:6px;background:#020617;display:block}
+    .small{font-size:13px;color:var(--muted)}
+    .stat{display:flex;gap:10px;flex-wrap:wrap}
+    .stat > div{background:rgba(255,255,255,0.02);padding:8px;border-radius:8px;font-size:13px}
+    pre{white-space:pre-wrap;background:rgba(0,0,0,0.2);padding:10px;border-radius:6px;color:var(--muted);font-size:13px}
+    .footer{margin-top:14px;color:var(--muted);font-size:13px}
+    a.link{color:var(--accent);text-decoration:none}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>NetSecurePro — Audio Analyzer (single file)</h1>
+    <p class="lead">Télécharge, visualise et analyse un fichier WAV depuis une URL locale. Génère spectrogramme, segments non-silencieux, JSON & CSV de rapport.</p>
+
+    <div class="grid">
+      <div class="card">
+        <label>URL du fichier WAV (ex: http://fox:0909@192.168.2.21:8888/audio.wav)</label>
+        <input id="urlInput" type="text" value="http://fox:0909@192.168.2.21:8888/audio.wav" />
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button id="btnFetch">Télécharger & Analyser</button>
+          <button id="btnPlay" class="ghost" disabled>Play</button>
+          <button id="btnDownloadAudio" class="ghost" disabled>Télécharger WAV</button>
+        </div>
+
+        <label style="margin-top:12px">Options d'analyse</label>
+        <div style="display:flex;gap:8px">
+          <div style="flex:1">
+            <input id="rmsThresh" type="number" value="-40" />
+            <div class="small">Seuil silence (dBFS)</div>
+          </div>
+          <div style="width:120px">
+            <input id="minSilenceMs" type="number" value="500" />
+            <div class="small">Min silence (ms)</div>
+          </div>
+        </div>
+
+        <div style="margin-top:12px">
+          <label>Audio</label>
+          <audio id="audioPlayer" controls style="width:100%"></audio>
+        </div>
+
+        <div style="margin-top:12px">
+          <label>Forme d'onde</label>
+          <canvas id="waveCanvas" height="160"></canvas>
+        </div>
+
+        <div style="margin-top:12px">
+          <label>Spectrogramme (STFT)</label>
+          <canvas id="specCanvas" height="200"></canvas>
+        </div>
+
+        <div style="margin-top:10px" class="stat">
+          <div id="infoDuration">Durée: -- s</div>
+          <div id="infoRate">Sample rate: -- Hz</div>
+          <div id="infoChannels">Canaux: --</div>
+        </div>
+
+        <div style="margin-top:12px;display:flex;gap:8px">
+          <button id="btnDownloadReport" class="ghost" disabled>Télécharger rapport JSON</button>
+          <button id="btnDownloadCSV" class="ghost" disabled>Télécharger segments CSV</button>
+          <button id="btnSendBackend" class="ghost" disabled>Poster vers /transcribe</button>
+        </div>
+
+        <div style="margin-top:12px">
+          <label>Logs</label>
+          <pre id="log" style="height:110px;overflow:auto">Prêt.</pre>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-top:0">Segments détectés</h3>
+        <div id="segmentsList" style="max-height:420px;overflow:auto"></div>
+
+        <div class="footer">
+          <p class="small">Note technique : Le navigateur peut bloquer la récupération si le serveur local n'autorise pas CORS. Si la requête échoue, exécute le script Bash sur la machine locale ou active CORS sur le serveur.</p>
+          <p class="small">Pour la transcription automatique, configure un endpoint `/transcribe` (Flask/Node) et clique <a class="link" href="#" id="learnMoreLink">ici</a> pour les instructions (exemple non inclus).</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+/*
+  audio_analyzer.html
+  - Télécharge via fetch
+  - Convertit en AudioBuffer (WebAudio)
+  - Dessine waveform + spectrogramme (STFT simple)
+  - Détecte segments non-silencieux par RMS en dBFS
+  - Exporte audio_report.json et audio_segments.csv
+  - Single-file, vanilla JS
+*/
+
+const logEl = id('log');
+function log(...a){ logEl.textContent += "\\n" + a.join(' '); logEl.scrollTop = logEl.scrollHeight; }
+
+const urlInput = id('urlInput');
+const btnFetch = id('btnFetch');
+const btnPlay = id('btnPlay');
+const btnDownloadAudio = id('btnDownloadAudio');
+const audioPlayer = id('audioPlayer');
+const waveCanvas = id('waveCanvas');
+const specCanvas = id('specCanvas');
+const infoDuration = id('infoDuration');
+const infoRate = id('infoRate');
+const infoChannels = id('infoChannels');
+const segmentsList = id('segmentsList');
+const btnDownloadReport = id('btnDownloadReport');
+const btnDownloadCSV = id('btnDownloadCSV');
+const btnSendBackend = id('btnSendBackend');
+const rmsThreshInput = id('rmsThresh');
+const minSilenceMsInput = id('minSilenceMs');
+const learnMoreLink = id('learnMoreLink');
+
+let audioBufferGlobal = null;
+let audioBlobGlobal = null;
+let report = null;
+let segments = [];
+
+learnMoreLink.onclick = (e)=>{ e.preventDefault(); alert("Configure un endpoint /transcribe qui accepte POST multipart/form-data (champ 'file')."); }
+
+/* helpers */
+function id(x){return document.getElementById(x);}
+function toBase64(blob){ return new Promise(res=>{ const r=new FileReader(); r.onload = ()=>res(r.result.split(',')[1]); r.readAsDataURL(blob); }); }
+function download(filename, textOrBlob){
+  const a = document.createElement('a');
+  if (textOrBlob instanceof Blob || textOrBlob instanceof ArrayBuffer) {
+    const blob = textOrBlob instanceof Blob ? textOrBlob : new Blob([textOrBlob]);
+    a.href = URL.createObjectURL(blob);
+  } else {
+    a.href = 'data:application/json;charset=utf-8,' + encodeURIComponent(textOrBlob);
+  }
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+
+/* fetch + decode */
+btnFetch.onclick = async ()=>{
+  const url = urlInput.value.trim();
+  if (!url) return alert('Indique l\'URL du WAV.');
+  disableAll(true);
+  log('Tentative de téléchargement depuis', url);
+  try {
+    // fetch with credentials in URL - note: if server triggers basic auth, fetch may prompt
+    const resp = await fetch(url, { method:'GET', mode:'cors' });
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const ab = await resp.arrayBuffer();
+    audioBlobGlobal = new Blob([ab], { type: 'audio/wav' });
+    // set audio player src
+    audioPlayer.src = URL.createObjectURL(audioBlobGlobal);
+    btnDownloadAudio.disabled = false;
+    btnPlay.disabled = false;
+    btnDownloadReport.disabled = true;
+    btnDownloadCSV.disabled = true;
+    btnSendBackend.disabled = false;
+    log('Téléchargé, taille:', (ab.byteLength/1024).toFixed(1) + ' KB');
+
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const decoded = await audioCtx.decodeAudioData(ab.slice(0));
+    audioBufferGlobal = decoded;
+    log('Décodé: channels=' + decoded.numberOfChannels + ' rate=' + decoded.sampleRate + ' dur=' + decoded.duration.toFixed(3) + 's');
+
+    // fill infos
+    infoDuration.textContent = 'Durée: ' + decoded.duration.toFixed(3) + ' s';
+    infoRate.textContent = 'Sample rate: ' + decoded.sampleRate + ' Hz';
+    infoChannels.textContent = 'Canaux: ' + decoded.numberOfChannels;
+
+    // draw waveform
+    drawWaveform(decoded, waveCanvas);
+
+    // compute spectrogram (simple STFT)
+    await drawSpectrogram(decoded, specCanvas, audioCtx);
+
+    // detect segments
+    segments = detectNonSilentSegments(decoded, {
+      minSilenceMs: parseInt(minSilenceMsInput.value||500),
+      silenceThreshDB: parseFloat(rmsThreshInput.value||-40)
+    });
+    renderSegmentsList(segments);
+
+    // create report object
+    report = {
+      file_url: url,
+      duration_s: Number(decoded.duration.toFixed(3)),
+      sample_rate: decoded.sampleRate,
+      channels: decoded.numberOfChannels,
+      generated_at: new Date().toISOString(),
+      segments_count: segments.length,
+      segments: segments
+    };
+
+    btnDownloadReport.disabled = false;
+    btnDownloadCSV.disabled = false;
+    log('Analyse terminée. segments détectés:', segments.length);
+  } catch (err) {
+    log('Erreur:', err.message || err);
+    alert('Erreur: ' + (err.message || err));
+  } finally {
+    disableAll(false);
+  }
+};
+
+btnPlay.onclick = ()=>{ if (audioPlayer.src) { audioPlayer.play(); } }
+btnDownloadAudio.onclick = ()=>{ if (audioBlobGlobal) download('audio.wav', audioBlobGlobal); }
+btnDownloadReport.onclick = ()=>{ if (report) download('audio_report.json', JSON.stringify(report, null, 2)); }
+btnDownloadCSV.onclick = ()=>{ if (segments) {
+  let csv = 'start_s,end_s,duration_s\\n' + segments.map(s=> [s.start_s, s.end_s, s.duration_s].join(',')).join('\\n');
+  download('audio_segments.csv', csv);
+}}
+
+btnSendBackend.onclick = async ()=>{
+  if (!audioBlobGlobal) return alert('Aucun audio en mémoire.');
+  try {
+    btnSendBackend.disabled = true;
+    log('Envoi du WAV vers /transcribe (POST multipart/form-data) ...');
+    const form = new FormData();
+    form.append('file', audioBlobGlobal, 'audio.wav');
+    // customise URL si besoin:
+    const endpoint = prompt('Endpoint de transcription (POST); ex: http://127.0.0.1:5000/transcribe', '/transcribe') || '/transcribe';
+    const resp = await fetch(endpoint, { method:'POST', body: form });
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const json = await resp.json();
+    log('Réponse backend:', JSON.stringify(json));
+    alert('Réponse backend: voir console/log.');
+  } catch (err) {
+    log('Erreur envoi:', err.message || err);
+    alert('Erreur envoi: ' + (err.message || err));
+  } finally {
+    btnSendBackend.disabled = false;
+  }
+}
+
+/* waveform drawing */
+function drawWaveform(audioBuffer, canvas){
+  const ch = audioBuffer.numberOfChannels>0 ? audioBuffer.getChannelData(0) : audioBuffer.getChannelData(0);
+  const width = canvas.width = canvas.clientWidth * devicePixelRatio;
+  const height = canvas.height = canvas.clientHeight * devicePixelRatio;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(devicePixelRatio, devicePixelRatio);
+  // clear
+  ctx.clearRect(0,0,canvas.clientWidth, canvas.clientHeight);
+  // draw background
+  ctx.fillStyle = '#041122';
+  ctx.fillRect(0,0,canvas.clientWidth, canvas.clientHeight);
+  // downsample to pixels
+  const samplesPerPixel = Math.max(1, Math.floor(ch.length / canvas.clientWidth));
+  ctx.lineWidth = 1;
+  ctx.strokeStyle = '#48dbfb';
+  ctx.beginPath();
+  for (let x=0; x<canvas.clientWidth; x++){
+    const start = x*samplesPerPixel;
+    let min=1, max=-1;
+    for (let i=0;i<samplesPerPixel;i++){
+      const v = ch[start+i];
+      if (v<min) min=v;
+      if (v>max) max=v;
+    }
+    const y1 = (1 - (max+1)/2) * canvas.clientHeight;
+    const y2 = (1 - (min+1)/2) * canvas.clientHeight;
+    ctx.moveTo(x, y1);
+    ctx.lineTo(x, y2);
+  }
+  ctx.stroke();
+}
+
+/* spectrogram via STFT (simple) */
+async function drawSpectrogram(audioBuffer, canvas, audioCtx){
+  const ch = audioBuffer.getChannelData(0);
+  const sampleRate = audioBuffer.sampleRate;
+  // STFT params
+  const fftSize = 1024;
+  const hop = fftSize/4;
+  const frames = Math.floor((ch.length - fftSize) / hop) + 1;
+  // prepare canvas
+  const cw = canvas.width = canvas.clientWidth * devicePixelRatio;
+  const chh = canvas.height = canvas.clientHeight * devicePixelRatio;
+  const ctx = canvas.getContext('2d');
+  // create image data column by column
+  const cols = Math.min(frames, canvas.clientWidth * devicePixelRatio);
+  const img = ctx.createImageData(cols, chh);
+  // Hann window
+  function hann(n){ return 0.5 - 0.5*Math.cos(2*Math.PI*n/(fftSize-1)); }
+  // FFT (simple JS FFT) - use built-in offline analyser? implement small FFT
+  // We'll implement a radix-2 FFT (cooley-tukey) minimal
+  function fft(real, imag){
+    const n = real.length;
+    let i=0,j=0;
+    for (i=1;i<n-1;i++){
+      for (let bit=n>>1; j^=bit, (bit>>=1)>0;);
+      if (i<j){ [real[i],real[j]]=[real[j],real[i]]; [imag[i],imag[j]]=[imag[j],imag[i]]; }
+    }
+    for (let len=2; len<=n; len<<=1){
+      const ang = -2*Math.PI/len;
+      const wlen_r = Math.cos(ang), wlen_i = Math.sin(ang);
+      for (let i=0;i<n;i+=len){
+        let wr=1, wi=0;
+        for (let j=0;j<len/2;j++){
+          const u_r = real[i+j], u_i = imag[i+j];
+          const v_r = real[i+j+len/2]*wr - imag[i+j+len/2]*wi;
+          const v_i = real[i+j+len/2]*wi + imag[i+j+len/2]*wr;
+          real[i+j] = u_r + v_r; imag[i+j] = u_i + v_i;
+          real[i+j+len/2] = u_r - v_r; imag[i+j+len/2] = u_i - v_i;
+          const nxt_wr = wr*wlen_r - wi*wlen_i;
+          wi = wr*wlen_i + wi*wlen_r; wr = nxt_wr;
+        }
+      }
+    }
+  }
+
+  // compute columns
+  for (let col=0; col<cols; col++){
+    const frameIdx = Math.floor(col * (frames/cols));
+    const offset = frameIdx*hop;
+    const real = new Float32Array(fftSize);
+    const imag = new Float32Array(fftSize);
+    for (let n=0;n<fftSize;n++){
+      const s = ch[offset + n] || 0;
+      real[n] = s * hann(n);
+      imag[n] = 0;
+    }
+    fft(real, imag);
+    // magnitude
+    const mags = new Float32Array(fftSize/2);
+    for (let k=0;k<fftSize/2;k++){
+      mags[k] = Math.sqrt(real[k]*real[k] + imag[k]*imag[k]);
+    }
+    // normalize and draw vertically (log freq)
+    for (let y=0;y<chh;y++){
+      const freqIdx = Math.floor((1 - y/chh) * (fftSize/2 - 1));
+      let v = mags[freqIdx];
+      // map to dB
+      let db = 20*Math.log10(v+1e-12);
+      // normalize dB range -100..0 -> 0..1
+      const norm = Math.max(0, Math.min(1, (db + 100)/100));
+      const color = colormap(norm);
+      const pixelIndex = ( ( (chh - 1 - y) * cols ) + col ) * 4;
+      img.data[pixelIndex  ] = color[0];
+      img.data[pixelIndex+1] = color[1];
+      img.data[pixelIndex+2] = color[2];
+      img.data[pixelIndex+3] = 255;
+    }
+  }
+  // draw image data scaled to canvas size
+  const tmp = document.createElement('canvas');
+  tmp.width = cols; tmp.height = chh;
+  const tctx = tmp.getContext('2d');
+  tctx.putImageData(img, 0, 0);
+  // scale to visible canvas
+  ctx.clearRect(0,0,canvas.clientWidth, canvas.clientHeight);
+  ctx.drawImage(tmp, 0, 0, canvas.clientWidth, canvas.clientHeight);
+}
+
+// simple color map: blue->turquoise->yellow->white
+function colormap(v){
+  const a = Math.floor(255 * Math.max(0, Math.min(1, v)));
+  // gradient: dark blue -> cyan -> yellow -> white
+  const r = Math.floor(Math.min(255, a*1.5));
+  const g = Math.floor(Math.min(255, a*1.2));
+  const b = Math.floor(Math.min(255, 255 - (a*0.3)));
+  return [r,g,b];
+}
+
+/* RMS dBFS and silence detection */
+function detectNonSilentSegments(audioBuffer, opts){
+  const channel = audioBuffer.getChannelData(0);
+  const sr = audioBuffer.sampleRate;
+  const frameMs = 30; // RMS window
+  const frameLen = Math.floor(sr * (frameMs/1000));
+  const minSilenceFrames = Math.max(1, Math.floor((opts.minSilenceMs || 500) / frameMs));
+  const thresholdDB = opts.silenceThreshDB || -40;
+  const rmsDB = [];
+  for (let i=0;i<channel.length;i+=frameLen){
+    let sum=0, cnt=0;
+    for (let j=i;j<Math.min(i+frameLen, channel.length); j++){ const v=channel[j]; sum += v*v; cnt++; }
+    const rms = Math.sqrt(sum / Math.max(1,cnt));
+    const db = 20*Math.log10(rms + 1e-12);
+    rmsDB.push(db);
+  }
+  // classify frames as silent or not
+  const voiced = rmsDB.map(db => db > thresholdDB ? 1 : 0);
+  // merge to segments
+  const segments = [];
+  let idx=0;
+  while(idx < voiced.length){
+    if (voiced[idx] === 1){
+      // start
+      let start = idx;
+      while(idx < voiced.length && voiced[idx]===1) idx++;
+      let end = idx;
+      // convert to seconds
+      const start_s = start * frameMs / 1000;
+      const end_s = end * frameMs / 1000;
+      segments.push({ start_s: Number(start_s.toFixed(3)), end_s: Number(end_s.toFixed(3)), duration_s: Number((end_s-start_s).toFixed(3)) });
+    } else {
+      idx++;
+    }
+  }
+  // optional: merge very short gaps etc (not implemented for brevity)
+  return segments;
+}
+
+/* render segments list */
+function renderSegmentsList(segs){
+  segmentsList.innerHTML = '';
+  if (!segs || segs.length===0){
+    segmentsList.textContent = 'Aucun segment non-silencieux détecté.';
+    return;
+  }
+  const ul = document.createElement('div');
+  segs.forEach((s,i)=>{
+    const div = document.createElement('div');
+    div.style.padding='8px'; div.style.borderBottom='1px solid rgba(255,255,255,0.03)';
+    div.innerHTML = '<strong>#'+(i+1)+'</strong> &middot; ' + s.start_s + 's → ' + s.end_s + 's (dur: ' + s.duration_s + 's)';
+    ul.appendChild(div);
+  });
+  segmentsList.appendChild(ul);
+}
+
+/* UI helpers */
+function disableAll(dis){ btnFetch.disabled = dis; btnPlay.disabled = dis || !audioPlayer.src; }
+
+window.addEventListener('resize', ()=>{ if (audioBufferGlobal) drawWaveform(audioBufferGlobal, waveCanvas); });
+
+</script>
+</body>
+</html>
