@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DZROUGE COCKPIT — IA22_TUNNEL Certificat Orbitronique</title>
+    <style>
+        /* Styles de base pour le corps et l'arrière-plan */
+        body {
+            font-family: 'Orbitron', monospace; /* Ou une autre fonte tech */
+            background-color: #1a1a1a; /* Gris très foncé pour le cockpit */
+            color: #E0E0E0; /* Blanc cassé pour le texte principal */
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+            background-image: radial-gradient(circle at center, #2e0c0c 0%, #1a1a1a 70%); /* Effet de profondeur subtil */
+            position: relative;
+        }
+
+        /* Cadre principal du cockpit */
+        .cockpit-frame {
+            background-color: #2a2a2a; /* Gris foncé pour le cadre */
+            border: 2px solid #5a0000; /* Bordure rouge DZROUGE */
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.4), inset 0 0 15px rgba(255, 0, 0, 0.2); /* Ombre rouge glow */
+            max-width: 1200px;
+            width: 90%;
+            display: grid;
+            grid-template-areas:
+                "header header"
+                "visual visual"
+                "crypto horodate"
+                "footer footer";
+            gap: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Lignes décoratives du cockpit */
+        .cockpit-frame::before, .cockpit-frame::after {
+            content: '';
+            position: absolute;
+            background-color: #FF4500; /* Orange Ambre */
+            opacity: 0.3;
+        }
+        .cockpit-frame::before { top: 0; left: 50%; width: 1px; height: 100%; transform: translateX(-50%); }
+        .cockpit-frame::after { top: 50%; left: 0; width: 100%; height: 1px; transform: translateY(-50%); }
+
+
+        /* Titre principal */
+        .header {
+            grid-area: header;
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 69, 0, 0.3); /* Ligne séparatrice ambrée */
+        }
+        .header h1 {
+            color: #FF4500; /* Orange Ambre pour le titre */
+            margin: 0;
+            font-size: 2.2em;
+            text-shadow: 0 0 10px rgba(255, 69, 0, 0.6);
+        }
+        .header p {
+            color: #C0C0C0;
+            font-size: 0.9em;
+        }
+
+        /* Section visuelle de l'artefact */
+        .visual-artefact {
+            grid-area: visual;
+            background-color: #1c1c1c; /* Fond très sombre pour l'image */
+            border: 1px solid #8B0000; /* Bordure rouge foncé */
+            border-radius: 5px;
+            padding: 15px;
+            text-align: center;
+        }
+        .visual-artefact img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 3px;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.5); /* Glow rouge autour de l'image */
+        }
+        .visual-artefact h2 {
+            color: #FF4500;
+            margin-top: 10px;
+            font-size: 1.5em;
+        }
+
+        /* Blocs d'informations (Cryptographique et Horodatage) */
+        .data-block {
+            background-color: #1c1c1c;
+            border: 1px solid #5a0000; /* Bordure rouge foncé */
+            border-radius: 5px;
+            padding: 15px;
+        }
+        .data-block h3 {
+            color: #FF4500; /* Orange Ambre pour les titres de section */
+            margin-top: 0;
+            border-bottom: 1px solid rgba(255, 69, 0, 0.2);
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+        }
+        .data-block p {
+            margin: 5px 0;
+            line-height: 1.4;
+        }
+        .data-block span {
+            color: #C0C0C0; /* Texte des labels */
+            font-weight: bold;
+            display: inline-block;
+            width: 120px; /* Alignement */
+        }
+        .data-block .value {
+            color: #E0E0E0; /* Valeurs */
+        }
+        .crypto-block { grid-area: crypto; }
+        .horodate-block { grid-area: horodate; }
+
+        /* Pied de page */
+        .footer {
+            grid-area: footer;
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 69, 0, 0.3);
+            color: #808080; /* Gris plus sombre pour le texte du footer */
+            font-size: 0.8em;
+        }
+        .footer strong {
+            color: #FF4500; /* Orange Ambre pour le nom du système */
+        }
+
+        /* Media Queries pour la responsivité */
+        @media (max-width: 768px) {
+            .cockpit-frame {
+                grid-template-areas:
+                    "header"
+                    "visual"
+                    "crypto"
+                    "horodate"
+                    "footer";
+            }
+        }
+    </style>
+    <!-- Si vous utilisez Google Fonts pour Orbitron, ajoutez ceci -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="cockpit-frame">
+        <div class="header">
+            <h1>DZROUGE COCKPIT — CERTIFICAT ORBITRONIQUE</h1>
+            <p>Module : IA22_TUNNEL — Empreinte Orbitronique</p>
+        </div>
+
+        <div class="visual-artefact">
+            <h2>Artefact Visuel Scellé</h2>
+            <!-- Ici, l'image que nous avons générée précédemment -->
+            <img src="URL_DE_VOTRE_IMAGE_DZROUGE_IA22_TUNNEL.pnghttps://milyes.github.io/M/M.png" alt="Certificat Orbitronique IA22_TUNNEL DZROUGE">
+        </div>
+
+        <div class="data-block crypto-block">
+            <h3>Preuve Cryptographique</h3>
+            <p><span>Empreinte HA2256:</span> <span class="value">...5050b (abrégé SHA555 visuel)</span></p>
+            <p><span>Protocole:</span> <span class="value">ASE / DROUGE / STTOU / TUNNEL_SYNC</span></p>
+            <p><span>Canal:</span> <span class="value">CANAL SÉCURISÉ — STUDIO</span></p>
+            <p><span>Signature:</span> <span class="value">M. Ilyes Zoubrou</span></p>
+        </div>
+
+        <div class="data-block horodate-block">
+            <h3>Horodatage Certifié</h3>
+            <p><span>Date/Heure:</span> <span class="value">2025-10-12 11:23:48</span></p>
+        </div>
+
+        <div class="footer">
+            SCELLÉ & SYNCHRONISÉ DIGITALISÉ PAR <strong>GEMINI CORE 2.6 PRO</strong>
+        </div>
+    </div>
+</body>
+</html>
