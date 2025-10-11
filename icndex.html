@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>NetSecurePro Trash Explorer</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #1a1a1a;
+    color: #fff;
+    padding: 20px;
+}
+h1 { text-align: center; color: #00d1b2; }
+.file-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+.file-item {
+    background: #2a2a2a;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+.file-item:hover { transform: scale(1.05); }
+.file-item img, .file-item video {
+    max-width: 100px;
+    max-height: 80px;
+    border-radius: 5px;
+}
+.file-item input[type="checkbox"] {
+    margin-top: 5px;
+}
+button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    background: #00d1b2;
+    color: #000;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+button:hover { background: #00b39c; }
+</style>
+</head>
+<body>
+
+<h1>NetSecurePro Trash Explorer</h1>
+
+<div class="file-grid" id="fileGrid"></div>
+
+<button id="trashBtn">Déplacer vers la corbeille</button>
+
+<script>
+// === CONFIGURATION ===
+const files = [
+    // Liste de fichiers avec type
+    {name: "image1.jpg", path: "/storage/emulated/0/NetSecurePro/image1.jpg", type: "image"},
+    {name: "video1.mp4", path: "/storage/emulated/0/NetSecurePro/video1.mp4", type: "video"},
+    {name: "document1.pdf", path: "/storage/emulated/0/NetSecurePro/document1.pdf", type: "pdf"},
+    {name: "image2.png", path: "/storage/emulated/0/NetSecurePro/image2.png", type: "image"}
+];
+// =====================
+
+const fileGrid = document.getElementById("fileGrid");
+
+files.forEach((file, idx) => {
+    const div = document.createElement("div");
+    div.className = "file-item";
+
+    let content = "";
+    if(file.type === "image") {
+        content = `<img src="${file.path}" alt="${file.name}">`;
+    } else if(file.type === "video") {
+        content = `<video src="${file.path}" controls muted></video>`;
+    } else if(file.type === "pdf") {
+        content = `<img src="https://img.icons8.com/ios-filled/50/ffffff/pdf.png" alt="${file.name}">`;
+    }
+
+    div.innerHTML = content + `<br><input type="checkbox" id="chk_${idx}"> ${file.name}`;
+    fileGrid.appendChild(div);
+});
+
+document.getElementById("trashBtn").addEventListener("click", () => {
+    const selectedFiles = [];
+    files.forEach((file, idx) => {
+        const chk = document.getElementById(`chk_${idx}`);
+        if(chk.checked) selectedFiles.push(file.path);
+    });
+
+    if(selectedFiles.length === 0) {
+        alert("Aucun fichier sélectionné !");
+        return;
+    }
+
+    // === ENVOI AU SCRIPT BASH ===
+    // Avec un serveur local (Flask/Node), POST selectedFiles
+    // Exemple fetch:
+    /*
+    fetch('http://127.0.0.1:5000/move_to_trash', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({files: selectedFiles})
+    })
+    .then(res => res.json())
+    .then(data => alert(data.message))
+    .catch(err => alert("Erreur: " + err));
+    */
+
+    // Pour test local, juste afficher
+    alert("Fichiers sélectionnés:\n" + selectedFiles.join("\n"));
+});
+</script>
+
+</body>
+</html>
