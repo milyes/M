@@ -1,0 +1,287 @@
+<!doctype html>
+
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>NetSecurePro — Simulation & Analyse (Paranormal - Demo)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#0f1724;--card:#0b1220;--accent:#10b981;--muted:#94a3b8;--glass:rgba(255,255,255,0.03)}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial;background:linear-gradient(180deg,#071024 0%, #081229 100%);color:#e6eef8}
+    .container{max-width:1100px;margin:24px auto;padding:20px}
+    header{display:flex;gap:12px;align-items:center}
+    h1{margin:0;font-size:20px}
+    .card{background:var(--card);border-radius:12px;padding:14px;margin-top:14px;box-shadow:0 6px 24px rgba(2,6,23,0.7)}
+    .controls{display:flex;gap:10px;flex-wrap:wrap}
+    button{background:var(--accent);border:0;color:#022;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:600}
+    .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
+    .flex{display:flex;gap:12px}
+    .col{flex:1}
+    #chartWrap{height:420px}
+    table{width:100%;border-collapse:collapse;font-size:13px}
+    th,td{padding:8px;border-bottom:1px dashed rgba(255,255,255,0.03);text-align:left}
+    small{color:var(--muted)}
+    .legend-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px}
+    .notice{padding:10px;background:var(--glass);border-radius:8px;color:var(--muted);font-size:13px}
+    input[type=file]{display:none}
+    .row{display:flex;gap:12px}
+    .settings{display:flex;gap:8px;align-items:center}
+    pre{background:#041122;padding:12px;border-radius:8px;overflow:auto}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>NetSecurePro — Simulation & Analyse (Paranormal Demo)</h1>
+        <small>Générateur de simulation réaliste + analyse de vos logs capteurs (EMF, Energy, Camera, Motion)</small>
+      </div>
+    </header><div class="card">
+  <div class="controls">
+    <label class="btn-ghost" id="loadJsonBtn">Charger JSON<input id="fileInput" type="file" accept="application/json"></label>
+    <button id="pasteBtn" class="btn-ghost">Coller JSON</button>
+    <button id="simulateBtn">Simulation réaliste</button>
+    <button id="mergeBtn" class="btn-ghost">Fusionner données (si JSON chargé)</button>
+    <button id="exportPdf">Générer PDF</button>
+    <button id="exportCsv" class="btn-ghost">Télécharger CSV</button>
+    <div style="margin-left:auto" class="settings">
+      <label><small>Durée (s)</small><br><input id="duration" type="number" value="10" min="5" style="width:70px"></label>
+      <label><small>Seed</small><br><input id="seed" type="text" value="netsecure" style="width:120px"></label>
+    </div>
+  </div>
+  <div style="margin-top:12px" class="row">
+    <div class="col">
+      <div id="chartWrap" class="card" style="padding:10px"></div>
+      <div style="margin-top:10px" class="notice">Utilisez <strong>Simulation réaliste</strong> pour générer un événement type "paranormal". Vous pouvez charger vos logs JSON et fusionner pour comparaison.</div>
+    </div>
+    <div style="width:380px">
+      <div class="card" style="height:280px;overflow:auto">
+        <h3 style="margin-top:0">Logs (aperçu)</h3>
+        <div id="logPreview"><small>Aucun log chargé.</small></div>
+      </div>
+
+      <div class="card" style="margin-top:10px">
+        <h3 style="margin-top:0">Contrôles rapides</h3>
+        <p><small>Actions :</small></p>
+        <ul>
+          <li><small><strong>Charger JSON</strong> : importer un fichier JSON contenant un tableau d'objets {timestamp, sensor, value, alert}.</small></li>
+          <li><small><strong>Coller JSON</strong> : coller des données JSON dans une fenêtre.</small></li>
+          <li><small><strong>Fusionner</strong> : ajoute la simulation à vos logs chargés.</small></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card" style="margin-top:14px">
+  <h3 style="margin:0">Tableau complet des événements</h3>
+  <div style="margin-top:8px;overflow:auto;max-height:240px"><table id="eventsTable"><thead><tr><th>Timestamp</th><th>Capteur</th><th>Valeur</th><th>Alerte</th></tr></thead><tbody></tbody></table></div>
+</div>
+
+<div id="report" class="card" style="margin-top:14px">
+  <h3 style="margin:0">Rapport IA — Synthèse</h3>
+  <div id="reportBody" style="margin-top:10px">
+    <p class="notice">Aucun rapport généré.</p>
+  </div>
+</div>
+
+<footer style="margin-top:18px;text-align:center;color:var(--muted)">NetSecurePro · Demo · Export PDF / CSV inclus</footer>
+
+  </div>  <!-- Librairies -->  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>  <script>
+    // Utilitaires
+    function parseTimestamp(s){return (new Date(s));}
+    function iso(ts){return new Date(ts).toISOString();}
+
+    // Stockage local
+    let rawLogs = [];
+    let simulated = [];
+
+    // Chart setup
+    const chartContainer = document.createElement('canvas');
+    chartContainer.id = 'mainChart';
+    document.getElementById('chartWrap').appendChild(chartContainer);
+
+    const ctx = chartContainer.getContext('2d');
+    const chart = new Chart(ctx, {
+      type: 'line',
+      data: {datasets:[]},
+      options: {
+        maintainAspectRatio:false,
+        interaction:{mode:'nearest',axis:'x',intersect:false},
+        scales:{
+          x:{type:'time',time:{parser:true,unit:'second',displayFormats:{second:'HH:mm:ss'}}},
+          y:{type:'linear',display:true,position:'left',title:{display:true,text:'Valeur'}}
+        },
+        plugins:{legend:{display:true}}
+      }
+    });
+
+    function refreshTable(all){
+      const tbody = document.querySelector('#eventsTable tbody');
+      tbody.innerHTML='';
+      all.sort((a,b)=>new Date(a.timestamp)-new Date(b.timestamp));
+      all.forEach(r=>{
+        const tr=document.createElement('tr');
+        tr.innerHTML=`<td>${r.timestamp}</td><td>${r.sensor}</td><td>${r.value}</td><td>${r.alert}</td>`;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function previewLogs(all){
+      const el = document.getElementById('logPreview');
+      if(!all.length){el.innerHTML='<small>Aucun log chargé.</small>';return}
+      el.innerHTML='';
+      const subset = all.slice(0,12);
+      subset.forEach(o=>{
+        const p=document.createElement('div');p.innerHTML=`<small><strong>${o.sensor}</strong> @ ${o.timestamp} → ${o.value} ${o.alert?'<span style="color:#fb7185">[ALERT]</span>':''}</small>`;
+        el.appendChild(p);
+      });
+    }
+
+    function buildDatasets(all){
+      const sensors = ['energy','emf','camera-movement','motion'];
+      const colors = {energy:'#f59e0b',emf:'#06b6d4','camera-movement':'#10b981','motion':'#fb7185'};
+      const datasets=[];
+      sensors.forEach(sensor=>{
+        const points = all.filter(x=>x.sensor===sensor).map(x=>({x:parseTimestamp(x.timestamp),y: sensor==='motion'? x.value * 200000 : x.value}));
+        if(points.length){
+          datasets.push({label:sensor,backgroundColor:colors[sensor],borderColor:colors[sensor],data:points,tension:0.3,pointRadius:3});
+        }
+      });
+      return datasets;
+    }
+
+    function render(all){
+      const ds=buildDatasets(all);
+      chart.data.datasets = ds;
+      chart.update();
+      refreshTable(all);
+      previewLogs(all);
+      generateReport(all);
+    }
+
+    // Simulation réaliste
+    function seededRandom(seed){
+      let h=2166136261;
+      for(let i=0;i<seed.length;i++)h=Math.imul(h^seed.charCodeAt(i),16777619);
+      return function(){h+=0x6D2B79F5;let t = Math.imul(h ^ h >>> 15,1 | h); t = t + Math.imul(t ^ t >>> 7,61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296}
+    }
+
+    function simulate(durationSeconds=10,seed='netsecure'){
+      const rand = seededRandom(seed);
+      const start = Date.now();
+      const out=[];
+      const base = new Date(start - 2000); // slight offset
+      for(let i=0;i<durationSeconds;i++){
+        // create variable number of events per second
+        const t = new Date(base.getTime() + i*1000);
+        // energy baseline 4-6, with spikes 6-10
+        const energyVal = +(4 + rand()*2 + (rand()>0.85? rand()*4:0)).toFixed(2);
+        out.push({timestamp:t.toISOString(),sensor:'energy',value:energyVal,alert: energyVal>6});
+        // emf baseline 3-6 with spikes
+        const emfVal = +(3 + rand()*3 + (rand()>0.80? rand()*6:0)).toFixed(2);
+        out.push({timestamp:t.toISOString(),sensor:'emf',value:emfVal,alert: emfVal>6});
+
+        // camera movement multiple samples per second (0-250k)
+        const chunks = 1 + Math.floor(rand()*3);
+        for(let c=0;c<chunks;c++){
+          const dt = new Date(t.getTime() + Math.floor(rand()*950));
+          const baseCam = Math.floor(20000 + rand()*60000 + Math.pow(rand(),2)*150000);
+          const camVal = Math.min(250000, Math.floor(baseCam * (1 + (rand()>0.85? rand()*1.5:0))));
+          out.push({timestamp:dt.toISOString(),sensor:'camera-movement',value:camVal,alert: camVal>50000});
+        }
+
+        // motion random
+        if(rand()>0.7) out.push({timestamp:new Date(t.getTime()+Math.floor(rand()*1000)).toISOString(),sensor:'motion',value:1,alert:true});
+      }
+      return out.sort((a,b)=>new Date(a.timestamp)-new Date(b.timestamp));
+    }
+
+    // Rapport IA simple
+    function generateReport(all){
+      if(!all.length){document.getElementById('reportBody').innerHTML='<p class="notice">Aucun rapport généré.</p>';return}
+      // calc stats
+      const energies = all.filter(x=>x.sensor==='energy').map(x=>x.value);
+      const emfs = all.filter(x=>x.sensor==='emf').map(x=>x.value);
+      const cams = all.filter(x=>x.sensor==='camera-movement').map(x=>x.value);
+      const motions = all.filter(x=>x.sensor==='motion');
+      const maxCam = cams.length? Math.max(...cams):0;
+      const maxEmf = emfs.length? Math.max(...emfs):0;
+      const report = [];
+      report.push(`<p><strong>Statistiques</strong> — échantillons: <strong>${all.length}</strong></p>`);
+      report.push(`<p><small>Pic Movement (camera): <strong>${maxCam}</strong> — Pic EMF: <strong>${maxEmf}</strong> — Detections Motion: <strong>${motions.length}</strong></small></p>`);
+
+      // Simple IA-style narrative
+      if(maxEmf>8 && motions.length>0 && maxCam>150000){
+        report.push(`<p><strong>Interprétation (NetSecurePro IA)</strong> : Les patterns combinés d'énergie élevée, d'un pic EMF (>8) et de mouvements caméra majeurs suggèrent une <em>anomalie transitoire</em> — simulation interprétée comme un phénomène "anomalique" (démo). Corréler avec vidéos et logs audio.</p>`);
+      } else if(maxCam>80000 && motions.length>0){
+        report.push(`<p><strong>Interprétation (NetSecurePro IA)</strong> : Activité physique confirmée — présence détectée. Vérifier identité et source électrique locale.</p>`);
+      } else {
+        report.push(`<p><strong>Interprétation (NetSecurePro IA)</strong> : Aucune preuve forte d'un phénomène. Valeurs modérées — recommander surveillance continue.</p>`);
+      }
+
+      report.push('<p><small>Remarques techniques : calibrer seuils EMF et energy, vérifier caméra (luminosité / vibration) et vérifier interférences RF.</small></p>');
+      document.getElementById('reportBody').innerHTML = report.join('');
+    }
+
+    // Export PDF
+    async function exportPdf(){
+      const el = document.getElementById('report');
+      const canvas = await html2canvas(el,{scale:2});
+      const imgData = canvas.toDataURL('image/png');
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({orientation:'portrait',unit:'px',format:[canvas.width,canvas.height]});
+      pdf.addImage(imgData,'PNG',0,0,canvas.width,canvas.height);
+      pdf.save('NetSecurePro_Simulation_Report.pdf');
+    }
+
+    // Export CSV
+    function exportCsv(all){
+      const rows = [['timestamp','sensor','value','alert']];
+      all.forEach(r=>rows.push([r.timestamp,r.sensor,r.value,r.alert]));
+      const csv = rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+      const url = URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+      const a = document.createElement('a');a.href=url;a.download='NetSecurePro_events.csv';document.body.appendChild(a);a.click();a.remove();
+    }
+
+    // Handlers
+    document.getElementById('simulateBtn').addEventListener('click',()=>{
+      const dur = Math.max(5,parseInt(document.getElementById('duration').value||10));
+      const seed = document.getElementById('seed').value||'netsecure';
+      simulated = simulate(dur,seed);
+      rawLogs = simulated.slice();
+      render(rawLogs);
+    });
+
+    document.getElementById('mergeBtn').addEventListener('click',()=>{
+      if(!simulated.length){alert('Lancer d\u00ababord la simulation.');return}
+      rawLogs = (rawLogs.concat(simulated)).sort((a,b)=>new Date(a.timestamp)-new Date(b.timestamp));
+      render(rawLogs);
+    });
+
+    document.getElementById('exportPdf').addEventListener('click',()=>exportPdf());
+    document.getElementById('exportCsv').addEventListener('click',()=>exportCsv(rawLogs));
+
+    // File load
+    document.getElementById('fileInput').addEventListener('change',async (e)=>{
+      const f = e.target.files[0]; if(!f) return;
+      try{
+        const txt = await f.text(); const j = JSON.parse(txt);
+        if(!Array.isArray(j)) throw new Error('JSON attendu: tableau d\'objets');
+        rawLogs = j.slice();
+        render(rawLogs);
+        alert('JSON chargé — ' + j.length + ' événements');
+      }catch(err){alert('Erreur lecture JSON: '+err.message)}
+    });
+
+    document.getElementById('pasteBtn').addEventListener('click',()=>{
+      const txt = prompt('Collez votre JSON (tableau d\'objets) :');
+      if(!txt) return;
+      try{const j = JSON.parse(txt); if(!Array.isArray(j)) throw new Error('Tableau attendu'); rawLogs=j.slice(); render(rawLogs);}catch(e){alert('JSON invalide: '+e.message)}
+    });
+
+    // initial empty render
+    render([]);
+  </script></body>
+</html>
