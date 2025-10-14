@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>IA22 – Domaines d'application</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f1117;
+      color: #f0f0f0;
+      margin: 0;
+      padding: 2em;
+    }
+    h1 {
+      text-align: center;
+      color: #00ffe7;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5em;
+      margin-top: 2em;
+    }
+    .card {
+      background: #1a1d29;
+      border: 1px solid #2e3244;
+      border-radius: 8px;
+      padding: 1.5em;
+      transition: transform 0.2s;
+    }
+    .card:hover {
+      transform: scale(1.03);
+      border-color: #00ffe7;
+    }
+    .card h2 {
+      color: #00ffe7;
+      margin-top: 0;
+    }
+    .card ul {
+      padding-left: 1.2em;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 3em;
+      font-size: 0.9em;
+      color: #888;
+    }
+    a {
+      color: #00ffe7;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Domaines IA22 : IA, Data Science, Web, Scripts</h1>
+  <div class="grid">
+    <div class="card">
+      <h2>🧠 Intelligence Artificielle</h2>
+      <ul>
+        <li>Commandes : <code>ia22_request</code>, <code>unlock_ai</code></li>
+        <li>Modules : <code>OCR_Command</code>, <code>PowerShell_CL8</code></li>
+        <li>Actions autonomes toutes les 60s</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2>📊 Data Science</h2>
+      <ul>
+        <li>Logs IA : <code>iaLogs</code>, archivage QR</li>
+        <li>Commandes : <code>analyze_logs</code>, <code>generate_report</code></li>
+        <li>Partage sécurisé des données</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2>🌐 Web</h2>
+      <ul>
+        <li>Dashboard CLI dans le navigateur</li>
+        <li>Simulation de tunnel distant (Ngrok/Cloudflare)</li>
+        <li>Commandes : <code>web_console</code>, <code>remote_access</code></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2>📜 Scripts</h2>
+      <ul>
+        <li>Commandes JavaScript modulaires</li>
+        <li>Chargement dynamique : <code>load_module</code></li>
+        <li>Sécurité : <code>lock_ai</code>, <code>secure_logs</code></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer">
+    Inspiré de <a href="https://milyes.github.io/M/repo.html" target="_blank">NetSecurePro IA22</a> – Projet IA22
+  </div>
+</body>
+</html>
