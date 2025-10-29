@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>NetSecurePro – IPTV Dashboard (HTML unique)</title>
+<style>
+  :root{
+    --bg:#0f172a;--panel:#111827;--muted:#94a3b8;--text:#e5e7eb;--primary:#2563eb;--ok:#16a34a;--bad:#ef4444;--warn:#f59e0b;
+    --br:16px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:linear-gradient(180deg,#0b1222 0%,#0f172a 100%);color:var(--text);font:14px/1.4 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial}
+  .wrap{max-width:1200px;margin:auto;padding:24px}
+  .card{background:rgba(17,24,39,.8);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.06);border-radius:var(--br);padding:18px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+  h1{font-size:24px;margin:0 0 10px}
+  h2{font-size:18px;margin:18px 0 8px;color:#cbd5e1}
+  .grid{display:grid;gap:12px}
+  .g-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .g-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .row{display:flex;gap:10px;flex-wrap:wrap}
+  label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}
+  input[type="text"],input[type="password"],input[type="url"],input[type="number"]{
+    width:100%;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:#0b1222;color:var(--text);outline:none
+  }
+  input::placeholder{color:#60708a}
+  .btn{appearance:none;border:1px solid rgba(255,255,255,.08);background:#0b1222;color:var(--text);padding:10px 14px;border-radius:10px;cursor:pointer;transition:.15s;white-space:nowrap}
+  .btn:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.16)}
+  .btn.primary{background:linear-gradient(180deg,#1d4ed8,#1e40af);border-color:#1e40af}
+  .btn.ok{background:linear-gradient(180deg,#16a34a,#15803d);border-color:#15803d}
+  .btn.bad{background:linear-gradient(180deg,#ef4444,#b91c1c);border-color:#b91c1c}
+  .btn.warn{background:linear-gradient(180deg,#f59e0b,#b45309);border-color:#b45309}
+  .btn.ghost{background:transparent}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:2px 8px;border-radius:999px;font-size:12px;border:1px solid rgba(255,255,255,.12)}
+  .pill.ok{background:rgba(22,163,74,.12);color:#86efac;border-color:rgba(22,163,74,.35)}
+  .pill.bad{background:rgba(239,68,68,.10);color:#fecaca;border-color:rgba(239,68,68,.3)}
+  .pill.pending{background:rgba(59,130,246,.10);color:#bfdbfe;border-color:rgba(59,130,246,.35)}
+  .pill.unknown{background:rgba(148,163,184,.08);color:#cbd5e1;border-color:rgba(148,163,184,.25)}
+  table{width:100%;border-collapse:separate;border-spacing:0 8px}
+  thead th{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#94a3b8;text-align:left;padding:6px 10px}
+  tbody tr{background:#0b1222;border:1px solid rgba(255,255,255,.06)}
+  tbody td{padding:10px}
+  tbody tr{border-radius:12px;overflow:hidden}
+  tbody tr td:first-child{border-top-left-radius:12px;border-bottom-left-radius:12px}
+  tbody tr td:last-child{border-top-right-radius:12px;border-bottom-right-radius:12px}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+  .log{height:160px;overflow:auto;background:#0b1222;border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:10px;white-space:pre-wrap}
+  .muted{color:#94a3b8}
+  .divider{height:1px;background:rgba(255,255,255,.06);margin:10px 0}
+  .drag{border:1px dashed rgba(255,255,255,.2);border-radius:12px;padding:12px;text-align:center}
+  .right{margin-left:auto}
+  .small{font-size:12px}
+  .nowrap{white-space:nowrap}
+  .sticky{position:sticky;top:0;z-index:10;background:rgba(17,24,39,.9);backdrop-filter:blur(6px);border-bottom:1px solid rgba(255,255,255,.06);padding:10px 12px;border-radius:12px;margin:-18px -18px 12px -18px}
+  @media (max-width:900px){.g-2,.g-3{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <div class="sticky">
+      <div class="row">
+        <h1 class="right">NetSecurePro · IPTV Dashboard</h1>
+      </div>
+    </div>
+
+    <div class="grid g-3">
+      <div>
+        <label>Identifiant (auto-rempli)</label>
+        <input id="user" type="text" value="milyes.github.io">
+      </div>
+      <div>
+        <label>Mot de passe</label>
+        <input id="pass" type="password" value="1776">
+      </div>
+      <div class="row" style="align-items:end">
+        <button class="btn primary" id="btnLogin">Connexion auto</button>
+        <button class="btn ghost small" id="btnSaveAuth" title="Mémoriser dans le navigateur">Mémoriser</button>
+        <span class="pill unknown" id="authState">Déconnecté</span>
+      </div>
+    </div>
+
+    <h2>Playlists & EPG</h2>
+    <div class="grid g-3">
+      <div>
+        <label>URL M3U</label>
+        <input id="m3uUrl" type="url" placeholder="https://exemple.tld/playlist.m3u ou .m3u8">
+      </div>
+      <div>
+        <label>URL EPG (XMLTV)</label>
+        <input id="epgUrl" type="url" placeholder="https://exemple.tld/epg.xml">
+      </div>
+      <div class="row" style="align-items:end">
+        <button class="btn" id="btnLoadM3U">Charger M3U (URL)</button>
+        <button class="btn" id="btnLoadEPG">Charger EPG (URL)</button>
+        <button class="btn warn" id="btnSample">Démo rapide</button>
+      </div>
+    </div>
+
+    <div class="grid g-2" style="margin-top:10px">
+      <div class="drag" id="dropM3U">Déposez un fichier <strong>.m3u / .m3u8</strong> ici ou cliquez pour sélectionner</div>
+      <div class="drag" id="dropEPG">Déposez un fichier <strong>.xml</strong> (EPG) ici ou cliquez pour sélectionner</div>
+    </div>
+
+    <h2>Actions</h2>
+    <div class="row">
+      <button class="btn ok" id="btnVerify">Vérifier les flux</button>
+      <button class="btn" id="btnFilterActive">Filtrer : Actifs</button>
+      <button class="btn" id="btnFilterDead">Filtrer : Morts</button>
+      <button class="btn" id="btnFilterAll">Tous</button>
+      <span class="right pill pending" id="countInfo">0 flux</span>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="row">
+      <button class="btn" id="btnExportCSV">Exporter CSV</button>
+      <button class="btn" id="btnExportHTML">Exporter HTML</button>
+      <button class="btn bad right" id="btnClear">Réinitialiser</button>
+    </div>
+
+    <h2>Flux détectés</h2>
+    <div class="small muted">Cliquez sur une URL pour l’ouvrir dans un nouvel onglet (si autorisé par le navigateur).</div>
+    <div style="overflow:auto;margin-top:8px">
+      <table id="tbl">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nom</th>
+            <th>Groupe</th>
+            <th class="nowrap">Logo</th>
+            <th>URL</th>
+            <th class="nowrap">Statut</th>
+            <th class="nowrap">Latence (ms)</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <h2>Logs</h2>
+    <div class="log mono" id="log"></div>
+  </div>
+</div>
+
+<script>
+/* ---------- Utilitaires UI ---------- */
+const $ = sel => document.querySelector(sel);
+const logEl = $("#log");
+function log(msg){ const t = new Date().toLocaleTimeString(); logEl.textContent += `[${t}] ${msg}\n`; logEl.scrollTop = logEl.scrollHeight; }
+function blobDownload(filename, mime, data){
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([data],{type:mime}));
+  a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+}
+
+/* ---------- État ---------- */
+let allStreams = [];      // [{name,url,group,logo,status,latency}]
+let viewStreams = [];     // filtrés
+let epgIndex = {};        // {channelId: {titles:[], ...}} (facultatif)
+let verifying = false;
+
+/* ---------- Auth locale ---------- */
+const authState = $("#authState");
+$("#btnSaveAuth").onclick = () => {
+  localStorage.setItem("ns_user", $("#user").value);
+  localStorage.setItem("ns_pass", $("#pass").value);
+  log("Identifiants mémorisés localement (localStorage).");
+};
+(function restoreAuth(){
+  const u = localStorage.getItem("ns_user");
+  const p = localStorage.getItem("ns_pass");
+  if(u){ $("#user").value = u; }
+  if(p){ $("#pass").value = p; }
+})();
+$("#btnLogin").onclick = () => {
+  const u = $("#user").value.trim(); const p = $("#pass").value.trim();
+  if(!u || !p){ log("⚠️ Identifiants manquants."); return; }
+  authState.textContent = "Connecté"; authState.className = "pill ok"; 
+  log(`Connexion simulée pour ${u} ✅`);
+};
+
+/* ---------- Drag & drop fichiers ---------- */
+function wireDrop(zone, acceptExts, handler){
+  const input = document.createElement("input"); input.type="file";
+  input.accept = acceptExts.map(x=>"."+x).join(",");
+  input.onchange = e => handler(input.files[0]);
+  zone.onclick = () => input.click();
+  ["dragenter","dragover"].forEach(ev=>zone.addEventListener(ev,e=>{e.preventDefault();zone.style.borderColor="rgba(37,99,235,.7)"}));
+  ["dragleave","drop"].forEach(ev=>zone.addEventListener(ev,e=>{e.preventDefault();zone.style.borderColor="rgba(255,255,255,.2)"}));
+  zone.addEventListener("drop", e => { const f = e.dataTransfer.files?.[0]; if(f) handler(f); });
+}
+wireDrop($("#dropM3U"), ["m3u","m3u8","txt"], file => {
+  file.text().then(parseM3U).catch(err=>log("Erreur lecture M3U: "+err));
+});
+wireDrop($("#dropEPG"), ["xml"], file => {
+  file.text().then(parseEPG).catch(err=>log("Erreur lecture EPG: "+err));
+});
+
+/* ---------- Chargement via URL ---------- */
+$("#btnLoadM3U").onclick = async ()=>{
+  const url = $("#m3uUrl").value.trim();
+  if(!url){ log("⚠️ Entrez une URL M3U."); return; }
+  try{
+    log("Téléchargement M3U…");
+    const res = await fetch(url,{mode:"cors"});
+    const txt = await res.text();
+    await parseM3U(txt);
+    log("M3U chargé ✅");
+  }catch(e){ log("Erreur M3U: "+e); }
+};
+$("#btnLoadEPG").onclick = async ()=>{
+  const url = $("#epgUrl").value.trim();
+  if(!url){ log("⚠️ Entrez une URL EPG."); return; }
+  try{
+    log("Téléchargement EPG…");
+    const res = await fetch(url,{mode:"cors"});
+    const txt = await res.text();
+    await parseEPG(txt);
+    log("EPG chargé ✅");
+  }catch(e){ log("Erreur EPG: "+e); }
+};
+
+/* ---------- Démo rapide ---------- */
+$("#btnSample").onclick = ()=>{
+  const sample = `#EXTM3U
+#EXTINF:-1 tvg-id="demo.1" tvg-name="Chaîne Démo 1" tvg-logo="https://dummyimage.com/60x60/1d4ed8/ffffff.png&text=C1" group-title="Demo",Chaîne Démo 1
+https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8
+#EXTINF:-1 tvg-id="demo.2" tvg-name="Chaîne Démo 2" tvg-logo="https://dummyimage.com/60x60/16a34a/ffffff.png&text=C2" group-title="Demo",Chaîne Démo 2
+https://test-streams.mux.dev/pts/index.m3u8
+#EXTINF:-1 tvg-id="demo.dead" tvg-name="Chaîne Down" tvg-logo="https://dummyimage.com/60x60/ef4444/ffffff.png&text=KO" group-title="Demo",Chaîne Down
+https://example.invalid/stream.m3u8`;
+  parseM3U(sample);
+  log("Playlist démo chargée.");
+};
+
+/* ---------- Parsing M3U ---------- */
+async function parseM3U(text){
+  const lines = text.split(/\r?\n/);
+  const out = [];
+  let meta = null;
+  for(let i=0;i<lines.length;i++){
+    const line = lines[i].trim();
+    if(!line) continue;
+    if(line.startsWith("#EXTINF")){
+      meta = parseExtInf(line);
+    }else if(!line.startsWith("#") && meta){
+      out.push({
+        name: meta.title || "Sans nom",
+        url: line,
+        group: meta.group || "",
+        logo: meta.logo || "",
+        id: meta.id || "",
+        status: "unknown",
+        latency: null
+      });
+      meta = null;
+    }
+  }
+  // fusion avec allStreams (évite doublons exacts d’URL)
+  const map = new Map(allStreams.map(s=>[s.url,s]));
+  out.forEach(s=>map.set(s.url,s));
+  allStreams = Array.from(map.values());
+  applyFilter("all");
+  renderTable();
+  updateCounter();
+}
+
+/* Analyse des attributs EXTINF */
+function parseExtInf(line){
+  // #EXTINF:-1 tvg-id="xxx" tvg-name="yyy" tvg-logo="url" group-title="gg",Title
+  const mTitle = line.split(",").slice(1).join(",").trim();
+  const obj = {title:mTitle};
+  const rx = /(\w[\w-]*)="([^"]*)"/g; let m;
+  while((m = rx.exec(line))!==null){
+    const k = m[1]; const v = m[2];
+    if(k==="tvg-id") obj.id = v;
+    if(k==="tvg-name") obj.title = v || obj.title;
+    if(k==="tvg-logo") obj.logo = v;
+    if(k==="group-title") obj.group = v;
+  }
+  return obj;
+}
+
+/* ---------- Parsing EPG XMLTV (basique) ---------- */
+async function parseEPG(xmlText){
+  epgIndex = {};
+  try{
+    const xml = new DOMParser().parseFromString(xmlText,"text/xml");
+    const chs = xml.querySelectorAll("channel");
+    chs.forEach(ch=>{
+      const id = ch.getAttribute("id") || "";
+      const display = ch.querySelector("display-name")?.textContent || id;
+      epgIndex[id] = {display};
+    });
+    log(`EPG indexé (${Object.keys(epgIndex).length} chaînes).`);
+  }catch(e){
+    log("EPG invalide: "+e);
+  }
+}
+
+/* ---------- Vérification des flux ---------- */
+/* NB: CORS peut empêcher d’obtenir finement les codes. On tente un fetch HEAD puis GET no-cors.
+   La logique: si une requête aboutit (même opaque), on marque "active" sinon "dead". */
+$("#btnVerify").onclick = ()=>verifyAll();
+async function verifyAll(concurrency=6, timeoutMs=6000){
+  if(verifying){ log("Vérification déjà en cours…"); return; }
+  if(allStreams.length===0){ log("Aucun flux à vérifier."); return; }
+  verifying = true; log(`Vérification (${allStreams.length} flux)…`);
+  const q = allStreams.slice();
+  let active = 0, dead = 0;
+  const runner = async ()=>{
+    while(q.length){
+      const s = q.shift();
+      const t0 = performance.now();
+      try{
+        const ok = await probeURL(s.url, timeoutMs);
+        s.status = ok ? "active" : "dead";
+        s.latency = Math.round(performance.now()-t0);
+        ok ? active++ : dead++;
+      }catch{
+        s.status = "dead"; s.latency = Math.round(performance.now()-t0); dead++;
+      }
+      renderRow(s);
+    }
+  };
+  await Promise.all(Array.from({length:concurrency}, runner));
+  verifying = false;
+  applyCurrentFilter();
+  renderTable();
+  updateCounter();
+  log(`Terminé ✅ · Actifs: ${active} · Morts: ${dead}`);
+}
+
+function fetchWithTimeout(resource, options={}){
+  const {timeout=6000} = options;
+  const controller = new AbortController();
+  const id = setTimeout(()=>controller.abort(), timeout);
+  return fetch(resource, {...options, signal:controller.signal}).finally(()=>clearTimeout(id));
+}
+
+async function probeURL(url, timeoutMs){
+  try{
+    // Essai HEAD (si CORS l'autorise)
+    const r1 = await fetchWithTimeout(url,{method:"HEAD",mode:"cors",redirect:"follow",timeout:timeoutMs});
+    if(r1.ok) return true;
+  }catch(_){}
+  try{
+    // Essai GET no-cors (opaque => on considère reachable)
+    const r2 = await fetchWithTimeout(url,{method:"GET",mode:"no-cors",redirect:"follow",timeout:timeoutMs});
+    // Si aucune exception: on considère "probablement actif"
+    return true;
+  }catch(_){ return false; }
+}
+
+/* ---------- Filtrage ---------- */
+let currentFilter = "all";
+$("#btnFilterActive").onclick = ()=>{applyFilter("active"); renderTable();};
+$("#btnFilterDead").onclick = ()=>{applyFilter("dead"); renderTable();};
+$("#btnFilterAll").onclick = ()=>{applyFilter("all"); renderTable();};
+function applyFilter(kind){
+  currentFilter = kind;
+  if(kind==="active") viewStreams = allStreams.filter(s=>s.status==="active");
+  else if(kind==="dead") viewStreams = allStreams.filter(s=>s.status==="dead");
+  else viewStreams = allStreams.slice();
+  updateCounter();
+}
+function applyCurrentFilter(){ applyFilter(currentFilter); }
+function updateCounter(){ $("#countInfo").textContent = `${viewStreams.length} / ${allStreams.length} flux (${currentFilter})`; }
+
+/* ---------- Rendu table ---------- */
+const tbody = $("#tbl tbody");
+function renderTable(){
+  tbody.innerHTML = "";
+  viewStreams.forEach((s,i)=>tbody.appendChild(rowFor(s, i)));
+}
+function renderRow(s){
+  // Mettre à jour la ligne si visible
+  const idx = viewStreams.indexOf(s);
+  if(idx>=0){
+    const tr = tbody.children[idx];
+    if(tr) tr.replaceWith(rowFor(s, idx));
+  }
+}
+function rowFor(s, i){
+  const tr = document.createElement("tr");
+  const statusClass = s.status==="active" ? "pill ok" : (s.status==="dead" ? "pill bad" : "pill unknown");
+  tr.innerHTML = `
+    <td class="mono">${i+1}</td>
+    <td>${escapeHtml(s.name||"")}</td>
+    <td class="small muted">${escapeHtml(s.group||"")}</td>
+    <td>${s.logo?`<img src="${escapeHtml(s.logo)}" alt="" style="height:28px;border-radius:6px;border:1px solid rgba(255,255,255,.1)">`:""}</td>
+    <td class="mono" style="max-width:480px;overflow:hidden;text-overflow:ellipsis">
+      <a href="${s.url}" target="_blank" rel="noopener">${escapeHtml(s.url)}</a>
+    </td>
+    <td><span class="${statusClass}">${s.status||"unknown"}</span></td>
+    <td class="mono">${s.latency??""}</td>
+  `;
+  return tr;
+}
+function escapeHtml(str){ return String(str).replace(/[&<>"']/g,s=>({&:"&amp;",<:"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[s])) }
+
+/* ---------- Export ---------- */
+$("#btnExportCSV").onclick = ()=>{
+  if(allStreams.length===0){ log("Rien à exporter."); return; }
+  const header = ["name","group","logo","url","status","latency"];
+  const rows = allStreams.map(s=>header.map(k=>String(s[k]??"").replace(/"/g,'""')));
+  const csv = [header.join(","), ...rows.map(r=>r.map(v=>`"${v}"`).join(","))].join("\n");
+  blobDownload("iptv_report.csv","text/csv;charset=utf-8",csv);
+  log("CSV exporté.");
+};
+$("#btnExportHTML").onclick = ()=>{
+  if(allStreams.length===0){ log("Rien à exporter."); return; }
+  const rows = allStreams.map((s,i)=>`
+    <tr>
+      <td>${i+1}</td>
+      <td>${escapeHtml(s.name||"")}</td>
+      <td>${escapeHtml(s.group||"")}</td>
+      <td>${s.logo?`<img src="${escapeHtml(s.logo)}" style="height:24px">`:""}</td>
+      <td><a href="${s.url}" target="_blank" rel="noopener">${escapeHtml(s.url)}</a></td>
+      <td>${s.status}</td>
+      <td>${s.latency??""}</td>
+    </tr>`).join("");
+  const html = `<!doctype html><meta charset="utf-8"><title>Rapport IPTV</title>
+  <style>body{font-family:Arial,Helvetica,sans-serif;background:#0f172a;color:#e5e7eb;padding:20px}
+  table{border-collapse:collapse;width:100%}th,td{border:1px solid #334155;padding:6px}</style>
+  <h1>Rapport IPTV</h1>
+  <table><thead><tr><th>#</th><th>Nom</th><th>Groupe</th><th>Logo</th><th>URL</th><th>Statut</th><th>Latence</th></tr></thead>
+  <tbody>${rows}</tbody></table>`;
+  blobDownload("iptv_report.html","text/html;charset=utf-8",html);
+  log("HTML exporté.");
+};
+
+/* ---------- Reset ---------- */
+$("#btnClear").onclick = ()=>{
+  allStreams = []; viewStreams = []; epgIndex = {};
+  renderTable(); updateCounter(); log("État réinitialisé.");
+};
+
+/* ---------- Fin ---------- */
+log("Prêt. Chargez un M3U (URL, fichier, ou Démo) puis Vérifier les flux.");
+</script>
+</body>
+</html>
