@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rapport de Certification & Déploiement GEMINI CORE V2.7</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 20px; background-color: #f4f7f6; color: #333; line-height: 1.6; }
+        .container { max-width: 1200px; margin: auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        h1, h2 { color: #004d40; border-bottom: 2px solid #e0e0e0; padding-bottom: 10px; margin-top: 30px; }
+        .header-section { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; }
+        .header-section .status { font-size: 1.5em; font-weight: bold; padding: 5px 10px; border-radius: 5px; }
+        .status.online { background-color: #e8f5e9; color: #4CAF50; }
+        .status.critical { background-color: #ffebee; color: #D32F2F; }
+        .info-card { background-color: #e8f5e9; border-left: 5px solid #4CAF50; padding: 15px; margin-bottom: 20px; border-radius: 4px; }
+        .info-card.critical { background-color: #ffebee; border-left-color: #D32F2F; }
+        .info-card p { margin: 5px 0; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; vertical-align: top; }
+        th { background-color: #f2f2f2; color: #333; font-weight: bold; }
+        .critical-row { background-color: #ffebee; }
+        .warning-row { background-color: #fffde7; }
+        .button { display: inline-block; background-color: #007bff; color: white; padding: 10px 18px; text-decoration: none; border-radius: 5px; margin-top: 10px; margin-right: 10px; transition: background-color 0.3s ease; }
+        .button:hover { background-color: #0056b3; }
+        .footer { text-align: center; margin-top: 40px; font-size: 0.9em; color: #777; }
+        code { background-color: #eee; padding: 2px 4px; border-radius: 3px; font-family: 'Consolas', 'Monaco', monospace; }
+        a { color: #007bff; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-section">
+            <h1>Rapport de Certification & Déploiement GEMINI CORE V2.7</h1>
+            <div id="deployment-status" class="status"></div>
+        </div>
+
+        <div id="certification-card" class="info-card">
+            <h2>Détails de Certification</h2>
+            <p><strong>Version Certifiée :</strong> <span id="cert-version"></span></p>
+            <p><strong>Date de Certification :</strong> <span id="cert-date"></span></p>
+            <p><strong>SHA256 Certifié :</strong> <code id="cert-sha256"></code></p>
+            <p><strong>Lien Workflow CI/CD (Certification) :</strong> <a id="cert-github-run" href="#" target="_blank"></a></p>
+            <a id="cert-pdf-link" href="#" class="button" target="_blank">Télécharger PDF Officiel V2.7</a>
+        </div>
+
+        <div id="deployment-card" class="info-card">
+            <h2>Détails du Déploiement</h2>
+            <p><strong>Environnement :</strong> Production</p>
+            <p><strong>Statut du Déploiement :</strong> <span id="deploy-status-text"></span></p>
+            <p><strong>Lien Workflow CI/CD (Déploiement) :</strong> <a id="deploy-github-run" href="#" target="_blank"></a></p>
+            <a id="prod-dashboard-link" href="#" class="button" target="_blank">Accéder au Monitoring de Production</a>
+        </div>
+
+        <h2>Santé des Dépendances pour DATA_AUDIT_ENGINE</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nom de la Dépendance</th>
+                    <th>Licence</th>
+                    <th>Impact sur la Conformité</th>
+                    <th>Vulnérabilités Connues</th>
+                    <th>Actions Recommandées</th>
+                </tr>
+            </thead>
+            <tbody id="dependency-table-body">
+                <!-- Les lignes de dépendances seront générées ici par JavaScript -->
+            </tbody>
+        </table>
+
+        <div class="footer">
+            Généré automatiquement par le Workflow CI/CD V4.1 (Certification Continue).
+        </div>
+    </div>
+
+    <script>
+        // --- Variables de Données (Simulées) ---
+        const reportData = {
+            version: "2.7",
+            deploymentStatus: "ONLINE_AND_HEALTHY", // Ou "CRITICAL_ISSUES"
+            certificationDate: new Date().toLocaleString('fr-FR', { dateStyle: 'full', timeStyle: 'medium' }),
+            certifiedSha256: "a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2",
+            pdfLink: "https://docs.gemini.ai/certifications/GEMINI_CORE_V2.7_Certified.pdf",
+            githubRunLinkCert: "https://github.com/gemini/core/actions/runs/123456789",
+            githubRunLinkDeploy: "https://github.com/gemini/core/actions/runs/987654321",
+            prodDashboardLink: "https://monitoring.gemini.ai/dashboards/v2.7",
+            dependencies: [
+                {"name": "pandas", "license": "BSD 3-Clause", "impact": "Compatible", "vulnerabilities": "Aucune connue", "action": "Surveiller Activement"},
+                {"name": "numpy", "license": "BSD 3-Clause", "impact": "Compatible", "vulnerabilities": "Aucune connue", "action": "Surveiller Activement"},
+                {"name": "psycopg2-binary", "license": "LGPLv3", "impact": "Potentiellement Restrictive", "vulnerabilities": "Aucune connue", "action": "Vérifier Intégration / Conformité juridique"},
+                {"name": "data-anonymizer", "license": "GPLv3", "impact": "Restrictive", "vulnerabilities": "CVE-2023-XXXX (Élevée)", "action": "Évaluation Critique & Remplacement Prioritaire"},
+                {"name": "requests", "license": "Apache 2.0", "impact": "Compatible", "vulnerabilities": "Aucune connue", "action": "Surveiller Activement"},
+                {"name": "flask", "license": "BSD 3-Clause", "impact": "Compatible", "vulnerabilities": "CVE-2023-Y1Z2 (Moyenne)", "action": "Mettre à jour vers la version patchée rapidement"}
+            ]
+        };
+
+        // --- Remplir les informations de certification et déploiement ---
+        document.getElementById('cert-version').textContent = reportData.version;
+        document.getElementById('cert-date').textContent = reportData.certificationDate;
+        document.getElementById('cert-sha256').textContent = reportData.certifiedSha256;
+        document.getElementById('cert-pdf-link').href = reportData.pdfLink;
+        document.getElementById('cert-github-run').href = reportData.githubRunLinkCert;
+        document.getElementById('cert-github-run').textContent = reportData.githubRunLinkCert;
+
+        document.getElementById('deploy-status-text').textContent = reportData.deploymentStatus.replace(/_/g, ' ');
+        document.getElementById('deploy-github-run').href = reportData.githubRunLinkDeploy;
+        document.getElementById('deploy-github-run').textContent = reportData.githubRunLinkDeploy;
+        document.getElementById('prod-dashboard-link').href = reportData.prodDashboardLink;
+
+        const deploymentStatusElement = document.getElementById('deployment-status');
+        deploymentStatusElement.textContent = `Statut : ${reportData.deploymentStatus.replace(/_/g, ' ')}`;
+        if (reportData.deploymentStatus === "ONLINE_AND_HEALTHY") {
+            deploymentStatusElement.classList.add('online');
+        } else {
+            deploymentStatusElement.classList.add('critical');
+            document.getElementById('deployment-card').classList.add('critical');
+        }
+
+        // --- Générer le tableau des dépendances ---
+        const dependencyTableBody = document.getElementById('dependency-table-body');
+        reportData.dependencies.forEach(dep => {
+            const row = document.createElement('tr');
+            let rowClass = '';
+            if (dep.impact === "Restrictive" || dep.vulnerabilities.includes("CVE")) {
+                rowClass = 'critical-row';
+            } else if (dep.impact === "Potentiellement Restrictive") {
+                rowClass = 'warning-row';
+            }
+            row.className = rowClass;
+
+            row.innerHTML = `
+                <td>${dep.name}</td>
+                <td>${dep.license}</td>
+                <td>${dep.impact}</td>
+                <td>${dep.vulnerabilities}</td>
+                <td>${dep.action}</td>
+            `;
+            dependencyTableBody.appendChild(row);
+        });
+    </script>
+</body>
+</html>
