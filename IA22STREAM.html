@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Flux IA22STREAM — Cours</title>
+  <meta name="description" content="Page de cours IA22STREAM : introduction et flux principal." />
+  <style>
+    :root {
+      --bg: #0f1115;
+      --panel: #151821;
+      --text: #e8ecf1;
+      --muted: #a8b0bd;
+      --accent: #6aa9ff;
+      --accent-2: #9a6aff;
+      --border: #232838;
+      --shadow: 0 8px 20px rgba(0,0,0,0.35);
+      --radius: 14px;
+      --maxw: 880px;
+      --leading: 1.55;
+    }
+
+    /* Reset & base */
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      background: radial-gradient(1200px 600px at 20% 10%, #131620 0%, #0f1115 60%, #0c0e12 100%);
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Helvetica Neue", sans-serif;
+      line-height: var(--leading);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Layout */
+    .wrap {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      min-height: 100vh;
+    }
+
+    header {
+      backdrop-filter: saturate(140%) blur(6px);
+      background: linear-gradient(180deg, rgba(21,24,33,0.75), rgba(21,24,33,0.35));
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+
+    .header-inner {
+      max-width: var(--maxw);
+      margin: 0 auto;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+    }
+
+    .brand-badge {
+      width: 28px; height: 28px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 6px 16px rgba(106,169,255,0.35), inset 0 0 12px rgba(154,106,255,0.45);
+    }
+
+    nav {
+      margin-left: auto;
+      display: flex;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    main {
+      padding: 40px 20px 56px;
+    }
+
+    .panel {
+      max-width: var(--maxw);
+      margin: 0 auto;
+      background: linear-gradient(180deg, rgba(21,24,33,0.8), rgba(21,24,33,0.6));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 22px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      background:
+        radial-gradient(220px 120px at 15% 0%, rgba(106,169,255,0.12), transparent 60%),
+        radial-gradient(220px 120px at 85% 0%, rgba(154,106,255,0.12), transparent 60%);
+    }
+
+    .titles h1 {
+      margin: 0;
+      font-size: clamp(24px, 3.2vw, 32px);
+      font-weight: 700;
+    }
+
+    .titles p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .badge {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 12px;
+      color: var(--muted);
+      background: rgba(13,15,20,0.35);
+    }
+
+    .content {
+      padding: 28px 24px 32px;
+    }
+
+    h2 {
+      font-size: clamp(18px, 2.2vw, 22px);
+      margin: 0 0 14px;
+      font-weight: 600;
+    }
+
+    .lead {
+      margin: 0 0 18px;
+      color: var(--muted);
+    }
+
+    .card {
+      margin-top: 18px;
+      padding: 16px 16px;
+      border: 1px dashed #2a3145;
+      border-radius: 12px;
+      background: rgba(18,20,28,0.5);
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 13px;
+      background: rgba(16,18,25,0.6);
+    }
+
+    .footer-inner {
+      max-width: var(--maxw);
+      margin: 0 auto;
+      padding: 18px 20px;
+      display: grid;
+      gap: 8px;
+    }
+
+    /* Responsive tweaks */
+    @media (max-width: 640px) {
+      nav { display: none; }
+      .panel-header { flex-direction: column; align-items: flex-start; }
+      .badge { align-self: flex-start; }
+    }
+
+    /* Accessibility helpers */
+    .sr-only {
+      position: absolute !important;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0);
+      white-space: nowrap; border: 0;
+    }
+  </style>
+</head>
+<body>
+  <a class="sr-only" href="#contenu">Aller au contenu</a>
+  <div class="wrap">
+    <header role="banner" aria-label="En-tête du site">
+      <div class="header-inner">
+        <div class="brand" aria-label="Identité">
+          <div class="brand-badge" aria-hidden="true"></div>
+          <span>IA22STREAM</span>
+        </div>
+        <nav aria-label="Navigation">
+          <span>Flux</span>
+          <span>Cours</span>
+          <span>Docs</span>
+        </nav>
+      </div>
+    </header>
+
+    <main id="contenu" role="main">
+      <section class="panel" aria-labelledby="titre-principal">
+        <div class="panel-header">
+          <div class="titles">
+            <h1 id="titre-principal">Cours IA22STREAM</h1>
+            <p>Introduction et capsule de flux pour IA22STREAM.</p>
+          </div>
+          <div class="badge" aria-label="Statut">Version publique</div>
+        </div>
+
+        <div class="content">
+          <h2>Flux IA22STREAM</h2>
+          <p class="lead">
+            Cette page présente le flux principal du cours IA22STREAM, avec une mise en page sobre,
+            lisible et prête à être publiée.
+          </p>
+
+          <div class="card" role="note" aria-label="Résumé">
+            <strong>Résumé:</strong> Cours IA22STREAM en tant que titre principal (h1) et Flux IA22STREAM
+            en sous-titre (h2). Mise en page responsive, typographie moderne, en-tête et pied de page inclus.
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer role="contentinfo" aria-label="Pied de page">
+      <div class="footer-inner">
+        <div>© <span id="annee"></span> IA22STREAM. Tous droits réservés.</div>
+        <div>Conception légère, accessible et responsive.</div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Met à jour l'année automatiquement
+    document.getElementById('annee').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
