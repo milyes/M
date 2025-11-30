@@ -1,0 +1,56 @@
+<header>
+    <h1>Tableau de Bord IA22 / LearnLinkc</h1>
+    <nav>
+        <ul>
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="main.html">Contenu Principal</a></li>
+            <li><a href="Logic.html">Logique</a></li>
+            <li><a href="netsecurepro.html">Netsecure Pro</a></li>
+            <li><a href="Terminal.html">Terminal</a></li>
+            <li><a href="ia22tunnelcockpit.html">Tunnel Cockpit</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <h2>Vue d'Ensemble des Composants Majeurs</h2>
+    <p>Cette page sert de point de départ pour l'exploration approfondie des outils et des projets de l'environnement IA22/LearnLinkc.</p>
+
+    <div class="card">
+        <h3>🤖 AI Studio & Code</h3>
+        <p>Accédez à la documentation et aux environnements de codage spécifiques à l'IA, y compris les versions de développement.</p>
+        <ul>
+            <li><a href="ai_studio_code.html">AI Studio Code (Stable)</a></li>
+            <li><a href="ai_studio_code (56).html">AI Studio Code (Version 56)</a></li>
+            <li><a href="copilot.html">Copilot HTML (Assistant)</a></li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>🔒 Sécurité et Réseau</h3>
+        <p>Documentation et outils pour la sécurité réseau et les connexions spécifiques au projet Orbitronic.</p>
+        <ul>
+            <li><a href="netsecurepro.html">Netsecure Pro Dashboard</a></li>
+            <li><a href="ia22tunnelcockpit.html">Tunnel Cockpit</a></li>
+            <li><a href="IA22_TUNNEL_Certificate_Orbitronic.png">Certificat Orbitronic</a></li>
+        </ul>
+    </div>
+    
+    <div class="card">
+        <h3>⚙️ Commandes et Environnements</h3>
+        <p>Accès aux interfaces de ligne de commande (CLI) et aux pages utilitaires.</p>
+        <ul>
+            <li><a href="Terminal.html">Interface Terminal</a></li>
+            <li><a href="cmd.html">Commandes (cmd)</a></li>
+            <li><a href="ubuntu.html">Configuration Ubuntu/Termux</a></li>
+        </ul>
+    </div>
+
+    <h4>Lien vers le Plan du Site</h4>
+    <p>Pour voir la liste complète de tous les fichiers, y compris les fichiers expérimentaux et les archives : <a href="sitemap.html">Consulter le Sitemap complet</a></p>
+
+</main>
+
+<footer>
+    <p>Projet IA22 &copy; 2025 - Chemin d'Accès: /data/data/.../LearnLinkc/M</p>
+</footer>
