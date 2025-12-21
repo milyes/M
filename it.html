@@ -1,0 +1,203 @@
+NSP Cockpit
+V3.0.0-ALPHA
+Engine Config
+Knowledge Base
+Cockpit Chat
+status: operational
+RAG Engine Setup
+Select the underlying Python libraries for the InnovAI engine.
+
+Engine Configuration
+RAG Framework
+
+LlamaIndex
+Specialized for data indexing & retrieval. Best for "Chat with Data".
+
+LangChain
+General purpose agent framework. Best for complex multi-step reasoning.
+Vector Store
+
+ChromaDB
+Open-source embedding database. Persistent, simple, python-native.
+
+FAISS
+Meta's library for efficient similarity search. High performance, in-memory focus.
+Indexing Parameters
+Chunk Size (Tokens)
+512
+
+512
+Default: 512. Controls the granularity of the RAG retrieval process.
+
+preview: innovai_engine.py
+import os
+import logging
+import chromadb
+from llama_index.core import (
+    VectorStoreIndex,
+    Settings,
+    StorageContext,
+    SimpleDirectoryReader,
+    load_index_from_storage,
+)
+from llama_index.vector_stores.chroma import ChromaVectorStore
+from llama_index.embeddings.huggingface import HuggingFaceEmbedding
+from llama_index.llms.ollama import Ollama
+from typing import Optional, Any
+
+# Configure logging for the function
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+def initialize_rag_engine(
+    persist_dir: str = "./chroma_db",
+    documents_dir: str = "./data",
+    collection_name: str = "rag_collection",
+    llm_model_name: str = "llama2", # Ensure ollama is running with this model pulled, e.g., 'ollama pull llama2'
+    embedding_model_name: str = "BAAI/bge-small-en-v1.5", # Ensure this model is available (will download if not local)
+    chunk_size: int = 1024,
+    chunk_overlap: int = 20,
+    force_rebuild: bool = False,
+    ollama_base_url: Optional[str] = None # e.g., "http://localhost:11434" for custom Ollama host
+) -> Optional[Any]: # Returns a LlamaIndex query engine or None on failure
+    """
+    Initializes a RAG engine using LlamaIndex and ChromaDB.
+
+    This function sets up the necessary components: ChromaDB as the vector store,
+    a HuggingFace embedding model, an Ollama LLM, and creates or loads a
+    LlamaIndex VectorStoreIndex and its query engine.
+
+    Args:
+        persist_dir (str): Directory where ChromaDB will store its data and LlamaIndex
+                           metadata will be stored in a subfolder `index_metadata`.
+                           Defaults to "./chroma_db".
+        documents_dir (str): Directory containing raw documents to be indexed.
+                             Defaults to "./data". Ignored if force_rebuild is False
+                             and a valid index already exists.
+        collection_name (str): The name of the ChromaDB collection.
+                               Defaults to "rag_collection".
+        llm_model_name (str): The name of the Ollama LLM model to use (e.g., "llama2").
+                              Ensure Ollama is running and the model is pulled.
+        embedding_model_name (str): The name of the HuggingFace embedding model
+                                    (e.g., "BAAI/bge-small-en-v1.5").
+                                    This model will be downloaded if not local.
+        chunk_size (int): The size of text chunks for indexing. Defaults to 1024.
+        chunk_overlap (int): The overlap between text chunks. Defaults to 20.
+        force_rebuild (bool): If True, forces a rebuild of the index from documents_dir,
+                              even if an existing index is found. Defaults to False.
+        ollama_base_url (Optional[str]): Optional base URL for the Ollama server.
+                                         e.g., "http://localhost:11434". If None,
+                                         it uses the default Ollama client discovery.
+
+    Returns:
+        Optional[Any]: A LlamaIndex QueryEngine instance if successful, None otherwise.
+    """
+    try:
+        logger.info(f"Starting RAG engine initialization. Persistence directory: '{persist_dir}'")
+
+        # 1. Initialize ChromaDB client and vector store
+        try:
+            db = chromadb.PersistentClient(path=persist_dir)
+            chroma_collection = db.get_or_create_collection(collection_name)
+            vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
+            logger.info(f"ChromaDB client initialized with collection '{collection_name}'.")
+        except Exception as e:
+            logger.error(f"Failed to initialize ChromaDB. Error: {e}", exc_info=True)
+            return None
+
+        # 2. Configure LlamaIndex global settings
+        try:
+            # Setup embedding model
+            Settings.embed_model = HuggingFaceEmbedding(model_name=embedding_model_name)
+            logger.info(f"Embedding model '{embedding_model_name}' configured.")
+
+            # Setup LLM
+            Settings.llm = Ollama(model=llm_model_name, base_url=ollama_base_url)
+            # Test LLM connectivity
+            try:
+                # A simple test to check if Ollama LLM is reachable and model is loaded
+                Settings.llm.complete("Hello")
+                logger.info(f"Ollama LLM '{llm_model_name}' configured and tested successfully.")
+            except Exception as e:
+                logger.error(
+                    f"Failed to connect to Ollama LLM '{llm_model_name}' (base_url: {ollama_base_url}). "
+                    f"Please ensure Ollama is running and the model is pulled. Error: {e}",
+                    exc_info=True
+                )
+                return None
+
+            Settings.chunk_size = chunk_size
+            Settings.chunk_overlap = chunk_overlap
+            logger.info(f"Text splitter settings: chunk_size={chunk_size}, chunk_overlap={chunk_overlap}.")
+
+        except Exception as e:
+            logger.error(f"Failed to configure LlamaIndex global settings. Error: {e}", exc_info=True)
+            return None
+
+        # 3. Load or create the index
+        # LlamaIndex stores its metadata in a separate directory within the persist_dir
+        index_storage_path = os.path.join(persist_dir, "index_metadata")
+        index = None
+        
+        # Check if an index exists and if we're not forcing a rebuild
+        if not force_rebuild and os.path.exists(index_storage_path) and os.listdir(index_storage_path):
+            try:
+                logger.info(f"Attempting to load existing index from '{index_storage_path}'...")
+                # StorageContext needs the vector_store to correctly load the index
+                storage_context = StorageContext.from_defaults(
+                    vector_store=vector_store, persist_dir=index_storage_path
+                )
+                index = load_index_from_storage(storage_context)
+                logger.info("Existing index loaded successfully.")
+            except Exception as e:
+                logger.warning(
+                    f"Failed to load existing index from '{index_storage_path}'. Error: {e}. "
+                    "Proceeding to rebuild the index.",
+                    exc_info=True
+                )
+                index = None # Force rebuild if loading fails
+
+        if index is None: # Index not loaded or force_rebuild is True
+            logger.info("Building or rebuilding index from documents...")
+            if not os.path.exists(documents_dir):
+                logger.error(f"Documents directory '{documents_dir}' not found. Cannot build index.")
+                return None
+            
+            try:
+                # Load documents from the specified directory
+                documents = SimpleDirectoryReader(documents_dir).load_data()
+                if not documents:
+                    logger.warning(f"No documents found in '{documents_dir}'. The index will be empty or minimal.")
+                else:
+                    logger.info(f"Loaded {len(documents)} documents from '{documents_dir}'.")
+
+                # Create StorageContext with the initialized ChromaVectorStore
+                storage_context = StorageContext.from_defaults(vector_store=vector_store)
+
+                # Create VectorStoreIndex from documents
+                index = VectorStoreIndex.from_documents(
+                    documents,
+                    storage_context=storage_context,
+                )
+                logger.info("VectorStoreIndex created successfully.")
+
+                # Persist LlamaIndex metadata (nodes, graph, etc.) to a sub-directory
+                index.persist(persist_dir=index_storage_path)
+                logger.info(f"Index metadata persisted to '{index_storage_path}'.")
+
+            except Exception as e:
+                logger.error(f"Failed to build or rebuild index. Error: {e}", exc_info=True)
+                return None
+
+        # 4. Create Query Engine
+        if index:
+            query_engine = index.as_query_engine()
+            logger.info("RAG Query Engine initialized successfully.")
+            return query_engine
+        else:
+            logger.error("Index was not created or loaded. Cannot create query engine.")
+            return None
+
+    except Exception as e:
+        logger.critical(f"An unhandled critical error occurred during RAG engine initialization. Error: {e}", exc_info=True)
+        return None
