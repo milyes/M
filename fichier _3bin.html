@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>IA22 CORE - BINARY INTERFACE</title>
+    <style>
+        body { background: #000; color: #0f0; font-family: 'Courier New', monospace; padding: 20px; text-align: center; }
+        .terminal { border: 1px solid #0f0; padding: 20px; display: inline-block; text-align: left; background: #050505; box-shadow: 0 0 15px rgba(0, 255, 0, 0.2); }
+        .blink { animation: blinker 1s linear infinite; color: #f00; font-weight: bold; }
+        @keyframes blinker { 50% { opacity: 0; } }
+        .btn-exe { display: block; margin-top: 20px; padding: 15px; border: 1px solid #0f0; color: #0f0; text-decoration: none; text-align: center; font-weight: bold; cursor: pointer; }
+        .btn-exe:hover { background: #0f0; color: #000; }
+        .stats { font-size: 0.8em; color: #888; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="terminal">
+        <div>[SYSTEM STATUS: ACTIVE]</div>
+        <div>[NODE: SM-S921W_350849441578883]</div>
+        <div>[CORE: IA22_LOGIC_AIMEDIXAL]</div>
+        <hr>
+        <div class="stats">
+            > Moteur de détection Parkinson chargé...<br>
+            > Calibration Micro/Caméra prête...<br>
+            > Signature indélébile : M.I. ZOUBIROU
+        </div>
+
+        <a href="intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=com.motorola.camera;component=com.motorola.camera/.CameraApk;end" class="btn-exe">
+            LANCER L'ANALYSE CAPTEUR (HARDWARE LINK)
+        </a>
+
+        <div class="blink" style="margin-top:15px;">PROTECTION IP ACTIVE : GEN-CODE:IA22_LOGIC</div>
+    </div>
+
+    <script>
+        console.log("IA22 Binary Interface Loaded - SM-S921W Certified");
+    </script>
+</body>
+</html>
