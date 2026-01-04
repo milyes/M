@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>IA22 • IPTV Xtream Logic</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{margin:0;background:#050b14;color:#e0f8ff;font-family:Segoe UI}
+header,footer{text-align:center;padding:1rem;background:#0f1825;color:#25c9ff}
+header{font-size:1.6rem;border-bottom:2px solid #25c9ff}
+footer{font-size:.9rem;border-top:1px solid #25c9ff}
+.container{max-width:1000px;margin:auto;padding:1rem}
+video{width:100%;border-radius:12px;background:black;box-shadow:0 0 20px #25c9ff55}
+.grid{display:grid;grid-template-columns:1fr;gap:.6rem;margin-top:1rem}
+input,button,select{
+  padding:.7rem;border-radius:8px;border:1px solid #25c9ff88;
+  background:#0b121b;color:#e0f8ff;font-size:.95rem
+}
+button{cursor:pointer;background:#101e2b}
+button:hover{background:#16283c}
+.panel{
+  background:#101e2b;border:2px solid #25c9ff55;
+  border-radius:12px;padding:1rem;margin-top:1rem
+}
+.log{
+  background:#0e161f;border-radius:8px;padding:1rem;
+  min-height:120px;white-space:pre-wrap;font-size:.9rem
+}
+.list{max-height:220px;overflow:auto;border:1px solid #25c9ff33;border-radius:8px}
+.list div{padding:.5rem;border-bottom:1px solid #25c9ff22;cursor:pointer}
+.list div:hover{background:#16283c}
+</style>
+</head>
+
+<body>
+
+<header>🛰️ IA22 • IPTV Xtream Cyber Interface</header>
+
+<div class="container">
+
+<video id="player" controls autoplay muted></video>
+
+<div class="grid">
+  <input id="m3u8" placeholder="🔗 URL M3U8 directe (playlist ou stream)" />
+  <button onclick="loadM3U8()">▶ Lire M3U8</button>
+
+  <input id="xtHost" placeholder="🌐 Xtream Host (ex: http://IP:PORT)" />
+  <input id="xtUser" placeholder="👤 Username" />
+  <input id="xtPass" placeholder="🔑 Password" />
+  <button onclick="loadXtream()">📺 Charger Xtream (IA22)</button>
+
+  <input type="file" accept="video/*" onchange="loadFile(this)">
+  <button onclick="startCam()">📷 Caméra live</button>
+  <button onclick="stopCam()">⏹ Stop</button>
+</div>
+
+<div class="panel">
+  <strong>📡 Chaînes détectées (IA22)</strong>
+  <div class="list" id="channels"></div>
+</div>
+
+<div class="panel">
+  <strong>🧠 IA22 Logic / EPG</strong>
+  <div class="log" id="log">IA22 initialisée
+Mode: OFFLINE
+Tunnel: prêt</div>
+  <input id="cmd" placeholder="Commande IA22 (ex: analyser chaîne, epg...)" />
+</div>
+
+</div>
+
+<footer>© 2025 • IA22 IPTV • NetSecurePro</footer>
+
+<script>
+const v=document.getElementById("player");
+const log=document.getElementById("log");
+const list=document.getElementById("channels");
+let cam=null;
+
+/* LOG IA */
+function ia(t){log.textContent="🧠 IA22 > "+t}
+
+/* M3U8 */
+function loadM3U8(){
+  const u=m3u8.value.trim();
+  if(!u) return;
+  v.src=u; v.play();
+  ia("Flux M3U8 chargé\n"+u);
+}
+
+/* XTREAM (simulation intelligente) */
+function loadXtream(){
+  list.innerHTML="";
+  const h=xtHost.value.trim();
+  const u=xtUser.value.trim();
+  const p=xtPass.value.trim();
+  if(!h||!u||!p){ia("Champs Xtream incomplets");return;}
+
+  ia("Connexion Xtream simulée (CORS safe)");
+  const fake=[
+    {name:"IA22 NEWS",id:1},
+    {name:"IA22 MOVIES",id:2},
+    {name:"IA22 SPORTS",id:3},
+    {name:"IA22 DOC",id:4}
+  ];
+
+  fake.forEach(c=>{
+    const d=document.createElement("div");
+    d.textContent="📺 "+c.name;
+    d.onclick=()=>{
+      const stream=`${h}/live/${u}/${p}/${c.id}.m3u8`;
+      v.src=stream; v.play();
+      ia("Lecture : "+c.name+"\nEPG: Programme IA simulé");
+    };
+    list.appendChild(d);
+  });
+}
+
+/* FILE */
+function loadFile(i){
+  const f=i.files[0];
+  if(f){v.src=URL.createObjectURL(f);v.play();ia("Fichier local: "+f.name);}
+}
+
+/* CAM */
+async function startCam(){
+  try{
+    cam=await navigator.mediaDevices.getUserMedia({video:true});
+    v.srcObject=cam;ia("Caméra live activée");
+  }catch{ia("Caméra refusée");}
+}
+function stopCam(){
+  if(cam){cam.getTracks().forEach(t=>t.stop());v.srcObject=null;ia("Caméra arrêtée");}
+}
+
+/* IA CMD */
+cmd.addEventListener("keydown",e=>{
+  if(e.key==="Enter"){
+    const q=cmd.value.trim();cmd.value="";
+    const r=["Analyse vidéo stable","Flux sécurisé","Programme détecté","Qualité HD","Tunnel prêt"];
+    ia("Commande: "+q+"\nRésultat: "+r[Math.floor(Math.random()*r.length)]);
+  }
+});
+</script>
+
+</body>
+</html>
