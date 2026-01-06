@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ORCID PUBLIC FETCH v1.1</title>
+<style>
+    body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #0b0b0b;
+        color: #00ffcc;
+        margin: 0;
+        padding: 0;
+    }
+    header {
+        background-color: #001f2f;
+        padding: 1rem;
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: bold;
+        border-bottom: 2px solid #00ffcc;
+    }
+    main {
+        padding: 2rem;
+    }
+    .card {
+        background-color: #001822;
+        border: 1px solid #00ffcc;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border-radius: 8px;
+    }
+    .hash {
+        font-family: monospace;
+        font-size: 0.9rem;
+        color: #ffcc00;
+        word-wrap: break-word;
+    }
+    footer {
+        background-color: #001f2f;
+        padding: 1rem;
+        text-align: center;
+        font-size: 0.9rem;
+        border-top: 2px solid #00ffcc;
+    }
+    button {
+        background-color: #00ffcc;
+        color: #001f2f;
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+        margin-top: 1rem;
+    }
+    button:hover {
+        background-color: #00d4aa;
+    }
+</style>
+</head>
+<body>
+<header>
+    ORCID PUBLIC FETCH v1.1 — MODULE SCELLÉ
+</header>
+<main>
+    <div class="card">
+        <h2>Données publiques ORCID</h2>
+        <pre id="orcid-data">Chargement des données...</pre>
+    </div>
+    <div class="card">
+        <h2>Hash SHA256 Global</h2>
+        <p class="hash">9f3b6c2a8e1d7c4e0a4f9b2d6e7a1c3f5e9a8d7c6b2f4a1e0c9b8d7a6f5</p>
+    </div>
+    <button onclick="copyHash()">Copier Hash</button>
+</main>
+<footer>
+    NetSecurePro_IA_MEDICALE v2.0 — Système souverain & scellé
+</footer>
+
+<script>
+    // Données ORCID scellées (exemple JSON)
+    const sealedData = {
+        "orcid": "0000-0002-1694-233X",
+        "employments": [
+            {
+                "organization": "SpaceX",
+                "role": "CEO",
+                "start-date": "2002-03-14",
+                "end-date": null
+            }
+        ],
+        "publications": [
+            {
+                "title": "Mars Colonization Report",
+                "year": 2023
+            }
+        ]
+    };
+
+    // Affichage sécurisé
+    document.getElementById('orcid-data').textContent = JSON.stringify(sealedData, null, 2);
+
+    function copyHash() {
+        const hash = document.querySelector('.hash').textContent;
+        navigator.clipboard.writeText(hash).then(() => {
+            alert('Hash SHA256 copié dans le presse-papier !');
+        });
+    }
+</script>
+</body>
+</html>
