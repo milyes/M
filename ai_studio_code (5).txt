@@ -1,0 +1,135 @@
+body {
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    font-family: var(--font-stack);
+    margin: 0;
+    padding: 20px;
+    line-height: 1.5;
+    overflow-x: hidden;
+}
+
+/* CONTAINER DYNAMICS */
+.interface-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.05); /* Subtle glow */
+    background-color: rgba(10, 10, 10, 0.95);
+}
+
+/* TELEMETRY HEADER */
+.status-bar {
+    background-color: #000;
+    border-bottom: 2px solid var(--accent-cyan);
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    text-transform: uppercase;
+    font-size: 0.9em;
+    letter-spacing: 1px;
+}
+
+.status-item span { font-weight: bold; }
+.status-online { color: var(--accent-green); text-shadow: 0 0 5px var(--accent-green); }
+.status-alert { color: var(--accent-alert); text-shadow: 0 0 5px var(--accent-alert); }
+.status-verified { color: var(--accent-cyan); text-shadow: 0 0 5px var(--accent-cyan); }
+
+/* OPERATIONAL ZONE */
+.terminal-body {
+    padding: 30px;
+}
+
+.intro-text {
+    color: var(--accent-cyan);
+    margin-bottom: 25px;
+    border-left: 3px solid var(--accent-cyan);
+    padding-left: 15px;
+}
+
+/* GRID ARCHITECTURE */
+.modules-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* MOBILE OPS RESPONSIVENESS */
+@media (max-width: 768px) {
+    .modules-grid { grid-template-columns: 1fr; }
+}
+
+.module-card {
+    background-color: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    padding: 15px;
+    transition: border-color 0.3s ease;
+}
+
+.module-card:hover {
+    border-color: var(--accent-cyan); /* Active Focus State */
+}
+
+.module-header {
+    color: #fff;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    font-size: 1em;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.command-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.command-item {
+    margin-bottom: 15px;
+    font-size: 0.9em;
+}
+
+/* SYNTAX HIGHLIGHTING */
+.cmd-syntax {
+    display: block;
+    color: var(--accent-green);
+    background: #000;
+    padding: 4px 8px;
+    border-radius: 3px;
+    margin-bottom: 4px;
+    font-weight: bold;
+    border-left: 2px solid var(--accent-green);
+}
+
+.cmd-desc {
+    color: #888;
+    font-size: 0.85em;
+    display: block;
+    padding-left: 5px;
+}
+
+/* COMMAND LINE INTERFACE */
+.input-prompt {
+    background-color: #000;
+    border-top: 1px solid var(--border-color);
+    padding: 20px;
+    color: #fff;
+    font-size: 1.1em;
+}
+
+.cursor {
+    display: inline-block;
+    width: 10px;
+    height: 18px;
+    background-color: var(--accent-cyan);
+    animation: blink 1s infinite;
+    vertical-align: middle;
+    margin-left: 5px;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
