@@ -6,35 +6,102 @@
 <title>IA_VISIONNAIRE</title>
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,Helvetica,sans-serif}
+/* Reset et styles de base */
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
 body{
-    background:radial-gradient(circle at top,#0a1a2f,#000);
-    color:#fff;
-    min-height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+  background: radial-gradient(circle at top, #0a1a2f, #000);
+  color:#fff;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
 }
 .container{
-    max-width:900px;
-    width:95%;
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:30px;
-    align-items:center;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:40px;
+  max-width:1000px;
+  width:100%;
 }
 @media(max-width:768px){
-    .container{grid-template-columns:1fr;text-align:center}
+  .container{grid-template-columns:1fr;text-align:center;}
 }
 .title{
-    font-size:3rem;
-    font-weight:800;
-    letter-spacing:2px;
-    margin-bottom:20px;
+  font-size:3rem;
+  font-weight:900;
+  margin-bottom:20px;
+  letter-spacing:1.5px;
+}
+.qr-container{
+  background:#fff;
+  padding:15px;
+  border-radius:12px;
+  display:inline-block;
+  margin-bottom:15px;
+}
+.qr-container img{
+  width:220px;
+  height:220px;
+  object-fit:contain;
+}
+.scan-text{
+  font-size:1.1rem;
+  color:#fff;
+  margin-top:8px;
+  font-weight:600;
+}
+.ai-image{
+  width:100%;
+  max-width:360px;
+  margin:auto;
+  filter:drop-shadow(0 0 20px #00bfff);
 }
 .subtitle{
-    font-size:1.5rem;
-    margin-bottom:10px;
+  font-size:1.8rem;
+  margin-top:15px;
+  font-weight:700;
+}
+.description{
+  font-size:1.2rem;
+  margin-top:8px;
+  opacity:.9;
+}
+footer{
+  text-align:center;
+  margin-top:30px;
+  font-size:.8rem;
+  opacity:.6;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Partie Gauche -->
+  <div>
+    <div class="title">IA_VISIONNAIRE</div>
+    <div class="qr-container">
+      <img src="qr.png" alt="QR IA_VISIONNAIRE">
+    </div>
+    <div class="scan-text">Scannez pour télécharger</div>
+  </div>
+
+  <!-- Partie Droite -->
+  <div>
+    <img class="ai-image" src="ai_head.png" alt="IA Visionnaire">
+    <div class="subtitle">INTELLIGENCE ARTIFICIELLE VISIONNAIRE</div>
+    <div class="description">Votre mentor numérique avec CLI embarquée</div>
+  </div>
+
+</div>
+
+<footer>© IA_VISIONNAIRE — NetSecurePro IA</footer>
+
+</body>
+</html>    margin-bottom:10px;
     opacity:.9;
 }
 .tagline{
