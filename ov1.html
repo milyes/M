@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ORBITRON OS // NetSecurePro</title>
+    <style>
+        :root {
+            --neon: #00f2ff;
+            --ubuntu: #E95420;
+            --bg: #020508;
+            --panel: rgba(0, 15, 25, 0.9);
+            --border: rgba(0, 242, 255, 0.4);
+        }
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background: var(--bg); font-family: 'Ubuntu', sans-serif;
+            color: var(--neon); overflow: hidden;
+        }
+
+        canvas#matrix { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.15; }
+
+        /* Top Bar */
+        #top-bar {
+            height: 35px; background: rgba(0, 0, 0, 0.95);
+            border-bottom: 1px solid var(--neon);
+            display: flex; align-items: center; padding: 0 15px;
+            justify-content: space-between; font-size: 0.7em; z-index: 1000;
+        }
+
+        /* Windows System */
+        .window {
+            position: absolute; background: var(--panel);
+            border: 1px solid var(--border);
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.1);
+            backdrop-filter: blur(8px); display: flex; flex-direction: column;
+            min-width: 320px;
+        }
+
+        .window-header {
+            padding: 8px 12px; cursor: move; display: flex; justify-content: space-between;
+            font-weight: bold; font-size: 0.65em; border-bottom: 1px solid var(--border);
+            text-transform: uppercase;
+        }
+
+        .netsecure-header { background: #0044cc !important; color: white !important; }
+        .ubuntu-header { background: var(--ubuntu) !important; color: white !important; }
+
+        .window-content { padding: 0; flex-grow: 1; overflow: hidden; }
+
+        /* Terminal & Files */
+        #terminal-output { 
+            color: #00ff41; font-family: 'Courier New', monospace; padding: 10px;
+            height: 180px; overflow-y: auto; font-size: 0.8em;
+        }
+        
+        #file-system { display: flex; flex-wrap: wrap; padding: 10px; border-top: 1px solid rgba(255,255,255,0.1); }
+
+        .file-icon {
+            width: 55px; height: 65px; display: inline-flex; flex-direction: column;
+            align-items: center; justify-content: center; cursor: grab; margin: 5px;
+            background: rgba(255,255,255,0.05); border-radius: 4px;
+        }
+        .file-name { font-size: 0.5em; color: white; margin-top: 3px; text-align: center; }
+
+        input {
+            width: 100%; background: transparent; border: none; color: white;
+            outline: none; border-top: 1px solid var(--border); padding: 12px;
+        }
+
+        iframe { width: 100%; height: 500px; border: none; }
+
+        .drop-zone-active { border: 2px dashed var(--ubuntu) !important; background: rgba(233, 84, 32, 0.1) !important; }
+    </style>
+</head>
+<body>
+
+<canvas id="matrix"></canvas>
+
+<div id="top-bar">
+    <div>ORBITRON_OS // <span style="color:var(--ubuntu)">UBUNTU_INTEL</span></div>
+    <div id="status-text">SHIELD: ACTIVE</div>
+    <div id="clock">00:00:00</div>
+</div>
+
+<div class="window" id="win-term" style="top: 50px; left: 20px; width: 400px; z-index: 100;">
+    <div class="window-header"><span>>_ KERNEL_CONSOLE</span><span>[ - ]</span></div>
+    <div class="window-content">
+        <div id="terminal-output"></div>
+        <div id="file-system"></div>
+        <input type="text" id="cmd-input" placeholder="Tapez 'guide', 'ubuntu' ou 'create [nom]'..." autofocus>
+    </div>
+</div>
+
+<script>
+    const input = document.getElementById('cmd-input');
+    const output = document.getElementById('terminal-output');
+    const fileSys = document.getElementById('file-system');
+    let winCount = 0;
+
+    // --- EFFET MATRIX ---
+    const mCanvas = document.getElementById('matrix');
+    const mCtx = mCanvas.getContext('2d');
+    mCanvas.width = window.innerWidth; mCanvas.height = window.innerHeight;
+    const drops = Array(Math.floor(mCanvas.width/20)).fill(1);
+    function drawMatrix() {
+        mCtx.fillStyle = "rgba(2, 5, 8, 0.15)"; mCtx.fillRect(0,0,mCanvas.width,mCanvas.height);
+        mCtx.fillStyle = "#00f2ff"; mCtx.font = "14px monospace";
+        drops.forEach((y, i) => {
+            mCtx.fillText(Math.random() > 0.5 ? "1":"0", i*20, y*20);
+            if(y*20 > mCanvas.height && Math.random() > 0.98) drops[i] = 0;
+            drops[i]++;
+        });
+    }
+    setInterval(drawMatrix, 50);
+
+    // --- GESTION DES FENÊTRES ---
+    function spawnWindow(title, contentHTML, headerClass = "") {
+        winCount++;
+        const id = `win-${winCount}`;
+        const win = document.createElement('div');
+        win.className = `window`;
+        win.id = id;
+        win.style = `top: ${100 + winCount*20}px; left: ${100 + winCount*20}px; z-index: ${100+winCount}; width: 600px;`;
+
+        win.innerHTML = `
+            <div class="window-header ${headerClass}">
+                <span>${title}</span>
+                <span onclick="document.getElementById('${id}').remove()" style="cursor:pointer">[ X ]</span>
+            </div>
+            <div class="window-content drop-zone">
+                ${contentHTML}
+            </div>
+        `;
+        document.body.appendChild(win);
+        makeDraggable(win);
+        setupDropZone(win.querySelector('.drop-zone'));
+    }
+
+    // --- COMMANDES ---
+    input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            const val = input.value.toLowerCase().trim();
+            output.innerHTML += `<br><span style="color:white">> ${val}</span>`;
+            
+            if (val === 'guide') {
+                spawnWindow('NETSECURE_PRO_IA_GUIDE', `<iframe src="https://milyes.github.io/NetSecurePro_IA_Guide/"></iframe>`, 'netsecure-header');
+                output.innerHTML += `<br>[OK] Déploiement du Guide de Sécurité...`;
+            } 
+            else if (val === 'ubuntu' || val === 'ubuntuintelligence') {
+                spawnWindow(`UBUNTU_NODE_${winCount+1}`, `<div style="padding:20px; background:rgba(119,41,83,0.2)"><h4>NODE ACTIF</h4><a href="https://ai.studio/apps/drive/1sU4EL90I-PHWX7EKkr5StyH05NALgEpY?fullscreenApplet=true" target="_blank" style="color:var(--ubuntu)">OUVRIR L'APPLET FULLSCREEN</a></div>`, 'ubuntu-header');
+            }
+            else if (val.startsWith('create ')) {
+                const name = val.replace('create ', '');
+                createFileIcon(name);
+                output.innerHTML += `<br>[OK] Fichier '${name}' généré dans le Kernel.`;
+            }
+            else if (val === 'clear') { output.innerHTML = ""; }
+            else { output.innerHTML += `<br>[!] Commande inconnue. Tapez 'guide' ou 'ubuntu'.`; }
+            
+            input.value = '';
+            output.scrollTop = output.scrollHeight;
+        }
+    });
+
+    // --- SYSTÈME DE FICHIERS ---
+    function createFileIcon(name) {
+        const file = document.createElement('div');
+        file.className = 'file-icon'; file.draggable = true; file.id = 'f-'+Math.random();
+        file.innerHTML = `<div>📄</div><div class="file-name">${name}</div>`;
+        file.ondragstart = (e) => e.dataTransfer.setData("text", file.id);
+        fileSys.appendChild(file);
+    }
+
+    function setupDropZone(zone) {
+        zone.ondragover = (e) => { e.preventDefault(); zone.classList.add('drop-zone-active'); };
+        zone.ondragleave = () => zone.classList.remove('drop-zone-active');
+        zone.ondrop = (e) => {
+            e.preventDefault(); zone.classList.remove('drop-zone-active');
+            const fileId = e.dataTransfer.getData("text");
+            zone.appendChild(document.getElementById(fileId));
+        };
+    }
+
+    // --- UTILS ---
+    function makeDraggable(win) {
+        const h = win.querySelector('.window-header');
+        h.onmousedown = (e) => {
+            let sx = e.clientX - win.offsetLeft, sy = e.clientY - win.offsetTop;
+            document.onmousemove = (e) => { win.style.left = e.pageX - sx + 'px'; win.style.top = e.pageY - sy + 'px'; };
+            document.onmouseup = () => document.onmousemove = null;
+        };
+    }
+
+    window.onload = () => {
+        output.innerHTML = `[SYSTEM] ORBITRON OS 4.5 READY.<br>[INFO] Tapez '<b>guide</b>' pour charger NetSecurePro.`;
+        createFileIcon("Kernel.bin");
+        createFileIcon("Shield.vxd");
+        setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
+    };
+</script>
+</body>
+</html>
+
