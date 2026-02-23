@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RED TEAM TERMINAL</title>
+    <!-- Pour la police Fira Code, c'est super stylé! -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Styles globaux pour le corps et la police */
+        body {
+            font-family: 'Fira Code', monospace;
+            background-color: #000000; /* Fond noir pur */
+            color: #00FF41; /* Texte vert néon */
+            margin: 0;
+            overflow: hidden; /* Cache les barres de défilement */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Conteneur principal du terminal */
+       .terminal-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
+            position: relative;
+            z-index: 1; /* Pour être au-dessus du CRT */
+        }
+
+        /* Effet CRT (lignes de scan) */
+       .terminal-container::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(0, 0, 0, 0) 50%, rgba(0, 255, 65, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.05), rgba(0, 255, 0, 0.05), rgba(0, 0, 255, 0.05));
+            background-size: 100% 2px, 3px 100%;
+            z-index: 0; /* En arrière-plan */
+            pointer-events: none; /* N'interfère pas avec les clics */
+            animation: scanline 8s linear infinite; /* Animation de scan */
+        }
+
+        @keyframes scanline {
+            0% { background-position: 0 0, 0 0; }
+            100% { background-position: 0 100vh, 0 0; }
+        }
+
+        /* Styles de la barre de navigation */
+       .navbar {
+            background-color: #1a1a1a; /* Un gris très foncé */
+            padding: 10px 0;
+            border-bottom: 1px solid #00FF41;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+       .navbar a {
+            color: #00FF41;
+            text-decoration: none;
+            padding: 10px 20px;
+            margin: 0 5px;
+            transition: color 0.3s, background-color 0.3s;
+            border: 1px solid transparent;
+            font-size: 1.1em;
+        }
+
+       .navbar a:hover,
+       .navbar a.active {
+            color: #000000;
+            background-color: #00FF41;
+            border-color: #00FF41;
+            box-shadow: 0 0 10px #00FF41;
+        }
+
+        /* Zone de contenu principale */
+       .content-area {
+            flex-grow: 1;
+            background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent pour voir l'effet CRT */
+            border: 1px solid #00FF41;
+            padding: 20px;
+            overflow-y: auto; /* Pour le défilement si le contenu est trop grand */
+            height: 100%;
+        }
+
+        /* Styles généraux des vues */
+       .terminal-view {
+            display: none; /* Caché par défaut */
+        }
+
+       .terminal-view.active {
+            display: block; /* Affiché si actif */
+        }
+
+        /* Titres */
+        h1, h2 {
+            color: #00FF41;
+            text-shadow: 0 0 5px #00FF41;
+            border-bottom: 1px dashed #00FF41;
+            padding-bottom: 5px;
+            margin-top: 0;
+        }
+
+        /* Console */
+        #console-output {
+            background-color: #111;
+            border: 1px solid #00FF41;
+            padding: 10px;
+            height: 250px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+
+       .input-line {
+            display: flex;
+            align-items: baseline;
+        }
+
+        #console-input {
+            background-color: transparent;
+            border: none;
+            color: #00FF41;
+            flex-grow: 1;
+            outline: none;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9em;
+        }
+
+       .prompt {
+            color: #00FF41;
+            margin-right: 5px;
+        }
+
+        /* Messages de la console */
+       .console-log {
+            margin-bottom: 5px;
+        }
+       .console-log.success { color: #00FF41; }
+       .console-log.error { color: #FF0000; }
+       .console-log.warning { color: #FFFF00; }
+       .console-log.info { color: #00FFFF; } /* Cyan pour les infos */
+
+        /* Tableau des intrusions */
+        #intrusions-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+
+        #intrusions-table th,
+        #intrusions-table td {
+            border: 1px solid #00FF41;
+            padding: 8px;
+            text-align: left;
+        }
+
+        #intrusions-table th {
+            background-color: #0a0a0a;
+            color: #00FF41;
+            text-transform: uppercase;
+        }
+
+        #intrusions-table tbody tr:nth-child(even) {
+            background-color: rgba(0, 255, 65, 0.05);
+        }
+
+        /* Couleurs de statut dans le tableau */
+       .status-active { color: #FF0000; font-weight: bold; }
+       .status-resolved { color: #00FF41; }
+       .status-pending { color: #FFFF00; }
+
+        /* Bouton de nettoyage */
+       .btn-cleanup {
+            background-color: #FF0000;
+            color: #FFF;
+            border: none;
+            padding: 10px 20px;
+            margin-top: 20px;
+            cursor: pointer;
+            font-family: 'Fira Code', monospace;
+            font-size: 1em;
+            transition: background-color 0.3s, box-shadow 0.3s;
+            border: 1px solid #FF0000;
+            box-shadow: 0 0 5px #FF0000;
+        }
+
+       .btn-cleanup:hover {
+            background-color: #CC0000;
+            box-shadow: 0 0 15px #FF0000;
+        }
+
+        /* Animation de suppression des données */
+        #cleanup-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 2em;
+            color: #FF0000;
+            z-index: 1000;
+            display: none; /* Caché par défaut */
+        }
+
+        #cleanup-animation.active {
+            display: flex;
+        }
+
+        #cleanup-animation p {
+            margin: 10px 0;
+            text-shadow: 0 0 10px #FF0000;
+        }
+
+       .glitch {
+            animation: glitch-effect 0.5s infinite alternate;
+        }
+
+        @keyframes glitch-effect {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+
+        /* Styles pour les exemples dans le log viewer et network map */
+       .log-entry.success { color: #00FF41; }
+       .log-entry.warning { color: #FFFF00; }
+       .network-map.error { color: #FF0000; font-weight: bold; }
+        pre {
+            background-color: #111;
+            border: 1px solid #00FF41;
+            padding: 10px;
+            white-space: pre-wrap; /* Permet le retour à la ligne automatique */
+            word-wrap: break-word;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="terminal-container">
+        <header class="navbar">
+            <nav>
+                <a href="#" data-view="dashboard" class="active">Dashboard</a>
+                <a href="#" data-view="log-viewer">Log Viewer</a>
+                <a href="#" data-view="network-map">Network Map</a>
+                <a href="#" data-view="console-section">Console</a>
+                <a href="#" data-view="intrusions-section">Intrusions</a>
+            </nav>
+        </header>
+
+        <main class="content-area">
+            <section id="dashboard" class="terminal-view active">
+                <h1>Initializing Red Team Operations...</h1>
+                <p>Welcome, Operator. System status: <span class="success">Online</span></p>
+                <p>Threat level: <span class="warning">Elevated</span></p>
+                <p>Active missions: <span class="info">2</span></p>
+                <p>Last intrusion detected: <span class="error">2026-02-23 13:45:12</span></p>
+            </section>
+
+            <section id="log-viewer" class="terminal-view">
+                <h2>Log Viewer</h2>
+                <div class="log-output">
+                    <p class="log-entry">[2026-02-23 14:30:01] <span class="success">INFO:</span> System check initiated.</p>
+                    <p class="log-entry">[2026-02-23 14:30:05] <span class="warning">WARNING:</span> Unidentified connection attempt from 192.168.1.100.</p>
+                    <p class="log-entry">[2026-02-23 14:30:10] <span class="error">ERROR:</span> Firewall breach attempt detected on port 22.</p>
+                    <p class="log-entry">[2026-02-23 14:30:15] <span class="info">INFO:</span> Intrusion Alert! IP: 172.16.0.5, Target: main_server, Type: SQL Injection.</p>
+                    <p class="log-entry">[2026-02-23 14:30:20] <span class="success">SUCCESS:</span> Threat mitigated, 172.16.0.5 blocked.</p>
+                </div>
+            </section>
+
+            <section id="network-map" class="terminal-view">
+                <h2>Network Map</h2>
+                <pre class="network-map">
+                    ┌───[You]─────────┐
+                    │ │
+                    │ ┌───[Firewall]───┐
+                    │ │ │
+                    │ ├───[Web Server]───┐
+                    │ │ │ │
+                    │ ├───[DB Server]───┼───[Intruder_IP: <span class="error">ACTIVE</span>]
+                    │ │ │ │
+                    │ └───[Mail Server]───┘
+                    │ │
+                    └───[External Network]────┘
+                </pre>
+            </section>
+
+            <section id="console-section" class="terminal-view">
+                <h2>Interactive Console</h2>
+                <div id="console-output">
+                    <span class="prompt">REDTEAM&gt; </span> Initializing console... Type 'help' for commands.
+                </div>
+                <div class="input-line">
+                    <span class="prompt">REDTEAM&gt; </span><input type="text" id="console-input" autofocus>
+                </div>
+            </section>
+
+            <section id="intrusions-section" class="terminal-view">
+                <h2>Intrusions Détectées</h2>
+                <table id="intrusions-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Cible</th>
+                            <th>Type</th>
+                            <th>Statut</th>
+                            <th>Heure</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Les intrusions seront ajoutées ici par JS -->
+                    </tbody>
+                </table>
+                <button id="cleanup-button" class="btn-cleanup">Nettoyage Automatique</button>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Animation de nettoyage -->
+    <div id="cleanup-animation">
+        <p class="glitch">ERASING ALL TRACES...</p>
+        <p>DO NOT POWER OFF</p>
+    </div>
+
+    <script>
+        const consoleOutput = document.getElementById('console-output');
+        const consoleInput = document.getElementById('console-input');
+        const intrusionsTableBody = document.querySelector('#intrusions-table tbody');
+        const cleanupButton = document.getElementById('cleanup-button');
+        const cleanupAnimation = document.getElementById('cleanup-animation');
+        const navLinks = document.querySelectorAll('.navbar a');
+        const terminalViews = document.querySelectorAll('.terminal-view');
+
+        let intrusionCounter = 1;
+        const knownIntrusions = [
+            { id: intrusionCounter++, target: 'Main Server', type: 'SQL Injection', status: 'Active', time: '2026-02-23 13:45:12' },
+            { id: intrusionCounter++, target: 'Web Server', type: 'XSS Attack', status: 'Resolved', time: '2026-02-23 12:01:05' },
+            { id: intrusionCounter++, target: 'DB Server', type: 'Privilege Escalation', status: 'Active', time: '2026-02-23 10:15:30' },
+            { id: intrusionCounter++, target: 'Mail Server', type: 'Phishing Attempt', status: 'Pending', time: '2026-02-23 09:00:00' },
+        ];
+
+        // --- Fonctions utilitaires ---
+        function addConsoleLine(text, type = 'normal') {
+            const line = document.createElement('div');
+            line.classList.add('console-log');
+            if (type!== 'normal') {
+                line.classList.add(type);
+            }
+            line.innerHTML = `<span class="prompt">REDTEAM&gt; </span>${text}`;
+            consoleOutput.appendChild(line);
+            consoleOutput.scrollTop = consoleOutput.scrollHeight; // Fait défiler vers le bas
+        }
+
+        function displayIntrusions(intrusions) {
+            intrusionsTableBody.innerHTML = ''; // Vide le tableau
+            intrusions.forEach(intrusion => {
+                const row = intrusionsTableBody.insertRow();
+                row.insertCell().textContent = intrusion.id;
+                row.insertCell().textContent = intrusion.target;
+                row.insertCell().textContent = intrusion.type;
+                const statusCell = row.insertCell();
+                statusCell.textContent = intrusion.status;
+                statusCell.classList.add(`status-${intrusion.status.toLowerCase()}`);
+                row.insertCell().textContent = intrusion.time;
+            });
+        }
+
+        function showView(viewId) {
+            terminalViews.forEach(view => view.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+
+            navLinks.forEach(link => link.classList.remove('active'));
+            document.querySelector(`.navbar a[data-view="${viewId}"]`).classList.add('active');
+
+            // Met à jour le tableau d'intrusions si on va sur cette vue
+            if (viewId === 'intrusions-section') {
+                displayIntrusions(knownIntrusions);
+            }
+        }
+
+        // --- Gestion de la console ---
+        consoleInput.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                const command = consoleInput.value.trim();
+                addConsoleLine(`<span>${command}</span>`, 'command'); // Affiche la commande tapée
+                processCommand(command);
+                consoleInput.value = ''; // Efface l'entrée
+            }
+        });
+
+        function processCommand(command) {
+            const args = command.split(' ');
+            const cmd = args[0].toLowerCase();
+
+            switch (cmd) {
+                case 'help':
+                    addConsoleLine("Available commands:");
+                    addConsoleLine(" <span class='success'>help</span> - Display this help message.");
+                    addConsoleLine(" <span class='info'>scan</span> - Initiate network scan.");
+                    addConsoleLine(" <span class='info'>status</span> - Show system status.");
+                    addConsoleLine(" <span class='warning'>clear</span> - Clear console output.");
+                    addConsoleLine(" <span class='error'>intrude [target]</span> - Simulate an intrusion on a target.");
+                    break;
+                case 'scan':
+                    addConsoleLine("Initiating deep-packet inspection...", 'info');
+                    setTimeout(() => addConsoleLine("Scan complete. No new critical vulnerabilities found.", 'success'), 2000);
+                    break;
+                case 'status':
+                    addConsoleLine("System Status Report:", 'info');
+                    addConsoleLine(` Operational: <span class="success">ONLINE</span>`);
+                    addConsoleLine(` Threat Level: <span class="warning">ELEVATED</span>`);
+                    addConsoleLine(` Active Intrusions: <span class="error">${knownIntrusions.filter(i => i.status === 'Active').length}</span>`);
+                    addConsoleLine(` Last Cleanup: <span class="success">2026-02-23 14:00:00</span>`);
+                    break;
+                case 'clear':
+                    consoleOutput.innerHTML = `<span class="prompt">REDTEAM&gt; </span> Console cleared. Type 'help' for commands.`;
+                    break;
+                case 'intrude':
+                    const target = args[1] || 'Unknown Target';
+                    addConsoleLine(`Attempting intrusion on ${target}...`, 'warning');
+                    setTimeout(() => {
+                        const newIntrusion = {
+                            id: intrusionCounter++,
+                            target: target,
+                            type: 'Remote Exploit',
+                            status: 'Active',
+                            time: new Date().toLocaleString()
+                        };
+                        knownIntrusions.push(newIntrusion);
+                        addConsoleLine(`Intrusion successful on ${target}! New entry added to Intrusions Log.`, 'error');
+                        // Optionnel: Mettre à jour la vue des intrusions si elle est active
+                        if (document.getElementById('intrusions-section').classList.contains('active')) {
+                            displayIntrusions(knownIntrusions);
+                        }
+                    }, 2500);
+                    break;
+                default:
+                    addConsoleLine(`Command not found: '${command}'. Type 'help' for available commands.`, 'error');
+            }
+        }
+
+        // --- Gestion du nettoyage automatique ---
+        cleanupButton.addEventListener('click', function() {
+            cleanupAnimation.classList.add('active');
+            let cleanupSteps = [
+                "Shredding logs...",
+                "Wiping temporary files...",
+                "Encrypting remaining data...",
+                "Deleting forensic traces...",
+                "Reconfiguring network signatures...",
+                "System rebooting for final sanitization..."
+            ];
+            let step = 0;
+
+            const cleanupInterval = setInterval(() => {
+                if (step < cleanupSteps.length) {
+                    cleanupAnimation.querySelector('p:first-child').textContent = cleanupSteps[step];
+                    step++;
+                } else {
+                    clearInterval(cleanupInterval);
+                    cleanupAnimation.classList.remove('active');
+                    alert("Automated cleanup complete. All traces purged.");
+                    // Réinitialise les intrusions ou marque-les comme résolues
+                    knownIntrusions.forEach(i => i.status = 'Resolved');
+                    displayIntrusions(knownIntrusions); // Rafraîchit le tableau
+                }
+            }, 1500); // Chaque étape dure 1.5 secondes
+        });
+
+        // --- Navigation entre les vues ---
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const viewId = this.getAttribute('data-view');
+                showView(viewId);
+            });
+        });
+
+        // Initialisation: Afficher le dashboard et les intrusions au démarrage
+        document.addEventListener('DOMContentLoaded', () => {
+            showView('dashboard'); // Affiche le dashboard par défaut
+            displayIntrusions(knownIntrusions); // Charge les intrusions initiales
+        });
+    </script>
+</body>
+</html>
