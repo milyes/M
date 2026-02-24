@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Proxy Local 100% Client-Side – Pas d'API Externe</title>
+  <style>
+    body { font-family: system-ui, sans-serif; background: #0f0f1a; color: #e0e0ff; margin: 0; padding: 20px; }
+    h1 { color: #a5b4fc; text-align: center; }
+    .container { max-width: 900px; margin: 0 auto; background: #1e1e38; padding: 24px; border-radius: 12px; box-shadow: 0 4px 30px rgba(0,0,0,0.5); }
+    input[type="text"], textarea { width: 100%; padding: 12px; margin: 10px 0; background: #2d2d44; color: #e0e0ff; border: 1px solid #4f46e5; border-radius: 6px; font-family: 'Consolas', monospace; font-size: 15px; }
+    button { background: #6366f1; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-size: 16px; margin: 8px 4px 8px 0; }
+    button:hover { background: #4f46e5; }
+    #result { margin-top: 20px; padding: 16px; background: #1a1a2e; border-radius: 8px; white-space: pre-wrap; word-break: break-all; max-height: 500px; overflow-y: auto; border: 1px solid #4338ca; }
+    .status { color: #34d399; font-weight: bold; }
+    .error { color: #f87171; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Proxy Local Client-Side (Navigateur Seulement)</h1>
+  <p>Pas d'API externe, pas de serveur, pas de CORS distant.<br>
+     Parfait pour tester localhost / 127.0.0.1 / LAN même hors-ligne.</p>
+
+  <input type="text" id="url" placeholder="http://localhost:3000/api ou http://127.0.0.1:8080" value="http://localhost:3000" />
+  <textarea id="body" rows="5" placeholder='Body pour POST/PUT (JSON valide)&#10;Ex: {"key": "value"}'></textarea>
+
+  <div>
+    <button onclick="sendRequest('GET')">GET via Proxy Local</button>
+    <button onclick="sendRequest('POST')">POST via Proxy Local</button>
+    <button onclick="clearResult()">Effacer</button>
+  </div>
+
+  <div id="result">Résultat du proxy local ici...</div>
+
+  <p><small>Logs console aussi (F12 → Console) pour voir les interceptions.</small></p>
+</div>
+
+<script>
+// === Proxy local sur fetch (100% client-side, surcharge globale) ===
+const originalFetch = window.fetch;
+
+window.fetch = new Proxy(originalFetch, {
+  apply: function(target, thisArg, args) {
+    const [url, options = {}] = args;
+    
+    // Log interception (visible en console)
+    console.log('[Proxy Local] Interception fetch →', url);
+    console.log('[Proxy Local] Options:', options);
+    
+    // Exemple de modif locale (tu peux customiser ici)
+    if (typeof url === 'string' && (url.startsWith('http://localhost') || url.startsWith('http://127.0.0.1'))) {
+      console.log('[Proxy Local] Requête LOCALE détectée – Pas de CORS distant');
+      // Ex: Ajouter un header custom local
+      options.headers = {
+        ...options.headers,
+        'X-Proxy-Local': 'Grok-4.20-Offline'
+      };
+    }
+    
+    // Appel original
+    return target.apply(thisArg, args)
+      .then(async response => {
+        console.log('[Proxy Local] Réponse reçue → Status:', response.status);
+        return response;
+      })
+      .catch(err => {
+        console.error('[Proxy Local] Erreur:', err);
+        throw err;
+      });
+  }
+});
+
+// === Fonction de test simple ===
+async function sendRequest(method) {
+  const urlInput = document.getElementById('url').value.trim();
+  const bodyText = document.getElementById('body').value.trim();
+  const result = document.getElementById('result');
+
+  if (!urlInput) {
+    result.innerHTML = '<span class="error">Entre une URL valide (localhost ou LAN svp)</span>';
+    return;
+  }
+
+  result.innerHTML = `<span class="status">Proxy local en cours... (${method})</span><br>URL: ${urlInput}`;
+
+  try {
+    const options = {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      mode: 'cors',  // même local, on garde cors (mais localhost passe)
+      credentials: 'omit'
+    };
+
+    if (method !== 'GET' && bodyText) {
+      options.body = bodyText;  // on envoie tel quel (assume JSON valide)
+    }
+
+    const res = await fetch(urlInput, options);
+
+    let data;
+    const contentType = res.headers.get('content-type') || '';
+
+    if (contentType.includes('json')) {
+      data = await res.json();
+      data = JSON.stringify(data, null, 2);
+    } else {
+      data = await res.text();
+    }
+
+    result.innerHTML = 
+      `Status: ${res.status} ${res.statusText}<br>` +
+      `Content-Type: ${contentType}<br><br>` +
+      `<pre>${data}</pre>`;
+
+  } catch (err) {
+    result.innerHTML = `<span class="error">Erreur proxy local: ${err.message}<br>(Vérifie si le serveur local tourne + CORS si distant)</span>`;
+  }
+}
+
+function clearResult() {
+  document.getElementById('result').innerHTML = 'Résultat du proxy local ici...';
+}
+</script>
+
+</body>
+</html>
