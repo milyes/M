@@ -1,93 +1,51 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Prompts IA NetSecurePro - IA22</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f9f9f9;
-      margin: 20px;
-      color: #222;
-    }
-    h1, h2 {
-      font-size: 20px;
-      margin-bottom: 10px;
-    }
-    .prompt {
-      background: #e8f0fe;
-      padding: 10px 20px;
-      margin: 10px 0;
-      border-left: 4px solid #1a73e8;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-    .tutorial {
-      background: #fff3cd;
-      padding: 10px 20px;
-      border-left: 4px solid #ffc107;
-      margin-bottom: 30px;
-      font-size: 14px;
-    }
-    .section {
-      margin-top: 40px;
-    }
-    footer {
-      margin-top: 50px;
-      font-size: 12px;
-      text-align: center;
-      color: #666;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Z-CORE Prompts IA22 / NetSecurePro v1.2</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a0a0a;color:#e0e0e0;font-family:system-ui;padding:15px;max-width:900px;margin:auto}
+h1{color:#00aaff;text-align:center;margin:15px 0;font-size:1.6em}
+h2{color:#00ff88;margin:20px 0 10px 0;font-size:1.2em}
+.tuto{background:#332200;border-left:4px solid #ffaa00;padding:15px;border-radius:8px;margin:15px 0;font-size:0.9em}
+.box{background:#1a1a1a;border-left:4px solid #00aaff;padding:12px;margin:10px 0;border-radius:8px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.prompt-text{flex:1;font-size:0.95em;line-height:1.4}
+.btn-copy{background:#00aaff;color:#000;border:none;padding:8px 14px;border-radius:6px;cursor:pointer;font-weight:bold;white-space:nowrap}
+.btn-copy:active{background:#00ff88;transform:scale(0.95)}
+.footer{text-align:center;font-size:0.8em;color:#555;margin-top:30px}
+</style>
 </head>
 <body>
+<h1>📌 Prompts IA NetSecurePro / IA22</h1>
 
-  <h1>📌 Prompts IA NetSecurePro / IA22</h1>
+<div class="tuto">
+<b>💡 Tutoriel rapide Z-CORE:</b><br>
+1. Copiez un prompt ci-dessous<br>
+2. Collez dans: ./netsecure_cli_ia.sh "votre_prompt"<br>
+3. Compatible Termux / Linux / APK / ISO
+</div>
 
-  <div class="tutorial">
-    <strong>💡 Tutoriel rapide :</strong><br/>
-    Copiez un prompt ci-dessous et utilisez-le dans :
-    <ul>
-      <li><code>./netsecure_cli_ia.sh</code> sur Termux ou Linux</li>
-      <li>Interface WebView mobile (APK)</li>
-      <li>Menu ISO bootable NetSecure IA</li>
-    </ul>
-    Tous les prompts sont inédits, conçus pour IA22 et NetSecurePro.
-  </div>
+<h2>🔒 Sécurité & Analyse</h2>
+<div class="box"><div class="prompt-text">Lancer l'analyse système IA22 et générer une fiche PDF chiffrée.</div><button class="btn-copy" onclick="copy(this)">Copier</button></div>
+<div class="box"><div class="prompt-text">Scanner les connexions réseau en temps réel avec IA_SECURITY_MODE activé.</div><button class="btn-copy" onclick="copy(this)">Copier</button></div>
+<div class="box"><div class="prompt-text">Détecte toute modification système non autorisée via IA forensic scan.</div><button class="btn-copy" onclick="copy(this)">Copier</button></div>
 
-  <div class="section">
-    <h2>🔐 Sécurité & Analyse</h2>
-    <div class="prompt">➤ Lancer l'analyse système IA22 et générer une fiche PDF chiffrée.</div>
-    <div class="prompt">➤ Scanner les connexions réseau en temps réel avec IA_SECURITY_MODE activé.</div>
-    <div class="prompt">➤ Détecte toute modification système non autorisée via IA forensic scan.</div>
-  </div>
+<h2>🧠 Développement & IA locale</h2>
+<div class="box"><div class="prompt-text">Génère un script CLI intelligent pour afficher tous les modules IA.</div><button class="btn-copy" onclick="copy(this)">Copier</button></div>
+<div class="box"><div class="prompt-text">Crée une nouvelle interface HTML IA avec menu interactif CLI.</div><button class="btn-copy" onclick="copy(this)">Copier</button></div>
+<div class="box"><div class="prompt-text">Compile une version APK avec WebView locale et splash IA22 personnalisé.</div><button class="btn-copy" onclick="copy(this)">Copier</button></div>
 
-  <div class="section">
-    <h2>🧠 Développement & IA locale</h2>
-    <div class="prompt">➤ Génère un script CLI intelligent pour afficher tous les modules IA.</div>
-    <div class="prompt">➤ Crée une nouvelle interface HTML IA avec menu interactif CLI.</div>
-    <div class="prompt">➤ Compile une version APK avec WebView locale et splash IA22 personnalisé.</div>
-  </div>
+<div class="footer">Z-CORE G7 v1.2 | Dernière MAJ: 24/08/2026</div>
 
-  <div class="section">
-    <h2>🔌 Accès distant & USB</h2>
-    <div class="prompt">➤ Lancer une session IA via USB avec tunnel sécurisé Cloudflare auto.</div>
-    <div class="prompt">➤ Détecter les périphériques USB connectés et afficher les infos IA enrichies.</div>
-    <div class="prompt">➤ Active une interface Web IA de contrôle distant en cas de détection USB.</div>
-  </div>
-
-  <div class="section">
-    <h2>🛠️ Maintenance & Scripting</h2>
-    <div class="prompt">➤ Propose un correctif IA automatique pour les erreurs système détectées.</div>
-    <div class="prompt">➤ Crée un fichier ISO auto-bootable avec tous les projets IA inclus.</div>
-    <div class="prompt">➤ Génère un script bash de restauration IA basé sur un modèle JSON.</div>
-  </div>
-
-  <footer>
-    NetSecurePro_IA / IA22 &copy; 2025 — par Zoubirou Mohammed Ilyes  
-  </footer>
-
+<script>
+function copy(btn){
+  const text = btn.previousElementSibling.innerText;
+  navigator.clipboard.writeText(text);
+  btn.innerText = "✅ Copié!";
+  setTimeout(()=>{btn.innerText="Copier"}, 1500);
+}
+</script>
 </body>
 </html>
