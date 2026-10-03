@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>ZeroTrust Native AI | Enterprise</title>
+<style>*{box-sizing:border-box}html,body{margin:0;padding:0;height:100%;font-family:"Segoe UI",Tahoma,Arial,sans-serif}body{background:linear-gradient(135deg,#020508 0%,#060d1a 50%,#0a1428 100%);color:#e8f0ff;overflow:hidden}
+.root{display:grid;grid-template-rows:60px 1fr;height:100vh}.header{background:linear-gradient(90deg,#1d39c4 0%,#7c3aed 100%);display:flex;justify-content:space-between;align-items:center;padding:0 20px;box-shadow:0 12px 30px rgba(0,0,0,0.4);z-index:10}
+.logo{font-size:18px;font-weight:900;letter-spacing:0.08em;text-transform:uppercase}
+.badge{display:inline-flex;align-items:center;gap:6px;background:rgba(0,0,0,0.2);padding:6px 12px;border-radius:999px;font-size:11px;font-weight:700;border:1px solid rgba(255,255,255,0.2)}
+.dot{width:8px;height:8px;border-radius:50%;background:#22ff88;box-shadow:0 0 10px #22ff88}
+.workspace{display:grid;grid-template-columns:280px 1fr 320px;gap:0;height:calc(100vh - 60px);overflow:hidden}
+.panel{display:flex;flex-direction:column;background:rgba(10,15,30,0.95);border-right:1px solid #1e3a8a;min-height:0}
+.panel.right{border-right:none;border-left:1px solid #1e3a8a}
+.panel-header{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid #1e3a8a;background:rgba(29,57,196,0.08);font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:0.06em}
+.panel-body{flex:1;overflow:auto;padding:12px;min-height:0}
+.item-list{display:grid;gap:8px}
+.item{padding:10px 12px;background:rgba(15,23,42,0.9);border:1px solid #1e3a8a;border-radius:8px;cursor:pointer;font-size:12px;transition:all 0.2s}
+.item:hover{border-color:#7c3aed;background:rgba(124,58,237,0.08)}
+.item.active{border-color:#22ff88;background:rgba(34,255,136,0.08);box-shadow:inset 0 0 0 1px rgba(34,255,136,0.2)}
+.item-title{font-weight:700;color:#dfe8ff}
+.item-meta{font-size:10px;color:#94a3b8;margin-top:4px}
+input,textarea,select{width:100%;border:1px solid #1e3a8a;background:rgba(5,10,20,0.9);color:#e8f0ff;border-radius:7px;padding:8px 10px;font-size:12px;outline:none;transition:border 0.2s}
+input:focus,textarea:focus,select:focus{border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,0.15)}
+textarea{resize:vertical;font-family:Consolas,monospace;line-height:1.5}
+.btn{border:none;border-radius:7px;padding:8px 12px;background:linear-gradient(135deg,#1d39c4,#7c3aed);color:white;font-weight:700;font-size:11px;cursor:pointer;text-transform:uppercase;transition:transform 0.15s,filter 0.2s;box-shadow:0 6px 16px rgba(124,58,237,0.25)}
+.btn:hover{transform:translateY(-1px);filter:brightness(1.1)}
+.btn.secondary{background:linear-gradient(135deg,#334155,#475569)}
+.btn.success{background:linear-gradient(135deg,#16a34a,#15803d)}
+.btn.warning{background:linear-gradient(135deg,#d97706,#b45309)}
+.btn.danger{background:linear-gradient(135deg,#dc2626,#b91c1c)}
+.btn-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.editor-zone{display:flex;flex-direction:column;min-height:0;background:rgba(5,10,20,0.95)}
+.editor-top{display:flex;gap:10px;padding:12px 14px;border-bottom:1px solid #1e3a8a;background:rgba(10,15,30,0.9);align-items:center;flex-wrap:wrap}
+.file-tab{background:rgba(29,57,196,0.15);border:1px solid #1e3a8a;padding:6px 10px;border-radius:6px;font-size:11px;font-weight:700;color:#dfe8ff}
+.editor-body{display:grid;grid-template-rows:1fr 150px;flex:1;min-height:0}
+textarea.code-editor{width:100%;height:100%;border:none;border-radius:0;resize:none;background:#030609;color:#22ff88;padding:14px;font-size:12px;font-family:Consolas,monospace}
+.preview-zone{border-top:1px solid #1e3a8a;background:rgba(10,15,30,0.95);display:flex;flex-direction:column}
+.preview-header{padding:10px 14px;border-bottom:1px solid #1e3a8a;display:flex;justify-content:space-between;font-size:11px;font-weight:700;color:#94a3b8}
+iframe{width:100%;flex:1;border:none;background:white}
+.section{margin-bottom:14px}
+.section-title{font-size:11px;font-weight:800;text-transform:uppercase;color:#7c3aed;margin-bottom:8px;letter-spacing:0.06em}
+.block{background:rgba(15,23,42,0.9);border:1px solid #1e3a8a;border-radius:8px;padding:10px;margin-bottom:8px}
+.block-title{font-weight:700;font-size:11px;color:#dfe8ff;margin-bottom:6px}
+.block-content{font-size:10px;color:#94a3b8;line-height:1.6}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tag{display:inline-block;background:rgba(124,58,237,0.2);border:1px solid rgba(124,58,237,0.4);color:#dfe8ff;padding:4px 8px;border-radius:999px;font-size:9px;font-weight:700;margin:2px}
+.ai-prompt{margin-top:12px}
+.slider{width:100%;cursor:pointer}
+.toggle{width:40px;height:24px;border-radius:999px;background:#1e3a8a;cursor:pointer;position:relative;border:1px solid #334155;transition:all 0.2s}
+.toggle.on{background:#22ff88}
+.toggle-dot{position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:white;transition:left 0.2s}
+.toggle.on .toggle-dot{left:18px}
+.modal{position:fixed;inset:0;background:rgba(1,4,10,0.8);display:none;align-items:center;justify-content:center;z-index:100}
+.modal.show{display:flex}
+.modal-card{width:min(520px,95%);background:rgba(10,15,30,0.98);border:1px solid #1e3a8a;border-radius:12px;box-shadow:0 20px 50px rgba(0,0,0,0.6);overflow:hidden}
+.modal-header{padding:12px 14px;border-bottom:1px solid #1e3a8a;background:rgba(29,57,196,0.1);font-weight:800;font-size:12px}
+.modal-body{padding:14px;display:grid;gap:10px}
+.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:8px}
+.chart{width:100%;height:120px;background:rgba(15,23,42,0.9);border:1px solid #1e3a8a;border-radius:8px;overflow:hidden}
+.log-box{height:100px;background:#030609;border:1px solid #1e3a8a;border-radius:6px;padding:8px;font-size:10px;font-family:Consolas,monospace;color:#22ff88;overflow:auto;line-height:1.4}
+@media(max-width:1200px){.workspace{grid-template-columns:260px 1fr;}.panel.right{grid-column:1/-1;border-left:none;border-top:1px solid #1e3a8a}}
+@media(max-width:768px){.workspace{grid-template-columns:1fr}.btn-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="root">
+<header class="header">
+<div class="logo">⚡ ZeroTrust Native AI</div>
+<div class="badge"><span class="dot"></span><span id="statusText">Système Prêt</span></div>
+</header>
+<main class="workspace">
+<aside class="panel">
+<div class="panel-header">🔐 Identités</div>
+<div class="panel-body">
+<div class="section">
+<div class="section-title">Compte Actif</div>
+<input id="userInput" type="text" value="admin@enterprise.local" placeholder="Utilisateur">
+<input id="tokenInput" type="password" value="sk_verify_native" placeholder="Token">
+<div class="btn-row">
+<button class="btn success" id="loginBtn">Authentifier</button>
+<button class="btn secondary" id="logoutBtn">Déconnecter</button>
+</div>
+</div>
+<div class="section">
+<div class="section-title">Rôles & Permissions</div>
+<div class="item-list" id="rolesList">
+<div class="item active"><div class="item-title">Admin</div><div class="item-meta">Accès complet</div></div>
+<div class="item"><div class="item-title">Editor</div><div class="item-meta">Modification code</div></div>
+<div class="item"><div class="item-title">Viewer</div><div class="item-meta">Lecture seule</div></div>
+</div>
+</div>
+<div class="section">
+<div class="section-title">Stratégies Actives</div>
+<div class="block">
+<div class="block-title">Vérification Continue</div>
+<div class="block-content">✓ Authentification<br>✓ Autorisation<br>✓ Audit Log<br>✓ Détection Anomalies</div>
+</div>
+</div>
+<div class="section">
+<div class="section-title">Ressources</div>
+<div class="item-list" id="resourcesList">
+<div class="item active"><div class="item-title">API Server</div><div class="item-meta">✓ Sécurisée</div></div>
+<div class="item"><div class="item-title">Database</div><div class="item-meta">✓ Chiffrée</div></div>
+<div class="item"><div class="item-title">Storage</div><div class="item-meta">✓ Protégée</div></div>
+</div>
+</div>
+</aside>
+
+<section class="editor-zone">
+<div class="editor-top">
+<div class="file-tab" id="fileTab">zero-trust.js</div>
+<div style="margin-left:auto;display:flex;gap:8px">
+<button class="btn secondary" id="runBtn">▶️ Exécuter</button>
+<button class="btn secondary" id="saveBtn">💾 Enregistrer</button>
+<button class="btn secondary" id="resetBtn">🔄 Réinitialiser</button>
+</div>
+</div>
+<div class="editor-body">
+<textarea class="code-editor" id="codeEditor" spellcheck="false"></textarea>
+<div class="preview-zone">
+<div class="preview-header">
+<span>📊 Sortie Exécution</span>
+<span id="execStatus">Prêt</span>
+</div>
+<div class="log-box" id="outputLog"></div>
+</div>
+</div>
+</section>
+
+<aside class="panel right">
+<div class="panel-header">🤖 Studio IA Enterprise</div>
+<div class="panel-body">
+<div class="section">
+<div class="section-title">Prompt IA Avancé</div>
+<textarea id="aiPrompt" placeholder="Décrivez la logique Zero Trust à générer..." style="min-height:100px">Crée un système d'authentification Zero Trust avec vérification continue, audit trail natif et détection d'anomalies</textarea>
+<div class="btn-row">
+<button class="btn success" id="generateBtn">🪄 Générer Code</button>
+<button class="btn secondary" id="analyzeBtn">🔍 Analyser</button>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title">Options Exécution</div>
+<div class="block">
+<label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin-bottom:8px">
+<div class="toggle" id="debugToggle"><div class="toggle-dot"></div></div>
+<span style="font-size:12px">Mode Debug</span>
+</label>
+<label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin-bottom:8px">
+<div class="toggle on" id="auditToggle"><div class="toggle-dot"></div></div>
+<span style="font-size:12px">Audit Trail</span>
+</label>
+<label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+<div class="toggle on" id="verifyToggle"><div class="toggle-dot"></div></div>
+<span style="font-size:12px">Vérification</span>
+</label>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title">Métadonnées Exécution</div>
+<div class="item-list">
+<div class="item">
+<div class="item-title">Runtime</div>
+<div class="item-meta" id="runtimeMeta">0ms</div>
+</div>
+<div class="item">
+<div class="item-title">Tokens</div>
+<div class="item-meta" id="tokensMeta">0</div>
+</div>
+<div class="item">
+<div class="item-title">Checkpoints</div>
+<div class="item-meta" id="checkpointsMeta">0</div>
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title">Modèles IA</div>
+<div class="item-list">
+<div class="item active"><div class="item-title">Native Logic</div><div class="item-meta">Engine: v1</div></div>
+<div class="item"><div class="item-title">Zero Trust</div><div class="item-meta">Policy: Strict</div></div>
+<div class="item"><div class="item-title">Anomaly</div><div class="item-meta">Detection: On</div></div>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title">Templates Rapides</div>
+<div style="display:grid;gap:6px">
+<button class="btn secondary" id="templateAuth" style="width:100%;text-align:left">🔑 Auth System</button>
+<button class="btn secondary" id="templateAudit" style="width:100%;text-align:left">📋 Audit Trail</button>
+<button class="btn secondary" id="templateDetect" style="width:100%;text-align:left">🚨 Detect Anomaly</button>
+<button class="btn secondary" id="templatePolicy" style="width:100%;text-align:left">📋 Policy Engine</button>
+</div>
+</div>
+</div>
+</aside>
+</main>
+</div>
+
+<div class="modal" id="modal">
+<div class="modal-card">
+<div class="modal-header" id="modalTitle">Message</div>
+<div class="modal-body" id="modalBody"></div>
+<div class="modal-actions">
+<button class="btn secondary" id="closeModalBtn">Fermer</button>
+</div>
+</div>
+</div>
+
+<script>
+const STATE={users:{"admin@enterprise.local":{role:"Admin",verified:!0,token:"sk_verify_native",loginTime:new Date,auditLog:[]}},currentUser:null,codeHistory:[],executionStats:{runtime:0,tokens:0,checkpoints:0},isDebug:!1,isAudit:!0,isVerify:!0};
+const UI={codeEditor:document.getElementById("codeEditor"),outputLog:document.getElementById("outputLog"),statusText:document.getElementById("statusText"),userInput:document.getElementById("userInput"),tokenInput:document.getElementById("tokenInput"),fileTab:document.getElementById("fileTab"),aiPrompt:document.getElementById("aiPrompt"),runtimeMeta:document.getElementById("runtimeMeta"),tokensMeta:document.getElementById("tokensMeta"),checkpointsMeta:document.getElementById("checkpointsMeta"),debugToggle:document.getElementById("debugToggle"),auditToggle:document.getElementById("auditToggle"),verifyToggle:document.getElementById("verifyToggle"),modal:document.getElementById("modal"),modalTitle:document.getElementById("modalTitle"),modalBody:document.getElementById("modalBody")};
+
+function log(msg,type="info"){const time=new Date().toLocaleTimeString();const prefix={"info":"ℹ️","success":"✅","error":"❌","warning":"⚠️","audit":"🔐"}[type]||"•";UI.outputLog.innerHTML+=`<div>${prefix} [${time}] ${msg}</div>`;UI.outputLog.scrollTop=UI.outputLog.scrollHeight}
+
+function setStatus(msg){UI.statusText.textContent=msg}
+
+function updateMeta(){UI.runtimeMeta.textContent=STATE.executionStats.runtime+"ms";UI.tokensMeta.textContent=STATE.executionStats.tokens;UI.checkpointsMeta.textContent=STATE.executionStats.checkpoints}
+
+function authenticate(){const user=UI.userInput.value.trim();const token=UI.tokenInput.value.trim();if(!user||!token){log("Identifiants invalides","error");return}if(STATE.users[user]&&STATE.users[user].token===token){STATE.currentUser=user;log(`Authentification réussie: ${user}`,"success");log("Vérification continue activée","audit");setStatus("🔓 Authentifié");STATE.executionStats.checkpoints++}else{log("Authentification échouée","error");setStatus("❌ Erreur Auth")}}
+
+function logout(){if(STATE.currentUser){log(`Déconnexion: ${STATE.currentUser}`,"info");STATE.currentUser=null;setStatus("🔒 Déconnecté")}}
+
+function executeCode(){if(!STATE.currentUser){log("Authentification requise","error");return}const code=UI.codeEditor.value.trim();if(!code){log("Code vide","warning");return}const t0=performance.now();UI.outputLog.innerHTML="";log("Exécution du code Zero Trust...","info");try{const fn=new Function(code);const result=fn();log("Exécution réussie","success");if(result)log(`Résultat: ${JSON.stringify(result)}`,"info");STATE.executionStats.runtime=Math.round(performance.now()-t0);STATE.executionStats.tokens=code.split(/\s+/).length;STATE.executionStats.checkpoints++;updateMeta();if(STATE.isAudit){log(`Audit: ${STATE.currentUser} a exécuté du code`,"audit")}}catch(err){log(`Erreur: ${err.message}`,"error")}}
+
+function generateFromAI(){const prompt=UI.aiPrompt.value.trim();if(!prompt){log("Prompt vide","warning");return}log("Génération IA en cours...","info");const templates={auth:`const auth={verify:async(user,token)=>{const valid=user&&token.startsWith('sk_');return valid;},audit:(action)=>{console.log('✓',action);}};auth.audit('User logged in');`,audit:`const auditTrail={events:[],log:(action,user,time)=>{auditTrail.events.push({action,user,timestamp:time});},export:()=>auditTrail.events};auditTrail.log('Login',STATE.currentUser,new Date());`,detect:`const detect={anomalies:[],check:(metric,threshold)=>{return metric>threshold;},report:()=>detect.anomalies};const suspicious=detect.check(5,3);if(suspicious){detect.anomalies.push({type:'elevated-activity',time:new Date()});}`,policy:`const policy={rules:{},enforce:(action,role)=>{const allowed=role==='Admin';return allowed;},evaluate:(action,user)=>{return policy.enforce(action,user.role);}};const canExecute=policy.evaluate('write',STATE.users[STATE.currentUser]);`};let generated="";if(prompt.toLowerCase().includes("auth"))generated=templates.auth;else if(prompt.toLowerCase().includes("audit"))generated=templates.audit;else if(prompt.toLowerCase().includes("anomal"))generated=templates.detect;else if(prompt.toLowerCase().includes("polic"))generated=templates.policy;else{generated=`// Logique Zero Trust générée pour: "${prompt}"\nconst zerotrust={verify:true,audit:true,enforce:(action)=>true};\nzerotrustlogic.audit('${prompt}');`}UI.codeEditor.value=generated;log("Code généré avec succès","success");STATE.executionStats.tokens=generated.split(/\s+/).length;updateMeta()}
+
+function analyzeCode(){const code=UI.codeEditor.value.trim();if(!code){log("Code vide","warning");return}log("Analyse du code...","info");const lines=code.split("\n").length;const functions=(code.match(/function|=>|const.*=/g)||[]).length;const hasVerify=code.includes("verify");const hasAudit=code.includes("audit");log(`📊 Analyse: ${lines} lignes, ${functions} fonctions`,"info");if(hasVerify)log("✓ Vérification détectée","success");if(hasAudit)log("✓ Audit trail détecté","success");if(!hasVerify)log("⚠ Pas de vérification continue détectée","warning");if(!hasAudit)log("⚠ Pas d'audit trail détecté","warning");STATE.executionStats.checkpoints++}
+
+function toggleDebug(){STATE.isDebug=!STATE.isDebug;UI.debugToggle.classList.toggle("on");log(STATE.isDebug?"Mode Debug activé":"Mode Debug désactivé","info")}
+
+function toggleAudit(){STATE.isAudit=!STATE.isAudit;UI.auditToggle.classList.toggle("on");log(STATE.isAudit?"Audit Trail activé":"Audit Trail désactivé","info")}
+
+function toggleVerify(){STATE.isVerify=!STATE.isVerify;UI.verifyToggle.classList.toggle("on");log(STATE.isVerify?"Vérification activée":"Vérification désactivée","info")}
+
+function showModal(title,content){UI.modalTitle.textContent=title;UI.modalBody.innerHTML=content;UI.modal.classList.add("show")}
+
+function closeModal(){UI.modal.classList.remove("show")}
+
+function loadTemplate(type){const templates={auth:`// Système d'authentification Zero Trust\nconst auth = {\n  verify: async (user, token) => {\n    const valid = user && token.startsWith('sk_');\n    console.log('Vérification:', user, valid ? '✓' : '✗');\n    return valid;\n  },\n  audit: (action) => {\n    console.log('🔐 Audit:', action, 'par', STATE.currentUser);\n  }\n};\nawait auth.verify(STATE.currentUser, '${UI.tokenInput.value}');\nauth.audit('Authentification réussie');`,audit:`// Trail d'audit natif\nconst auditTrail = {\n  events: [],\n  log: (action, user, timestamp) => {\n    auditTrail.events.push({ action, user, timestamp });\n    console.log('📋', action, 'par', user);\n  },\n  export: () => auditTrail.events\n};\nauditTrail.log('LOGIN', STATE.currentUser, new Date());\nauditTrail.log('CODE_EXECUTED', STATE.currentUser, new Date());\nconsole.log('Total événements:', auditTrail.events.length);`,detect:`// Détection d'anomalies\nconst anomalyDetector = {\n  thresholds: { loginAttempts: 5, apiCalls: 100, failureRate: 0.3 },\n  check: (metric, threshold) => metric > threshold,\n  report: []\n};\n\nconst loginAttempts = 3;\nconst apiCalls = 120;\nconst failureRate = 0.25;\n\nif (anomalyDetector.check(apiCalls, anomalyDetector.thresholds.apiCalls)) {\n  anomalyDetector.report.push({ type: 'elevated_api_activity', time: new Date() });\n  console.log('🚨 Anomalie détectée: activité API élevée');\n}\n\nconsole.log('Rapports:', anomalyDetector.report.length);`,policy:`// Moteur de politique Zero Trust\nconst policyEngine = {\n  policies: {\n    Admin: { read: true, write: true, delete: true, audit: true },\n    Editor: { read: true, write: true, delete: false, audit: false },\n    Viewer: { read: true, write: false, delete: false, audit: false }\n  },\n  evaluate: (action, userRole) => {\n    const allowed = policyEngine.policies[userRole]?.[action] || false;\n    console.log(action, 'pour', userRole, ':', allowed ? '✓ Autorisé' : '✗ Refusé');\n    return allowed;\n  }\n};\n\nconst userRole = STATE.users[STATE.currentUser]?.role || 'Viewer';\npolicyEngine.evaluate('write', userRole);\npolicyEngine.evaluate('delete', userRole);\npolicyEngine.evaluate('audit', userRole);`};UI.codeEditor.value=templates[type]||"";log(`Template chargé: ${type}`,"success");STATE.executionStats.tokens=UI.codeEditor.value.split(/\s+/).length;updateMeta()}
+
+document.getElementById("loginBtn").addEventListener("click",authenticate);
+document.getElementById("logoutBtn").addEventListener("click",logout);
+document.getElementById("runBtn").addEventListener("click",executeCode);
+document.getElementById("generateBtn").addEventListener("click",generateFromAI);
+document.getElementById("analyzeBtn").addEventListener("click",analyzeCode);
+document.getElementById("saveBtn").addEventListener("click",()=>{STATE.codeHistory.push(UI.codeEditor.value);log(`Code enregistré (${STATE.codeHistory.length} versions)`,"success")});
+document.getElementById("resetBtn").addEventListener("click",()=>{UI.codeEditor.value="";log("Éditeur réinitialisé","info")});
+document.getElementById("debugToggle").addEventListener("click",toggleDebug);
+document.getElementById("auditToggle").addEventListener("click",toggleAudit);
+document.getElementById("verifyToggle").addEventListener("click",toggleVerify);
+document.getElementById("closeModalBtn").addEventListener("click",closeModal);
+document.getElementById("templateAuth").addEventListener("click",()=>loadTemplate("auth"));
+document.getElementById("templateAudit").addEventListener("click",()=>loadTemplate("audit"));
+document.getElementById("templateDetect").addEventListener("click",()=>loadTemplate("detect"));
+document.getElementById("templatePolicy").addEventListener("click",()=>loadTemplate("policy"));
+
+UI.codeEditor.value=`// Bienvenue dans le Studio IA Enterprise Zero Trust\n// Écrivez votre logique métier native ici\n\nconst system = {\n  name: 'ZeroTrust Native',\n  mode: 'enterprise',\n  verification: true,\n  auditEnabled: true\n};\n\nconsole.log('🚀 Système prêt:', system);\nconsole.log('✓ Vérification native activée');\nconsole.log('✓ Audit trail actif');`;
+
+log("Système ZeroTrust Native prêt","success");
+log("Authentifiez-vous pour commencer","info");
+setStatus("🔒 En attente d'authentification");
+updateMeta();
+</script>
+</body>
+</html>
