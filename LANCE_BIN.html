@@ -3,21 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ProjectM Advanced Builder</title>
+  <title>ProjectM AI Studio</title>
   <style>
     :root {
-      --bg: #0b1020;
-      --panel: #121a2b;
-      --panel-2: #1a2338;
-      --panel-3: #0f172a;
-      --line: #2a3b5f;
+      --bg: #07111d;
+      --bg2: #0d1728;
+      --panel: #101b2d;
+      --panel2: #16273d;
+      --panel3: #0f1c2b;
+      --line: #223755;
       --primary: #7c9cff;
       --primary-2: #8b5cf6;
-      --accent: #22c55e;
+      --success: #22c55e;
       --warning: #f59e0b;
       --danger: #ef4444;
-      --text: #e5eefc;
-      --muted: #9bb0d1;
+      --text: #ebf1ff;
+      --muted: #9bb2d9;
       --shadow: rgba(0, 0, 0, 0.35);
     }
 
@@ -26,8 +27,8 @@
     html, body {
       margin: 0;
       height: 100%;
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      background: radial-gradient(circle at top, #111b2f 0%, var(--bg) 55%);
+      font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+      background: linear-gradient(135deg, #070e1b 0%, #0b1630 30%, #0b1020 100%);
       color: var(--text);
     }
 
@@ -39,57 +40,56 @@
     }
 
     .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
       background: linear-gradient(90deg, var(--primary), var(--primary-2));
-      padding: 16px 22px;
-      box-shadow: 0 8px 25px var(--shadow);
-      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 12px 30px var(--shadow);
       position: relative;
-      z-index: 3;
+      z-index: 5;
     }
 
-    .topbar h1 {
-      margin: 0;
-      font-size: clamp(20px, 2vw, 30px);
+    .brand {
+      font-weight: 800;
+      font-size: clamp(18px, 2vw, 30px);
       letter-spacing: 0.05em;
     }
 
-    .topbar .status {
+    .status-pill {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
+      background: rgba(0,0,0,0.15);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 999px;
+      padding: 8px 12px;
+      color: white;
       font-size: 12px;
       font-weight: 700;
-      color: #f7fbff;
-      background: rgba(0,0,0,0.18);
-      padding: 8px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.12);
     }
 
     .dot {
       width: 10px;
       height: 10px;
       border-radius: 50%;
-      background: #71f7ae;
-      box-shadow: 0 0 12px rgba(113, 247, 174, 0.9);
+      background: #70f7a7;
+      box-shadow: 0 0 12px rgba(112,247,167,0.9);
     }
 
     .workspace {
       display: grid;
-      grid-template-columns: 300px 1.35fr 350px;
+      grid-template-columns: 310px 1.3fr 360px;
       flex: 1;
       min-height: 0;
     }
 
     .panel {
-      background: rgba(17, 24, 39, 0.92);
+      background: rgba(16, 27, 45, 0.96);
       border-right: 1px solid var(--line);
-      min-height: 0;
       display: flex;
       flex-direction: column;
+      min-height: 0;
     }
 
     .panel:last-child {
@@ -98,13 +98,13 @@
     }
 
     .panel-header {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(124, 156, 255, 0.07);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 14px 16px;
       font-weight: 700;
-      background: rgba(122, 145, 255, 0.08);
-      border-bottom: 1px solid var(--line);
       letter-spacing: 0.04em;
     }
 
@@ -114,34 +114,29 @@
       height: 100%;
     }
 
-    .input,
-    .select,
-    .textarea,
-    textarea,
-    input[type="text"],
-    input[type="file"] {
+    .input, .textarea, textarea, input[type="text"], input[type="file"], select {
       width: 100%;
-      background: rgba(7, 12, 22, 0.9);
-      color: var(--text);
       border: 1px solid var(--line);
-      border-radius: 8px;
+      border-radius: 9px;
+      background: rgba(7, 17, 29, 0.9);
+      color: var(--text);
       padding: 10px 12px;
       font-size: 13px;
       outline: none;
       transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .input:focus,
-    .select:focus,
-    .textarea:focus,
-    textarea:focus,
-    input[type="text"]:focus,
-    input[type="file"]:focus {
+    .input:focus, .textarea:focus, textarea:focus, input[type="text"]:focus, select:focus {
       border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(124, 156, 255, 0.18);
+      box-shadow: 0 0 0 3px rgba(124,156,255,0.18);
     }
 
-    .btn-group {
+    .textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .btn-row {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 8px;
@@ -149,117 +144,193 @@
     }
 
     button {
-      appearance: none;
-      border: none;
-      border-radius: 8px;
-      padding: 10px 12px;
-      font-weight: 700;
-      color: white;
-      cursor: pointer;
       background: linear-gradient(135deg, var(--primary), var(--primary-2));
-      box-shadow: 0 10px 20px rgba(124, 156, 255, 0.2);
-      transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.2s ease;
-    }
-
-    button:hover {
-      transform: translateY(-1px);
-      filter: brightness(1.08);
-    }
-
-    button.secondary {
-      background: linear-gradient(135deg, #1e293b, #334155);
-    }
-
-    button.success {
-      background: linear-gradient(135deg, #22c55e, #16a34a);
-    }
-
-    button.warning {
-      background: linear-gradient(135deg, #f59e0b, #d97706);
-    }
-
-    button.danger {
-      background: linear-gradient(135deg, #ef4444, #dc2626);
-    }
-
-    button.muted {
-      background: linear-gradient(135deg, #475569, #334155);
-    }
-
-    .project-card {
-      background: rgba(18, 26, 43, 0.9);
-      border: 1px solid var(--line);
+      color: white;
+      border: none;
+      border-radius: 9px;
       padding: 10px 12px;
+      font-weight: 800;
+      font-size: 12px;
+      cursor: pointer;
+      letter-spacing: 0.02em;
+      transition: transform 0.15s ease, filter 0.2s ease;
+      box-shadow: 0 8px 18px rgba(124, 156, 255, 0.18);
+    }
+
+    button:hover { transform: translateY(-1px); filter: brightness(1.08); }
+    button.secondary { background: linear-gradient(135deg, #334155, #475569); }
+    button.success { background: linear-gradient(135deg, #22c55e, #16a34a); }
+    button.warning { background: linear-gradient(135deg, #f59e0b, #d97706); }
+    button.danger { background: linear-gradient(135deg, #ef4444, #b91c1c); }
+    button.muted { background: linear-gradient(135deg, #1f2937, #374151); }
+
+    .project-list {
+      margin-top: 14px;
+      display: grid;
+      gap: 9px;
+    }
+
+    .project-item {
+      background: rgba(17, 24, 39, 0.9);
+      border: 1px solid var(--line);
       border-radius: 10px;
-      margin-bottom: 10px;
+      padding: 10px 12px;
       cursor: pointer;
       transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
     }
 
-    .project-card:hover {
+    .project-item:hover {
       border-color: var(--primary);
       transform: translateX(1px);
     }
 
-    .project-card.active {
+    .project-item.active {
       background: rgba(124, 156, 255, 0.12);
       border-color: var(--primary);
-      box-shadow: inset 0 0 0 1px rgba(124, 156, 255, 0.25);
+      box-shadow: inset 0 0 0 1px rgba(124,156,255,0.18);
     }
 
-    .project-card strong {
+    .project-item .name {
       display: block;
-      margin-bottom: 4px;
-      color: #edf6ff;
-      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 2px;
     }
 
-    .project-card small {
-      display: block;
+    .project-item .meta {
       color: var(--muted);
-      margin-bottom: 4px;
-      line-height: 1.45;
+      font-size: 11px;
+      line-height: 1.5;
     }
 
     .tag {
       display: inline-block;
-      padding: 4px 7px;
-      border-radius: 999px;
       font-size: 10px;
+      font-weight: 800;
+      border-radius: 999px;
+      padding: 4px 7px;
+      background: rgba(124,156,255,0.18);
+      border: 1px solid rgba(124,156,255,0.26);
+      color: #dfe8ff;
+    }
+
+    .stats {
+      margin-top: 14px;
+      padding: 12px;
+      background: rgba(9, 16, 26, 0.9);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .stat-row strong { color: var(--text); }
+
+    .main-shell {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      background: rgba(9, 15, 26, 0.82);
+    }
+
+    .editor-toolbar {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(13, 20, 33, 0.9);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .file-label {
+      background: rgba(124,156,255,0.1);
+      border: 1px solid rgba(124,156,255,0.3);
+      color: #edf1ff;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 12px;
       font-weight: 700;
-      color: #dfe7ff;
-      background: rgba(124, 156, 255, 0.18);
-      border: 1px solid rgba(124, 156, 255, 0.3);
-      margin-top: 2px;
+    }
+
+    .editor { display: grid; grid-template-rows: 1fr 180px; flex: 1; min-height: 0; }
+
+    textarea.code {
+      width: 100%;
+      height: 100%;
+      resize: none;
+      border: none;
+      border-radius: 0;
+      background: #0b1220;
+      color: #dfe9ff;
+      line-height: 1.6;
+      font-size: 13px;
+      font-family: Consolas, "Courier New", monospace;
+      padding: 18px 18px 0 18px;
+    }
+
+    .preview-panel {
+      border-top: 1px solid var(--line);
+      background: rgba(15, 22, 35, 0.98);
+      display: flex;
+      flex-direction: column;
+      min-height: 180px;
+    }
+
+    .preview-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: white;
+      min-height: 160px;
     }
 
     .tree {
-      margin-top: 12px;
-      display: flex;
-      flex-direction: column;
+      display: grid;
       gap: 10px;
+      margin-top: 10px;
     }
 
     .tree-item {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      gap: 10px;
-      background: rgba(15, 23, 42, 0.8);
+      align-items: center;
+      gap: 8px;
+      background: rgba(14, 20, 30, 0.7);
       border: 1px solid var(--line);
-      border-radius: 8px;
+      border-radius: 9px;
       padding: 8px 10px;
       cursor: pointer;
       transition: border-color 0.2s ease, background 0.2s ease;
+      font-size: 13px;
     }
 
     .tree-item:hover {
       border-color: var(--primary);
-      background: rgba(124, 156, 255, 0.08);
+      background: rgba(124,156,255,0.06);
     }
 
     .tree-item.active {
-      border-color: var(--accent);
+      border-color: var(--success);
       background: rgba(34, 197, 94, 0.08);
     }
 
@@ -269,184 +340,78 @@
       gap: 8px;
       min-width: 0;
       flex: 1;
-      font-size: 13px;
-      color: var(--text);
-    }
-
-    .tree-name {
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
     }
 
-    .tree-actions {
-      display: flex;
-      gap: 6px;
-      font-size: 11px;
-      opacity: 0.7;
+    .tree-title {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
-    .editor-shell {
-      display: flex;
-      min-height: 0;
-      flex-direction: column;
-      background: rgba(11, 16, 32, 0.9);
-    }
-
-    .editor-toolbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 14px;
-      border-bottom: 1px solid var(--line);
-      background: rgba(13, 19, 31, 0.95);
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .file-badge {
-      padding: 7px 10px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 700;
-      border: 1px solid rgba(124, 156, 255, 0.35);
-      background: rgba(124, 156, 255, 0.1);
-      color: #dfe8ff;
-    }
-
-    .toolbar-right {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .editor-area {
-      display: grid;
-      grid-template-rows: 1fr 180px;
-      flex: 1;
-      min-height: 0;
-    }
-
-    textarea.editor {
-      width: 100%;
-      height: 100%;
-      min-height: 320px;
-      border: none;
-      border-radius: 0;
-      background: #0d1220;
-      color: #dce7ff;
-      resize: none;
-      padding: 18px 18px 0 18px;
-      line-height: 1.6;
-      font-size: 13px;
-      font-family: Consolas, "Courier New", monospace;
-    }
-
-    .preview-panel {
-      border-top: 1px solid var(--line);
-      background: rgba(15, 20, 33, 0.98);
-      display: flex;
-      flex-direction: column;
-    }
-
-    .preview-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 14px;
-      border-bottom: 1px solid var(--line);
-      font-weight: 700;
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    iframe {
-      width: 100%;
-      border: none;
-      background: white;
-      flex: 1;
-      min-height: 180px;
-    }
-
-    .meta {
+    .ai-box {
       margin-top: 12px;
+      background: rgba(10, 18, 30, 0.9);
       border: 1px solid var(--line);
       border-radius: 10px;
-      background: rgba(11, 16, 32, 0.82);
-      padding: 10px 12px;
-      display: grid;
-      gap: 8px;
+      padding: 12px;
     }
 
-    .meta-row {
+    .ai-box textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    .chip-list {
       display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .meta-row strong { color: var(--text); }
-
-    .template-list {
-      display: grid;
+      flex-wrap: wrap;
       gap: 8px;
-      margin-top: 12px;
+      margin-top: 10px;
     }
 
-    .template-item {
-      background: rgba(124, 156, 255, 0.06);
-      border: 1px solid rgba(124, 156, 255, 0.2);
-      border-radius: 8px;
-      padding: 10px 12px;
-      font-size: 12px;
+    .chip {
+      background: rgba(124,156,255,0.12);
+      border: 1px solid rgba(124,156,255,0.2);
+      color: #dfe8ff;
+      padding: 6px 8px;
+      border-radius: 999px;
+      font-size: 11px;
       cursor: pointer;
-      transition: border-color 0.2s ease, transform 0.2s ease;
     }
-
-    .template-item:hover {
-      border-color: var(--primary);
-      transform: translateY(-1px);
-    }
-
-    .template-item strong { display: block; margin-bottom: 4px; }
-
-    .template-item span { color: var(--muted); }
 
     .modal {
       position: fixed;
       inset: 0;
-      background: rgba(1, 4, 10, 0.7);
+      background: rgba(1, 4, 10, 0.75);
       display: none;
       align-items: center;
       justify-content: center;
-      z-index: 50;
-      padding: 16px;
+      z-index: 100;
+      padding: 18px;
     }
 
-    .modal.show {
-      display: flex;
-    }
+    .modal.show { display: flex; }
 
     .modal-card {
       width: min(520px, 100%);
-      background: #101b2d;
+      background: #102033;
       border: 1px solid var(--line);
       border-radius: 14px;
-      box-shadow: 0 30px 60px rgba(0,0,0,0.35);
+      box-shadow: 0 30px 60px rgba(0,0,0,0.45);
       overflow: hidden;
     }
 
     .modal-header {
-      padding: 16px 18px;
+      padding: 14px 16px;
       border-bottom: 1px solid var(--line);
-      font-weight: 700;
-      background: rgba(124, 156, 255, 0.08);
+      font-weight: 800;
+      background: rgba(124,156,255,0.07);
     }
 
     .modal-body {
-      padding: 16px 18px 18px 18px;
+      padding: 16px;
       display: grid;
       gap: 12px;
     }
@@ -459,18 +424,19 @@
     }
 
     .warning-box {
-      padding: 10px 12px;
-      border: 1px solid rgba(245, 158, 11, 0.4);
-      background: rgba(245, 158, 11, 0.08);
+      margin-top: 12px;
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.35);
       border-radius: 8px;
       color: #f8d98b;
       font-size: 12px;
       line-height: 1.5;
+      padding: 10px 12px;
     }
 
-    @media (max-width: 1150px) {
+    @media (max-width: 1180px) {
       .workspace {
-        grid-template-columns: 260px 1fr;
+        grid-template-columns: 280px 1fr;
       }
       .panel:last-child {
         grid-column: 1 / -1;
@@ -481,27 +447,16 @@
 
     @media (max-width: 760px) {
       body { overflow: auto; }
-      .workspace {
-        grid-template-columns: 1fr;
-      }
-      .panel, .panel:last-child {
-        min-height: 280px;
-        border-right: none;
-        border-left: none;
-      }
-      .btn-group {
-        grid-template-columns: 1fr;
-      }
-      .editor-area {
-        grid-template-rows: 1fr 200px;
-      }
+      .workspace { grid-template-columns: 1fr; }
+      .btn-row { grid-template-columns: 1fr; }
+      .editor { grid-template-rows: 1fr 200px; }
     }
   </style>
 </head>
 <body>
   <header class="topbar">
-    <h1>🚀 ProjectM Advanced Builder</h1>
-    <div class="status">
+    <div class="brand">🚀 ProjectM AI Studio</div>
+    <div class="status-pill">
       <span class="dot"></span>
       <span id="statusLabel">Système prêt</span>
     </div>
@@ -511,46 +466,45 @@
     <aside class="panel">
       <div class="panel-header">
         <span>📁 Projets</span>
-        <span id="projectCountBadge" class="tag">0</span>
+        <span class="tag" id="projectCountBadge">0</span>
       </div>
       <div class="panel-body">
         <input id="projectNameInput" class="input" type="text" placeholder="Nom du projet" value="ProjectM" />
-        <div class="btn-group">
+        <div class="btn-row">
           <button class="success" id="createProjectBtn">Créer</button>
           <button class="secondary" id="loadProjectsBtn">Charger</button>
           <button class="warning" id="newFileBtn">Nouveau Fichier</button>
           <button class="danger" id="deleteProjectBtn">Supprimer</button>
         </div>
 
-        <div id="projectList" style="margin-top: 16px;"></div>
+        <div id="projectList" class="project-list"></div>
 
-        <div class="meta">
-          <div class="meta-row"><span>Actif</span><strong id="activeProjectLabel">Aucun</strong></div>
-          <div class="meta-row"><span>Fichiers</span><strong id="fileCountLabel">0</strong></div>
-          <div class="meta-row"><span>Taille</span><strong id="projectSizeLabel">0 KB</strong></div>
+        <div class="stats">
+          <div class="stat-row"><span>Actif</span><strong id="activeProjectLabel">Aucun</strong></div>
+          <div class="stat-row"><span>Fichiers</span><strong id="fileCountLabel">0</strong></div>
+          <div class="stat-row"><span>Taille</span><strong id="projectSizeLabel">0 KB</strong></div>
         </div>
       </div>
     </aside>
 
-    <section class="panel editor-shell">
+    <section class="panel main-shell">
       <div class="editor-toolbar">
-        <div class="file-badge" id="activeFileBadge">main.js</div>
-        <div class="toolbar-right">
+        <div class="file-label" id="activeFileLabel">main.js</div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
           <button class="secondary" id="saveFileBtn">💾 Enregistrer</button>
           <button class="muted" id="newFolderBtn">📁 Dossier</button>
           <button class="warning" id="previewBtn">👁️ Aperçu</button>
         </div>
       </div>
 
-      <div class="editor-area">
-        <textarea id="editor" class="editor" spellcheck="false" placeholder="Écrivez votre code ici..."></textarea>
-
+      <div class="editor">
+        <textarea id="editor" class="code" spellcheck="false" placeholder="Écrivez votre code ici..."></textarea>
         <div class="preview-panel">
-          <div class="preview-header">
+          <div class="preview-toolbar">
             <span>Prévisualisation</span>
             <span id="previewTypeLabel">HTML</span>
           </div>
-          <iframe id="previewFrame" title="Preview"></iframe>
+          <iframe id="previewFrame" title="Aperçu"></iframe>
         </div>
       </div>
     </section>
@@ -563,128 +517,78 @@
       <div class="panel-body">
         <div id="treeView" class="tree"></div>
 
-        <div class="warning-box" style="margin-top: 16px;">
-          Les projets sont enregistrés en local dans le navigateur. Vous pouvez ensuite exporter JSON, HTML, JS ou ZIP.
-        </div>
+        <div class="ai-box">
+          <label style="font-size:12px; color: var(--muted); display:block; margin-bottom:8px; font-weight:700;">Prompt IA</label>
+          <textarea id="promptInput" placeholder="Ex: Crée une landing page premium pour un SaaS avec section hero, pricing, CTA, et dark mode. "> </textarea>
+          <div class="btn-row" style="margin-top: 10px;">
+            <button class="success" id="generateBtn">🪄 Générer</button>
+            <button class="secondary" id="exportJsonBtn">JSON</button>
+            <button class="secondary" id="exportHtmlBtn">HTML</button>
+            <button class="secondary" id="exportZipBtn">ZIP</button>
+          </div>
 
-        <div style="margin-top: 18px;">
-          <div style="font-weight: 700; margin-bottom: 10px; color: #dfe8ff;">⚡ Modèles</div>
-          <div class="template-list">
-            <div class="template-item" data-template="fullstack">
-              <strong>Full Stack</strong>
-              <span>App de gestion avancée + UI + logique</span>
-            </div>
-            <div class="template-item" data-template="dashboard">
-              <strong>Dashboard</strong>
-              <span>Interface SaaS moderne + analytics</span>
-            </div>
-            <div class="template-item" data-template="secure">
-              <strong>Secure Native</strong>
-              <span>Zero trust + architecture native</span>
-            </div>
-            <div class="template-item" data-template="api">
-              <strong>API Starter</strong>
-              <span>Service backend JS + config + docs</span>
-            </div>
+          <div class="chip-list">
+            <span class="chip" data-prompt="crée une landing page moderne pour startup tech avec dark mode">Landing Page</span>
+            <span class="chip" data-prompt="crée un dashboard d'analytics avec cartes, graphes et sidebar premium">Dashboard</span>
+            <span class="chip" data-prompt="crée une application de gestion de tâches avec interface claire et modale">Task App</span>
+            <span class="chip" data-prompt="crée un système de sécurité zero trust avec éléments visuels avancés">Secure Native</span>
           </div>
         </div>
 
-        <div class="btn-group" style="margin-top: 18px;">
-          <button class="secondary" id="exportJsonBtn">JSON</button>
-          <button class="secondary" id="exportHtmlBtn">HTML</button>
-          <button class="secondary" id="exportJsBtn">JS</button>
-          <button class="secondary" id="exportZipBtn">ZIP</button>
+        <div class="warning-box">
+          Le générateur IA est local et basé sur des modèles de texte prédéfinis, parfait pour construire rapidement une structure de projet autonome, sans dépendances.
         </div>
-
-        <div class="btn-group" style="margin-top: 12px;">
-          <button class="warning" id="importBtn">Importer</button>
-          <button class="muted" id="downloadBtn">Télécharger</button>
-        </div>
-
-        <input type="file" id="importInput" accept=".json,application/json" style="display: none; margin-top: 10px;" />
       </div>
     </aside>
   </main>
 
   <div id="modal" class="modal" aria-hidden="true">
     <div class="modal-card">
-      <div class="modal-header">Nom du nouvel élément</div>
+      <div class="modal-header">Nouvel élément</div>
       <div class="modal-body">
-        <label for="modalInput" style="font-size: 12px; color: var(--muted);">Tapez le nom</label>
-        <input id="modalInput" class="input" type="text" placeholder="ex: component.js ou src/" />
+        <label for="modalInput" style="font-size:12px; color:var(--muted);">Nom du fichier ou dossier</label>
+        <input id="modalInput" class="input" type="text" placeholder="Ex: src/app.js ou src/components" />
         <div class="modal-actions">
-          <button type="button" class="secondary" id="cancelModalBtn">Annuler</button>
-          <button type="button" class="success" id="confirmModalBtn">Valider</button>
+          <button class="secondary" id="cancelModalBtn" type="button">Annuler</button>
+          <button class="success" id="confirmModalBtn" type="button">Valider</button>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    const STORAGE_KEY = 'projectm-advanced-builder-v1';
+    const STORAGE_KEY = 'projectm-ai-studio-v2';
     const state = {
       projects: {},
       currentProject: null,
       currentFile: null,
-      modalType: null,
-      modalTargetPath: null
+      modalType: null
     };
 
     const els = {
+      statusLabel: document.getElementById('statusLabel'),
+      projectNameInput: document.getElementById('projectNameInput'),
       projectList: document.getElementById('projectList'),
       projectCountBadge: document.getElementById('projectCountBadge'),
       activeProjectLabel: document.getElementById('activeProjectLabel'),
       fileCountLabel: document.getElementById('fileCountLabel'),
       projectSizeLabel: document.getElementById('projectSizeLabel'),
       editor: document.getElementById('editor'),
-      activeFileBadge: document.getElementById('activeFileBadge'),
+      activeFileLabel: document.getElementById('activeFileLabel'),
+      treeView: document.getElementById('treeView'),
       previewFrame: document.getElementById('previewFrame'),
       previewTypeLabel: document.getElementById('previewTypeLabel'),
-      treeView: document.getElementById('treeView'),
-      statusLabel: document.getElementById('statusLabel'),
-      projectNameInput: document.getElementById('projectNameInput'),
+      promptInput: document.getElementById('promptInput'),
       modal: document.getElementById('modal'),
-      modalInput: document.getElementById('modalInput'),
-      importInput: document.getElementById('importInput')
+      modalInput: document.getElementById('modalInput')
     };
 
-    function setStatus(message) {
-      els.statusLabel.textContent = message;
-    }
-
-    function readStorage() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        state.projects = raw ? JSON.parse(raw) : {};
-      } catch (e) {
-        state.projects = {};
-      }
-      if (!Object.keys(state.projects).length) {
-        createDefaultProject();
-      }
-      state.currentProject = Object.keys(state.projects)[0] || null;
-      state.currentFile = getFirstFilePathForProject(state.currentProject);
-      saveStorage();
+    function setStatus(msg) {
+      els.statusLabel.textContent = msg;
     }
 
     function saveStorage() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state.projects));
-    }
-
-    function createDefaultProject() {
-      const defaultProject = makeProject('ProjectM', 'Zero trust native project');
-      defaultProject.files['README.md'] = { type: 'file', content: '# ProjectM\n\nApplication générée automatiquement.' };
-      defaultProject.files['src/main.js'] = { type: 'file', content: "console.log('ProjectM ready');\nconst app = { name: 'ProjectM', mode: 'native' };\nconsole.log(app);\n" };
-      defaultProject.files['index.html'] = { type: 'file', content: `<!doctype html>
-<html>
-<head><meta charset=\"utf-8\"><title>ProjectM</title></head>
-<body>
-  <h1>ProjectM</h1>
-  <p>Projet généré avec un moteur avancé.</p>
-  <script>console.log('Hello from ProjectM');<\/script>
-</body>
-</html>` };
-      state.projects['ProjectM'] = defaultProject;
     }
 
     function makeProject(name, description = '') {
@@ -701,23 +605,72 @@
       return state.projects[name] || null;
     }
 
-    function getFirstFilePathForProject(projectName) {
-      const project = getProject(projectName);
+    function getFirstFile(project) {
       if (!project) return null;
-      const paths = Object.keys(project.files);
-      return paths.length ? paths[0] : null;
+      const paths = Object.keys(project.files).filter((path) => !path.endsWith('/'));
+      return paths[0] || null;
     }
 
-    function fileSizeInKB(content) {
-      const len = new TextEncoder().encode(content || '').length;
-      return (len / 1024).toFixed(1) + ' KB';
+    function normalizePath(value) {
+      return value.replace(/\\/g, '/').replace(/^\/+|\/+$/g, '').trim();
     }
 
-    function projectSize(project) {
-      return Object.values(project.files).reduce((total, file) => {
-        const content = typeof file === 'string' ? file : (file.content || '');
-        return total + new TextEncoder().encode(content).length;
-      }, 0) / 1024;
+    function projectSizeKB(project) {
+      const bytes = Object.values(project.files).reduce((sum, entry) => {
+        const content = typeof entry === 'object' && entry ? (entry.content || '') : '';
+        return sum + new TextEncoder().encode(content).length;
+      }, 0);
+      return (bytes / 1024).toFixed(1) + ' KB';
+    }
+
+    function createDefaultProject() {
+      const project = makeProject('ProjectM', 'Projet intelligent et avancé');
+      project.files['index.html'] = {
+        type: 'file',
+        content: `<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ProjectM</title>
+    <style>
+      body { font-family: Arial; background: #0f172a; color: white; padding: 40px; }
+      .box { max-width: 760px; margin: auto; border: 1px solid #334155; border-radius: 12px; padding: 20px; }
+      h1 { color: #7c9cff; }
+    </style>
+  </head>
+  <body>
+    <div class="box">
+      <h1>🚀 ProjectM</h1>
+      <p>Projet généré par l'AI Studio.</p>
+    </div>
+  </body>
+</html>`
+      };
+      project.files['src/main.js'] = {
+        type: 'file',
+        content: `console.log('ProjectM ready');\nconst app = { name: 'ProjectM', status: 'native' };\nconsole.log(app);`
+      };
+      project.files['README.md'] = {
+        type: 'file',
+        content: '# ProjectM\n\nProjet avancé créé avec AI Studio.'
+      };
+      state.projects['ProjectM'] = project;
+    }
+
+    function loadStorage() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        state.projects = raw ? JSON.parse(raw) : {};
+      } catch (e) {
+        state.projects = {};
+      }
+      if (!Object.keys(state.projects).length) {
+        createDefaultProject();
+      }
+      state.currentProject = Object.keys(state.projects)[0];
+      state.currentFile = getFirstFile(state.projects[state.currentProject]);
+      saveStorage();
     }
 
     function renderProjectList() {
@@ -725,30 +678,28 @@
       els.projectCountBadge.textContent = keys.length;
       els.projectList.innerHTML = '';
 
-      keys.forEach((key) => {
-        const project = state.projects[key];
-        const card = document.createElement('div');
-        card.className = 'project-card' + (key === state.currentProject ? ' active' : '');
-        card.innerHTML = `
-          <strong>${project.name}</strong>
-          <small>${project.description || 'Aucune description'}</small>
-          <small>${Object.keys(project.files).length} fichiers</small>
-          <span class="tag">${projectSize(project).toFixed(1)} KB</span>
+      keys.forEach((name) => {
+        const project = state.projects[name];
+        const item = document.createElement('div');
+        item.className = 'project-item' + (name === state.currentProject ? ' active' : '');
+        item.innerHTML = `
+          <span class="name">${project.name}</span>
+          <div class="meta">${project.description || 'Aucune description'}<br>${Object.keys(project.files).length} fichiers<br><span class="tag">${projectSizeKB(project)}</span></div>
         `;
-        card.addEventListener('click', () => {
-          state.currentProject = key;
-          state.currentFile = getFirstFilePathForProject(key);
+        item.addEventListener('click', () => {
+          state.currentProject = name;
+          state.currentFile = getFirstFile(project);
           renderAll();
-          setStatus(`Projet sélectionné: ${key}`);
+          setStatus(`Projet sélectionné: ${name}`);
         });
-        els.projectList.appendChild(card);
+        els.projectList.appendChild(item);
       });
 
-      const project = getProject(state.currentProject);
-      if (project) {
-        els.activeProjectLabel.textContent = project.name;
-        els.fileCountLabel.textContent = Object.keys(project.files).length;
-        els.projectSizeLabel.textContent = projectSize(project).toFixed(1) + ' KB';
+      const active = state.projects[state.currentProject];
+      if (active) {
+        els.activeProjectLabel.textContent = active.name;
+        els.fileCountLabel.textContent = Object.keys(active.files).length;
+        els.projectSizeLabel.textContent = projectSizeKB(active);
       } else {
         els.activeProjectLabel.textContent = 'Aucun';
         els.fileCountLabel.textContent = '0';
@@ -761,98 +712,56 @@
       els.treeView.innerHTML = '';
       if (!project) return;
 
-      const paths = Object.keys(project.files).sort();
-      const rootChildren = {};
-
-      paths.forEach((path) => {
+      const root = {};
+      Object.keys(project.files).forEach((path) => {
         const segments = path.split('/');
-        let current = rootChildren;
-        for (let i = 0; i < segments.length; i++) {
-          const segment = segments[i];
-          const isFile = i === segments.length - 1;
+        let current = root;
+        segments.forEach((segment, idx) => {
+          const isLast = idx === segments.length - 1;
           if (!current[segment]) {
-            current[segment] = { type: isFile ? 'file' : 'folder', children: {}, path: segments.slice(0, i + 1).join('/') };
+            current[segment] = {
+              type: isLast ? 'file' : 'folder',
+              path: segments.slice(0, idx + 1).join('/'),
+              children: {}
+            };
           }
-          if (!isFile) current = current[segment].children;
-        }
+          if (!isLast) current = current[segment].children;
+        });
       });
 
-      function renderNode(node, label, depth = 0) {
-        const item = document.createElement('div');
-        item.className = 'tree-item' + (state.currentFile === node.path ? ' active' : '');
-        item.style.marginLeft = depth * 12 + 'px';
-        item.title = node.path;
-        item.innerHTML = `
+      const renderNode = (node, name, depth = 0) => {
+        const block = document.createElement('div');
+        const isActive = node.path === state.currentFile;
+        block.className = 'tree-item' + (isActive ? ' active' : '');
+        block.style.marginLeft = depth * 12 + 'px';
+        block.innerHTML = `
           <div class="tree-label">
             <span>${node.type === 'folder' ? '📁' : '📄'}</span>
-            <span class="tree-name">${label}</span>
+            <span class="tree-title">${name}</span>
           </div>
-          <div class="tree-actions">
-            <span>${node.type === 'folder' ? 'D' : 'F'}</span>
-          </div>
+          <span>${node.type === 'folder' ? 'D' : 'F'}</span>
         `;
-        item.addEventListener('click', () => {
+        block.addEventListener('click', () => {
           if (node.type === 'file') {
             state.currentFile = node.path;
             renderAll();
             setStatus(`Fichier ouvert: ${node.path}`);
           }
         });
+        return block;
+      };
 
-        const parent = document.createElement('div');
-        parent.appendChild(item);
-
-        if (node.type === 'folder') {
-          const children = Object.entries(node.children).sort((a, b) => a[0].localeCompare(b[0]));
-          children.forEach(([key, childNode]) => renderNode(childNode, key, depth + 1));
-        }
-
-        return parent;
-      }
-
-      const rootEntries = Object.entries(rootChildren).sort((a, b) => a[0].localeCompare(b[0]));
-      rootEntries.forEach(([key, child]) => {
-        const container = renderNode(child, key, 0);
-        els.treeView.appendChild(container.firstChild || container);
+      const entries = Object.entries(root).sort((a, b) => a[0].localeCompare(b[0]));
+      entries.forEach(([key, value]) => {
+        const rootNode = renderNode(value, key, 0);
+        els.treeView.appendChild(rootNode);
       });
     }
 
-    function renderEditor() {
-      const project = getProject(state.currentProject);
-      if (!project || !state.currentFile || !project.files[state.currentFile]) {
-        els.editor.value = '';
-        els.activeFileBadge.textContent = 'aucun fichier';
-        return;
-      }
-
-      const file = project.files[state.currentFile];
-      els.editor.value = file.content || '';
-      els.activeFileBadge.textContent = state.currentFile;
-      updatePreview();
-    }
-
-    function saveCurrentFile() {
-      const project = getProject(state.currentProject);
-      if (!project || !state.currentFile) {
-        setStatus('Aucun projet actif');
-        return;
-      }
-
-      project.files[state.currentFile] = {
-        type: 'file',
-        content: els.editor.value,
-        updatedAt: new Date().toISOString()
-      };
-      project.updatedAt = new Date().toISOString();
-      saveStorage();
-      renderProjectList();
-      renderTree();
-      setStatus(`Sauvegardé: ${state.currentFile}`);
-    }
-
     function updatePreview() {
-      const file = getProject(state.currentProject)?.files[state.currentFile];
-      const content = file?.content || '';
+      const project = getProject(state.currentProject);
+      const file = project && state.currentFile ? project.files[state.currentFile] : null;
+      const content = file && file.content ? file.content : '';
       const filename = state.currentFile || 'preview';
 
       if (filename.endsWith('.html') || filename.endsWith('.htm')) {
@@ -860,10 +769,10 @@
         els.previewFrame.srcdoc = content;
       } else if (filename.endsWith('.css')) {
         els.previewTypeLabel.textContent = 'CSS';
-        els.previewFrame.srcdoc = `<style>${content}</style><div style="padding:16px;">CSS preview</div>`;
+        els.previewFrame.srcdoc = `<style>${content}</style><div style="padding:20px;">CSS preview</div>`;
       } else {
         els.previewTypeLabel.textContent = 'TEXT';
-        els.previewFrame.srcdoc = `<pre style="font-family: monospace; padding: 16px; white-space: pre-wrap;">${escapeHtml(content || 'Aucun contenu')}</pre>`;
+        els.previewFrame.srcdoc = `<pre style="padding:20px;font-family:Consolas,monospace;white-space:pre-wrap;">${escapeHtml(content || 'Aucun contenu')}</pre>`;
       }
     }
 
@@ -876,19 +785,51 @@
         .replace(/'/g, '&#039;');
     }
 
+    function renderEditor() {
+      const project = getProject(state.currentProject);
+      if (!project || !state.currentFile) {
+        els.editor.value = '';
+        els.activeFileLabel.textContent = 'aucun fichier';
+        return;
+      }
+      const file = project.files[state.currentFile];
+      els.editor.value = file && file.content ? file.content : '';
+      els.activeFileLabel.textContent = state.currentFile;
+      updatePreview();
+    }
+
+    function saveCurrentFile() {
+      const project = getProject(state.currentProject);
+      if (!project || !state.currentFile) {
+        setStatus('Aucun fichier actif');
+        return;
+      }
+      project.files[state.currentFile] = {
+        type: 'file',
+        content: els.editor.value,
+        updatedAt: new Date().toISOString()
+      };
+      project.updatedAt = new Date().toISOString();
+      saveStorage();
+      renderProjectList();
+      setStatus(`Sauvegardé: ${state.currentFile}`);
+    }
+
     function createProject() {
-      const name = (els.projectNameInput.value || '').trim();
+      const name = (document.getElementById('projectNameInput').value || '').trim();
       if (!name) {
-        setStatus('Saisissez un nom de projet');
+        setStatus('Entrez un nom de projet');
         return;
       }
       if (state.projects[name]) {
-        setStatus('Project déjà existant');
+        setStatus('Projet existant');
         return;
       }
-      state.projects[name] = makeProject(name, 'Projet avancé');
+      const project = makeProject(name, 'Projet généré');
+      project.files['main.js'] = { type: 'file', content: "console.log('Projet créé');\n" };
+      state.projects[name] = project;
       state.currentProject = name;
-      state.currentFile = null;
+      state.currentFile = 'main.js';
       saveStorage();
       renderAll();
       setStatus(`Projet créé: ${name}`);
@@ -900,82 +841,168 @@
         setStatus('Aucun projet sélectionné');
         return;
       }
-      const ok = confirm(`Supprimer le projet "${project.name}" ?`);
-      if (!ok) return;
+      if (!confirm(`Supprimer le projet "${project.name}" ?`)) return;
       delete state.projects[project.name];
       const keys = Object.keys(state.projects);
       state.currentProject = keys[0] || null;
-      state.currentFile = state.currentProject ? getFirstFilePathForProject(state.currentProject) : null;
+      state.currentFile = state.currentProject ? getFirstFile(state.projects[state.currentProject]) : null;
       saveStorage();
       renderAll();
       setStatus(`Projet supprimé: ${project.name}`);
-    }
-
-    function addNewFile() {
-      openModal('file');
-    }
-
-    function addNewFolder() {
-      openModal('folder');
     }
 
     function openModal(type) {
       state.modalType = type;
       els.modal.classList.add('show');
       els.modalInput.value = '';
-      els.modalInput.placeholder = type === 'file' ? 'ex: component.js ou src/app.js' : 'ex: src/components';
+      els.modalInput.placeholder = type === 'file' ? 'ex: src/app.js' : 'ex: src/components';
     }
 
     function closeModal() {
       state.modalType = null;
-      state.modalTargetPath = null;
       els.modal.classList.remove('show');
+      els.modalInput.value = '';
     }
 
     function confirmModal() {
       const project = getProject(state.currentProject);
       if (!project) {
-        setStatus('Sélectionnez un projet d’abord');
+        setStatus('Sélectionnez un projet');
         closeModal();
         return;
       }
-
-      const value = els.modalInput.value.trim();
+      const value = normalizePath(els.modalInput.value || '');
       if (!value) {
-        setStatus('Le nom ne peut pas être vide');
+        setStatus('Nom invalide');
         return;
       }
 
       if (state.modalType === 'file') {
-        const path = normalizePath(value);
-        if (project.files[path]) {
-          setStatus('Le fichier existe déjà');
+        if (project.files[value]) {
+          setStatus('Fichier déjà existant');
           return;
         }
-        project.files[path] = { type: 'file', content: '' };
-        state.currentFile = path;
-      } else if (state.modalType === 'folder') {
-        const path = normalizePath(value.endsWith('/') ? value : value + '/');
-        if (!path) {
-          setStatus('Nom de dossier invalide');
-          return;
-        }
-        project.files[path] = { type: 'folder', content: '' };
+        project.files[value] = { type: 'file', content: '' };
+        state.currentFile = value;
+      }
+
+      if (state.modalType === 'folder') {
+        const folderPath = value.endsWith('/') ? value : `${value}/`;
+        const folderName = folderPath.replace(/\/$/, '');
+        project.files[folderName] = { type: 'folder', content: '' };
       }
 
       project.updatedAt = new Date().toISOString();
       saveStorage();
       renderAll();
       closeModal();
-      setStatus(`${state.modalType === 'file' ? 'Fichier créé' : 'Dossier créé'}: ${value}`);
+      setStatus(`${state.modalType === 'file' ? 'Fichier' : 'Dossier'} créé`);
     }
 
-    function normalizePath(path) {
-      const cleaned = path.replace(/\\/g, '/').replace(/^\/+|\/+$/g, '');
-      return cleaned;
+    function generateFromPrompt() {
+      const prompt = (document.getElementById('promptInput').value || '').trim();
+      const project = getProject(state.currentProject);
+      if (!project || !prompt) {
+        setStatus('Saisissez un prompt valide');
+        return;
+      }
+
+      let generatedFiles = {};
+      const lower = prompt.toLowerCase();
+
+      if (lower.includes('landing') || lower.includes('startup') || lower.includes('saas')) {
+        generatedFiles['index.html'] = `<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LaunchFlow</title>
+  <style>
+    body { margin: 0; font-family: Arial; background: linear-gradient(135deg,#0b1020,#111827); color: #edf2ff; }
+    .wrap { max-width: 1200px; margin: auto; padding: 40px 20px 80px; }
+    .nav { display:flex; justify-content:space-between; align-items:center; padding: 18px 0; }
+    .logo { font-size: 24px; font-weight: 800; color: #7c9cff; }
+    .cta { background: linear-gradient(135deg,#7c9cff,#8b5cf6); color: white; padding: 12px 18px; border-radius: 999px; text-decoration:none; font-weight:700; }
+    .hero { display:grid; grid-template-columns: 1.2fr 1fr; gap: 30px; align-items: center; padding: 40px 0; }
+    .hero h1 { font-size: clamp(2.2rem, 4vw, 4rem); margin-bottom: 18px; }
+    .hero p { color:#c7d4f6; line-height:1.7; font-size: 1.08rem; }
+    .card { background: rgba(17,24,39,0.82); border:1px solid #334155; border-radius: 18px; padding: 22px; }
+    .grid { display:grid; grid-template-columns: repeat(3,1fr); gap: 20px; margin-top: 40px; }
+    .grid .card h3 { margin-top: 0; }
+    .pricing { display:grid; grid-template-columns: repeat(3,1fr); gap: 20px; margin-top: 40px; }
+    .plan { background: rgba(17,24,39,0.8); border:1px solid #334155; border-radius: 14px; padding: 22px; }
+    .button { display:inline-block; margin-top: 12px; background:#22c55e; color: white; padding: 11px 16px; border-radius: 10px; text-decoration:none; font-weight:700; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <nav class="nav">
+      <div class="logo">LaunchFlow</div>
+      <a class="cta" href="#">Essai gratuit</a>
+    </nav>
+
+    <section class="hero">
+      <div>
+        <h1>Faites grandir votre produit plus vite.</h1>
+        <p>Interface premium, automatisation intelligente, analytics avancés et workflow de lancement prêt en quelques minutes.</p>
+        <p><a class="cta" href="#">Démarrer</a></p>
+      </div>
+      <div class="card">
+        <h3>Statut du lancement</h3>
+        <p>Utilisateurs actifs: 32k</p>
+        <p>Conversion: 18.4%</p>
+        <p>Engagement: 91%</p>
+      </div>
+    </section>
+
+    <div class="grid">
+      <div class="card"><h3>Rapidité</h3><p>Déploiement ultra rapide.</p></div>
+      <div class="card"><h3>Automatisation</h3><p>Flux intelligents prêtes à l'emploi.</p></div>
+      <div class="card"><h3>Analyse</h3><p>Dashboards d'impact en temps réel.</p></div>
+    </div>
+
+    <div class="pricing">
+      <div class="plan"><h3>Starter</h3><p>19€/mois</p><a class="button" href="#">Choisir</a></div>
+      <div class="plan"><h3>Pro</h3><p>49€/mois</p><a class="button" href="#">Choisir</a></div>
+      <div class="plan"><h3>Scale</h3><p>99€/mois</p><a class="button" href="#">Choisir</a></div>
+    </div>
+  </div>
+</body>
+</html>`;
+        generatedFiles['src/main.js'] = `console.log('Landing page ready');\nconst stats = { users: 32000, conversion: '18.4%' };\nconsole.log(stats);`;
+      }
+
+      if (lower.includes('dashboard') || lower.includes('analytics')) {
+        generatedFiles['index.html'] = `<!doctype html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Analytics Dashboard</title><style>body{margin:0;font-family:Arial;background:#0b1020;color:#e2e8f0} .app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}.aside{background:#111827;padding:24px;border-right:1px solid #334155}.main{padding:24px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.card{background:#111827;border:1px solid #334155;border-radius:12px;padding:18px}.h{font-size:32px;margin:0 0 5px}.big{font-size:34px;font-weight:700}.muted{color:#94a3b8}.nav{display:flex;justify-content:space-between;margin-bottom:16px}.badge{display:inline-block;padding:6px 10px;border-radius:999px;background:#1d4ed8;color:white;font-size:12px}</style></head><body><div class="app"><aside class="aside"><h2>Panel</h2><p>Overview</p><p>Reports</p><p>Users</p><p>Settings</p></aside><main class="main"><div class="nav"><h2>Dashboard</h2><span class="badge">Live</span></div><div class="grid"><div class="card"><div class="muted">Revenue</div><div class="big">$128K</div></div><div class="card"><div class="muted">Users</div><div class="big">42K</div></div><div class="card"><div class="muted">Retention</div><div class="big">91%</div></div></div></main></div></body></html>`;
+        generatedFiles['src/dashboard.js'] = `const metrics = { revenue: '$128K', users: '42K', retention: '91%' };\nconsole.log(metrics);`;
+      }
+
+      if (lower.includes('tâche') || lower.includes('task') || lower.includes('gestion')) {
+        generatedFiles['index.html'] = `<!doctype html><html><head><meta charset="UTF-8"><title>TaskFlow</title><style>body{font-family:Arial;background:#0f172a;color:#e2e8f0;padding:30px}.wrap{max-width:900px;margin:auto}.task{background:#111827;border:1px solid #334155;border-radius:12px;padding:18px;margin-bottom:12px;display:flex;justify-content:space-between}.done{background:#14532d}.input{width:100%;padding:12px;border-radius:10px;border:1px solid #334155;background:#0b1120;color:white;margin-bottom:12px}</style></head><body><div class="wrap"><h1>TaskFlow</h1><input class="input" placeholder="Ajouter une tâche..." /><div class="task"><span>Créer la roadmap</span><span>✅</span></div><div class="task"><span>Valider la UI</span><span>⏳</span></div><div class="task done"><span>Publier le projet</span><span>🚀</span></div></div></body></html>`;
+        generatedFiles['src/tasks.js'] = `const tasks = ['Créer la roadmap', 'Valider la UI', 'Publier le projet'];\nconsole.log(tasks);`;
+      }
+
+      if (lower.includes('zero trust') || lower.includes('secure') || lower.includes('sécurité')) {
+        generatedFiles['index.html'] = `<!doctype html><html><head><meta charset="UTF-8"><title>Zero Trust</title><style>body{margin:0;font-family:Arial;background:#020817;color:#e2e8f0;padding:30px}.wrap{max-width:900px;margin:auto}.card{background:#0f172a;border:1px solid #1d4ed8;border-radius:14px;padding:20px;margin-top:18px}.status{color:#70f7a7;font-weight:700}.tag{display:inline-block;padding:5px 10px;background:#1d4ed8;border-radius:999px;font-size:12px;margin-right:8px}</style></head><body><div class="wrap"><h1>Zero Trust Native</h1><div class="card"><div class="status">✅ Vérification avancée</div><p>Authentification continue, identité vérifiée, contrôle strict des accès.</p><div><span class="tag">Policy</span><span class="tag">Verify</span><span class="tag">Session</span></div></div></div></body></html>`;
+        generatedFiles['src/security.js'] = `const policy = { mode: 'zero-trust', native: true, verified: true };\nconsole.log(policy);`;
+      }
+
+      if (Object.keys(generatedFiles).length === 0) {
+        generatedFiles['index.html'] = `<!doctype html><html><body><h1>Projet généré</h1><p>${escapeHtml(prompt)}</p></body></html>`;
+        generatedFiles['src/main.js'] = `console.log(${JSON.stringify(prompt)});`;
+      }
+
+      Object.entries(generatedFiles).forEach(([path, content]) => {
+        project.files[path] = { type: 'file', content };
+      });
+      state.currentFile = Object.keys(project.files)[0] || null;
+      project.updatedAt = new Date().toISOString();
+      saveStorage();
+      renderAll();
+      setStatus('Projet généré à partir du prompt');
     }
 
-    function exportAsJson() {
+    function exportToJson() {
       const project = getProject(state.currentProject);
       if (!project) {
         setStatus('Aucun projet actif');
@@ -985,47 +1012,18 @@
       setStatus(`Export JSON: ${project.name}.json`);
     }
 
-    function exportAsHtml() {
+    function exportToHtml() {
       const project = getProject(state.currentProject);
       if (!project) {
         setStatus('Aucun projet actif');
         return;
       }
-      const html = `<!doctype html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>${project.name}</title>
-  <style>
-    body { font-family: Arial, sans-serif; background: #0f172a; color: #e2e8f0; padding: 30px; }
-    .box { max-width: 800px; margin: auto; background: #111827; border:1px solid #334155; border-radius: 12px; padding: 24px; }
-    h1 { color: #7c9cff; }
-    code { background: rgba(124,156,255,0.1); padding: 2px 6px; border-radius: 6px; }
-  </style>
-</head>
-<body>
-  <div class="box">
-    <h1>${project.name}</h1>
-    <p>${project.description || 'Projet exporté depuis ProjectM Advanced Builder.'}</p>
-    <p>Fichiers: ${Object.keys(project.files).length}</p>
-    <p>Exporté le: ${new Date().toLocaleString('fr-FR')}</p>
-  </div>
-</body>
-</html>`;
-      downloadBlob(new Blob([html], { type: 'text/html' }), `${project.name}.html`);
+      const htmlContent = project.files['index.html']?.content || `<!doctype html><html><body><h1>${project.name}</h1></body></html>`;
+      downloadBlob(new Blob([htmlContent], { type: 'text/html' }), `${project.name}.html`);
       setStatus(`Export HTML: ${project.name}.html`);
     }
 
-    function exportAsJs() {
-      const current = els.editor.value;
-      const fileName = state.currentFile || 'script.js';
-      const js = `// ${fileName}\n// Generated by ProjectM Advanced Builder\n${current}\n`;
-      downloadBlob(new Blob([js], { type: 'application/javascript' }), fileName.endsWith('.js') ? fileName : `${fileName}.js`);
-      setStatus(`Export JS: ${fileName}`);
-    }
-
-    function exportZip() {
+    function exportToZip() {
       const project = getProject(state.currentProject);
       if (!project) {
         setStatus('Aucun projet actif');
@@ -1035,101 +1033,26 @@
       const files = {};
       Object.entries(project.files).forEach(([path, entry]) => {
         if (entry && entry.type === 'file') {
-          files[path] = (entry.content || '').toString();
+          files[path] = String(entry.content || '');
         }
       });
 
-      const zipBytes = buildZip(files);
-      downloadBlob(new Blob([zipBytes], { type: 'application/zip' }), `${project.name}.zip`);
+      const binary = buildMinimalZip(files);
+      downloadBlob(new Blob([binary], { type: 'application/zip' }), `${project.name}.zip`);
       setStatus(`Export ZIP: ${project.name}.zip`);
     }
 
-    function downloadBlob(blob, filename) {
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-    }
-
-    function applyTemplate(name) {
-      const project = getProject(state.currentProject);
-      if (!project) {
-        setStatus('Sélectionnez un projet');
-        return;
-      }
-
-      const templates = {
-        fullstack: {
-          'index.html': `<!doctype html>\n<html>\n<head>\n  <meta charset="UTF-8">\n  <title>FullStack App</title>\n  <style>body{font-family:Arial;background:#0f172a;color:#e2e8f0;padding:32px} .box{max-width:700px;margin:auto;background:#111827;border:1px solid #334155;padding:24px;border-radius:12px} h1{color:#7c9cff}</style>\n</head>\n<body>\n  <div class="box">\n    <h1>FullStack App</h1>\n    <p>Projet complet prêt pour l'éditeur.</p>\n  </div>\n</body>\n</html>`,
-          'src/app.js': `console.log('FullStack app started');\nconst state = { ready: true, project: 'ProjectM' };\nconsole.log(state);`,
-          'src/styles.css': `body { background: linear-gradient(135deg, #0b1020, #111827); color: #edf2ff; }\n* { box-sizing: border-box; }`,
-          'README.md': '# FullStack\n\nModèle complet pour application avancée.'
-        },
-        dashboard: {
-          'index.html': `<!doctype html><html><head><meta charset="UTF-8"><title>Dashboard</title><style>body{margin:0;font-family:Arial;background:#0f172a;color:#e2e8f0;padding:20px} .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}.card{background:#111827;border:1px solid #334155;border-radius:12px;padding:18px}</style></head><body><div class='grid'><div class='card'><h2>Sales</h2><p>$120K</p></div><div class='card'><h2>Users</h2><p>42K</p></div><div class='card'><h2>Uptime</h2><p>99.9%</p></div></div></body></html>`,
-          'src/main.js': `console.log('Dashboard started');`,
-          'config/settings.json': '{"theme":"dark","analytics":true}'
-        },
-        secure: {
-          'index.html': `<!doctype html><html><head><meta charset="UTF-8"><title>Secure Native</title><style>body{font-family:Arial;background:#07111e;color:#dfe8ff;padding:30px} .box{max-width:750px;margin:auto;background:#0b1c2d;border:1px solid #1d4ed8;padding:20px;border-radius:12px}</style></head><body><div class='box'><h1>Zero Trust Native</h1><p>Architecture sécurisée et autonome.</p></div></body></html>`,
-          'src/security.js': `const trust = { mode: 'zero-trust', native: true, token: 'secure-native' };\nconsole.log(trust);`,
-          'config/manifest.json': '{"security":{"mode":"zero-trust","native":true}}'
-        },
-        api: {
-          'server.js': `const PORT = 3000;\nconst app = { name: 'ProjectM API', status: 'ready' };\nconsole.log(app);\nconsole.log('Listening on', PORT);`,
-          'README.md': '# API Starter\n\nService Node.js prêt à évoluer.',
-          'config/.env': 'PORT=3000\nNODE_ENV=development'
-        }
-      };
-
-      Object.entries(templates[name] || {}).forEach(([path, content]) => {
-        project.files[path] = { type: 'file', content };
-      });
-
-      state.currentFile = Object.keys(project.files)[0] || null;
-      project.updatedAt = new Date().toISOString();
-      saveStorage();
-      renderAll();
-      setStatus(`Modèle appliqué: ${name}`);
-    }
-
-    function importProject(file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        try {
-          const parsed = JSON.parse(String(reader.result));
-          if (!parsed || !parsed.name || !parsed.files) {
-            throw new Error('Fichier JSON invalide');
-          }
-          state.projects[parsed.name] = parsed;
-          state.currentProject = parsed.name;
-          state.currentFile = Object.keys(parsed.files)[0] || null;
-          saveStorage();
-          renderAll();
-          setStatus(`Projet importé: ${parsed.name}`);
-        } catch (err) {
-          setStatus('Erreur import JSON');
-        }
-      };
-      reader.readAsText(file);
-    }
-
-    function buildZip(files) {
+    function buildMinimalZip(files) {
       const encoder = new TextEncoder();
-      const chunks = [];
       const localParts = [];
       const centralParts = [];
       const fileEntries = [];
-      let offset = 0;
+      let writeOffset = 0;
 
-      const crc32 = (bytes) => {
+      const crc32 = (buf) => {
         let crc = 0xffffffff;
-        for (let i = 0; i < bytes.length; i++) {
-          crc ^= bytes[i];
+        for (let i = 0; i < buf.length; i++) {
+          crc ^= buf[i];
           for (let j = 0; j < 8; j++) {
             const isOdd = (crc & 1) === 1;
             crc = (crc >>> 1) ^ (isOdd ? 0xedb88320 : 0);
@@ -1147,25 +1070,24 @@
       };
 
       Object.entries(files).forEach(([path, content]) => {
-        const bytes = encoder.encode(content || '');
-        const nameBytes = encoder.encode(path);
-        const crc = crc32(bytes);
-        const localHeader = [];
-        localHeader.push(0x50, 0x4b, 0x03, 0x04);
+        const data = encoder.encode(content || '');
+        const name = encoder.encode(path);
+        const crc = crc32(data);
+
+        const localHeader = [0x50,0x4b,0x03,0x04];
         writeU16(localHeader, 20);
         writeU16(localHeader, 0);
         writeU16(localHeader, 0);
         writeU16(localHeader, 0);
         writeU16(localHeader, 0);
         writeU32(localHeader, crc);
-        writeU32(localHeader, bytes.length);
-        writeU32(localHeader, bytes.length);
-        writeU16(localHeader, nameBytes.length);
+        writeU32(localHeader, data.length);
+        writeU32(localHeader, data.length);
+        writeU16(localHeader, name.length);
         writeU16(localHeader, 0);
-        localHeader.push(...nameBytes, ...bytes);
+        localHeader.push(...name, ...data);
 
-        const centralHeader = [];
-        centralHeader.push(0x50, 0x4b, 0x01, 0x02);
+        const centralHeader = [0x50,0x4b,0x01,0x02];
         writeU16(centralHeader, 20);
         writeU16(centralHeader, 20);
         writeU16(centralHeader, 0);
@@ -1173,9 +1095,9 @@
         writeU16(centralHeader, 0);
         writeU16(centralHeader, 0);
         writeU32(centralHeader, crc);
-        writeU32(centralHeader, bytes.length);
-        writeU32(centralHeader, bytes.length);
-        writeU16(centralHeader, nameBytes.length);
+        writeU32(centralHeader, data.length);
+        writeU32(centralHeader, data.length);
+        writeU16(centralHeader, name.length);
         writeU16(centralHeader, 0);
         writeU16(centralHeader, 0);
         writeU16(centralHeader, 0);
@@ -1184,41 +1106,46 @@
         writeU32(centralHeader, 0);
         writeU32(centralHeader, 0);
         writeU32(centralHeader, 0);
-        centralHeader.push(...nameBytes);
+        centralHeader.push(...name);
 
-        fileEntries.push({ localHeader, centralHeader, size: bytes.length });
-        offset += localHeader.length;
+        fileEntries.push({ localHeader, centralHeader, name });
       });
 
-      fileEntries.forEach((entry) => {
-        localParts.push(...entry.localHeader);
-      });
+      fileEntries.forEach((entry) => { localParts.push(...entry.localHeader); });
+      const centralOffset = localParts.length;
+      fileEntries.forEach((entry) => { centralParts.push(...entry.centralHeader); });
 
-      const centralDirectoryOffset = localParts.length;
-      fileEntries.forEach((entry) => {
-        centralParts.push(...entry.centralHeader);
-      });
+      const end = [0x50,0x4b,0x05,0x06];
+      writeU16(end, 0);
+      writeU16(end, 0);
+      writeU16(end, fileEntries.length);
+      writeU16(end, fileEntries.length);
+      writeU32(end, centralParts.length);
+      writeU32(end, centralOffset);
+      writeU16(end, 0);
 
-      const endOfCentral = [];
-      endOfCentral.push(0x50, 0x4b, 0x05, 0x06);
-      writeU16(endOfCentral, 0);
-      writeU16(endOfCentral, 0);
-      writeU16(endOfCentral, fileEntries.length);
-      writeU16(endOfCentral, fileEntries.length);
-      writeU32(endOfCentral, centralParts.length);
-      writeU32(endOfCentral, centralDirectoryOffset);
-      writeU16(endOfCentral, 0);
-
-      const total = new Uint8Array(localParts.length + centralParts.length + endOfCentral.length);
+      const total = new Uint8Array(localParts.length + centralParts.length + end.length);
       let cursor = 0;
-      const writeAll = (arr) => {
+      const append = (arr) => {
         total.set(arr, cursor);
         cursor += arr.length;
       };
-      localParts.forEach((byte) => { total[cursor++] = byte; });
-      centralParts.forEach((byte) => { total[cursor++] = byte; });
-      endOfCentral.forEach((byte) => { total[cursor++] = byte; });
+
+      localParts.forEach((n) => total[cursor++] = n);
+      centralParts.forEach((n) => total[cursor++] = n);
+      end.forEach((n) => total[cursor++] = n);
       return total;
+    }
+
+    function downloadBlob(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.append(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
     }
 
     function renderAll() {
@@ -1228,16 +1155,15 @@
     }
 
     document.getElementById('createProjectBtn').addEventListener('click', createProject);
-    document.getElementById('saveFileBtn').addEventListener('click', saveCurrentFile);
     document.getElementById('deleteProjectBtn').addEventListener('click', deleteProject);
-    document.getElementById('newFileBtn').addEventListener('click', addNewFile);
-    document.getElementById('newFolderBtn').addEventListener('click', addNewFolder);
-    document.getElementById('previewBtn').addEventListener('click', () => updatePreview());
-    document.getElementById('exportJsonBtn').addEventListener('click', exportAsJson);
-    document.getElementById('exportHtmlBtn').addEventListener('click', exportAsHtml);
-    document.getElementById('exportJsBtn').addEventListener('click', exportAsJs);
-    document.getElementById('exportZipBtn').addEventListener('click', exportZip);
-    document.getElementById('downloadBtn').addEventListener('click', exportAsJson);
+    document.getElementById('newFileBtn').addEventListener('click', () => openModal('file'));
+    document.getElementById('newFolderBtn').addEventListener('click', () => openModal('folder'));
+    document.getElementById('saveFileBtn').addEventListener('click', saveCurrentFile);
+    document.getElementById('previewBtn').addEventListener('click', updatePreview);
+    document.getElementById('generateBtn').addEventListener('click', generateFromPrompt);
+    document.getElementById('exportJsonBtn').addEventListener('click', exportToJson);
+    document.getElementById('exportHtmlBtn').addEventListener('click', exportToHtml);
+    document.getElementById('exportZipBtn').addEventListener('click', exportToZip);
     document.getElementById('loadProjectsBtn').addEventListener('click', () => renderAll());
     document.getElementById('cancelModalBtn').addEventListener('click', closeModal);
     document.getElementById('confirmModalBtn').addEventListener('click', confirmModal);
@@ -1247,16 +1173,14 @@
       project.files[state.currentFile].content = els.editor.value;
       project.updatedAt = new Date().toISOString();
       saveStorage();
-    });
-    document.getElementById('importBtn').addEventListener('click', () => els.importInput.click());
-    els.importInput.addEventListener('change', (event) => {
-      const file = event.target.files && event.target.files[0];
-      if (file) importProject(file);
-      event.target.value = '';
+      renderProjectList();
     });
 
-    document.querySelectorAll('.template-item').forEach((item) => {
-      item.addEventListener('click', () => applyTemplate(item.dataset.template));
+    document.querySelectorAll('.chip').forEach((chip) => {
+      chip.addEventListener('click', () => {
+        const value = chip.dataset.prompt || '';
+        document.getElementById('promptInput').value = value;
+      });
     });
 
     els.modalInput.addEventListener('keydown', (event) => {
@@ -1264,7 +1188,7 @@
       if (event.key === 'Escape') closeModal();
     });
 
-    readStorage();
+    loadStorage();
     renderAll();
     setStatus('Système prêt');
   </script>
