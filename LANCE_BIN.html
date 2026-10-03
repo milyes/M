@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ProjectM - Manager Editor Export</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'JetBrains Mono', 'Courier New', monospace;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      min-height: 100vh;
+      color: #e0e0e0;
+      overflow-x: hidden;
+    }
+    
+    .header {
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+      border-bottom: 2px solid #764ba2;
+    }
+    
+    .header h1 {
+      font-size: 32px;
+      margin-bottom: 5px;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    
+    .header p {
+      font-size: 12px;
+      opacity: 0.9;
+    }
+    
+    .container {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+      padding: 20px;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+    
+    .panel {
+      background: rgba(30, 30, 50, 0.8);
+      border: 1px solid #667eea;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    }
+    
+    .panel-header {
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      padding: 15px;
+      font-weight: bold;
+      border-bottom: 1px solid #764ba2;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .panel-header .icon {
+      font-size: 18px;
+      margin-right: 10px;
+    }
+    
+    .panel-content {
+      padding: 15px;
+      height: 600px;
+      overflow-y: auto;
+    }
+    
+    .panel-content::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    .panel-content::-webkit-scrollbar-track {
+      background: rgba(102, 126, 234, 0.1);
+    }
+    
+    .panel-content::-webkit-scrollbar-thumb {
+      background: #667eea;
+      border-radius: 4px;
+    }
+    
+    textarea, input[type="text"], input[type="file"] {
+      width: 100%;
+      background: rgba(20, 20, 40, 0.9);
+      color: #00ff00;
+      border: 1px solid #667eea;
+      border-radius: 4px;
+      padding: 10px;
+      font-family: inherit;
+      font-size: 12px;
+      margin-bottom: 10px;
+      resize: none;
+    }
+    
+    textarea {
+      height: 500px;
+    }
+    
+    textarea:focus, input:focus {
+      outline: none;
+      border-color: #764ba2;
+      box-shadow: 0 0 10px rgba(118, 75, 162, 0.5);
+    }
+    
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+    
+    button {
+      flex: 1;
+      min-width: 100px;
+      padding: 12px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s;
+      font-size: 12px;
+    }
+    
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+    }
+    
+    button:active {
+      transform: translateY(0);
+    }
+    
+    .btn-secondary {
+      background: linear-gradient(135deg, #764ba2, #667eea);
+    }
+    
+    .btn-success {
+      background: linear-gradient(135deg, #11998e, #38ef7d);
+    }
+    
+    .btn-danger {
+      background: linear-gradient(135deg, #eb3349, #f45c43);
+    }
+    
+    .btn-info {
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+    }
+    
+    .file-item {
+      background: rgba(102, 126, 234, 0.1);
+      border-left: 3px solid #667eea;
+      padding: 10px;
+      margin-bottom: 8px;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .file-item:hover {
+      background: rgba(102, 126, 234, 0.2);
+      border-left-color: #764ba2;
+    }
+    
+    .file-item.active {
+      background: rgba(118, 75, 162, 0.3);
+      border-left-color: #00ff00;
+    }
+    
+    .file-name {
+      font-weight: bold;
+      color: #00ff00;
+      font-size: 12px;
+    }
+    
+    .file-size {
+      font-size: 10px;
+      color: #888;
+      margin-top: 3px;
+    }
+    
+    .stats {
+      background: rgba(102, 126, 234, 0.1);
+      border: 1px solid #667eea;
+      padding: 10px;
+      border-radius: 4px;
+      margin-top: 10px;
+      font-size: 11px;
+    }
+    
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+    
+    .stat-value {
+      color: #00ff00;
+      font-weight: bold;
+    }
+    
+    .status-bar {
+      background: rgba(20, 20, 40, 0.8);
+      border-top: 1px solid #667eea;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+    }
+    
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .status-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #00ff00;
+    }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .modal.active {
+      display: flex;
+    }
+    
+    .modal-content {
+      background: #1e1e32;
+      border: 2px solid #667eea;
+      border-radius: 8px;
+      padding: 20px;
+      max-width: 500px;
+      width: 90%;
+    }
+    
+    .modal-content h2 {
+      margin-bottom: 15px;
+      color: #667eea;
+    }
+    
+    .modal-content label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 12px;
+    }
+    
+    .modal-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    
+    .modal-buttons button {
+      flex: 1;
+    }
+    
+    .tag {
+      display: inline-block;
+      background: rgba(102, 126, 234, 0.3);
+      color: #667eea;
+      padding: 3px 8px;
+      border-radius: 3px;
+      font-size: 10px;
+      margin-right: 5px;
+      margin-top: 3px;
+    }
+    
+    @media (max-width: 1200px) {
+      .container {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🚀 ProjectM - Manager Editor Export</h1>
+    <p>Gestionnaire de projets - Édition & Export - Zero Trust Native Logic</p>
+  </div>
+
+  <div class="container">
+    <!-- PANEL 1: PROJECT MANAGER -->
+    <div class="panel">
+      <div class="panel-header">
+        <span><span class="icon">📂</span> Gestionnaire Projets</span>
+        <span style="font-size: 10px;">v1.0</span>
+      </div>
+      <div class="panel-content">
+        <input type="text" id="projectName" placeholder="Nom du projet..." value="ProjectM">
+        <input type="text" id="projectDesc" placeholder="Description...">
+        
+        <div class="btn-group">
+          <button class="btn-success" onclick="createProject()">➕ Créer</button>
+          <button class="btn-info" onclick="loadProjects()">🔄 Charger</button>
+          <button class="btn-danger" onclick="deleteProject()">🗑️ Supprimer</button>
+        </div>
+
+        <div style="margin-top: 15px;">
+          <strong style="color: #667eea;">📋 Projets:</strong>
+          <div id="projectList"></div>
+        </div>
+
+        <div class="stats">
+          <div class="stat-row">
+            <span>Total Projets:</span>
+            <span class="stat-value" id="projectCount">0</span>
+          </div>
+          <div class="stat-row">
+            <span>Projets Actifs:</span>
+            <span class="stat-value" id="activeCount">0</span>
+          </div>
+          <div class="stat-row">
+            <span>Taille Totale:</span>
+            <span class="stat-value" id="totalSize">0 KB</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL 2: EDITOR -->
+    <div class="panel">
+      <div class="panel-header">
+        <span><span class="icon">✏️</span> Éditeur de Code</span>
+        <button onclick="clearEditor()" style="padding: 5px 10px; font-size: 10px;">Clear</button>
+      </div>
+      <div class="panel-content">
+        <input type="text" id="fileName" placeholder="Nom du fichier..." value="main.js">
+        <textarea id="codeEditor" placeholder="// Votre code ici...
+// Commencez à écrire..."></textarea>
+      </div>
+    </div>
+
+    <!-- PANEL 3: EXPORT MANAGER -->
+    <div class="panel">
+      <div class="panel-header">
+        <span><span class="icon">📤</span> Gestionnaire Export</span>
+        <span style="font-size: 10px;">Multi-Format</span>
+      </div>
+      <div class="panel-content">
+        <strong style="color: #667eea;">Format d'export:</strong>
+        <div class="btn-group">
+          <button class="btn-success" onclick="exportJSON()">JSON</button>
+          <button class="btn-success" onclick="exportHTML()">HTML</button>
+          <button class="btn-success" onclick="exportJS()">JavaScript</button>
+          <button class="btn-success" onclick="exportZIP()">ZIP</button>
+        </div>
+
+        <strong style="color: #667eea; margin-top: 15px;">Code Export:</strong>
+        <textarea id="exportPreview" placeholder="Aperçu de l'export..." readonly></textarea>
+
+        <div class="btn-group" style="margin-top: 10px;">
+          <button class="btn-info" onclick="copyToClipboard()">📋 Copier</button>
+          <button class="btn-success" onclick="downloadFile()">⬇️ Télécharger</button>
+        </div>
+
+        <div class="stats">
+          <div class="stat-row">
+            <span>Fichiers:</span>
+            <span class="stat-value" id="fileCount">0</span>
+          </div>
+          <div class="stat-row">
+            <span>Taille Export:</span>
+            <span class="stat-value" id="exportSize">0 KB</span>
+          </div>
+          <div class="stat-row">
+            <span>Format:</span>
+            <span class="stat-value" id="exportFormat">JSON</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="status-bar">
+    <div class="status-item">
+      <div class="status-indicator"></div>
+      <span>Status: <strong id="status">Ready</strong></span>
+    </div>
+    <div class="status-item">
+      Dernière action: <strong id="lastAction">Aucune</strong>
+    </div>
+    <div class="status-item">
+      Memory: <strong id="memory">0 MB</strong>
+    </div>
+  </div>
+
+  <!-- MODAL -->
+  <div class="modal" id="exportModal">
+    <div class="modal-content">
+      <h2>⚙️ Paramètres Export</h2>
+      <label>Nom du fichier:</label>
+      <input type="text" id="exportFileName" value="project">
+      <label>Format:</label>
+      <select id="exportFormatSelect" style="width: 100%; padding: 10px; margin-bottom: 10px;">
+        <option>JSON</option>
+        <option>HTML</option>
+        <option>JavaScript</option>
+        <option>ZIP</option>
+      </select>
+      <label>
+        <input type="checkbox" id="includeMetadata"> Inclure métadonnées
+      </label>
+      <label>
+        <input type="checkbox" id="minify"> Minifier
+      </label>
+      <div class="modal-buttons">
+        <button class="btn-success" onclick="confirmExport()">Exporter</button>
+        <button class="btn-danger" onclick="closeModal()">Annuler</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // STATE MANAGEMENT
+    const AppState = (() => {
+      let projects = JSON.parse(localStorage.getItem('projects')) || {};
+      let currentProject = localStorage.getItem('currentProject') || null;
+      
+      return {
+        projects,
+        currentProject,
+        
+        saveProjects: () => {
+          localStorage.setItem('projects', JSON.stringify(projects));
+        },
+        
+        setCurrentProject: (name) => {
+          currentProject = name;
+          localStorage.setItem('currentProject', name);
+        },
+        
+        getCurrentProject: () => currentProject,
+        
+        addProject: (name, desc) => {
+          projects[name] = {
+            name,
+            description: desc,
+            files: {},
+            created: new Date().toISOString(),
+            updated: new Date().toISOString()
+          };
+          this.saveProjects();
+          return projects[name];
+        },
+        
+        getProject: (name) => projects[name],
+        
+        deleteProject: (name) => {
+          delete projects[name];
+          this.saveProjects();
+        }
+      };
+    })();
+
+    // MANAGER FUNCTIONS
+    function createProject() {
+      const name = document.getElementById('projectName').value.trim();
+      const desc = document.getElementById('projectDesc').value.trim();
+      
+      if (!name) {
+        updateStatus('❌ Entrez un nom de projet');
+        return;
+      }
+      
+      if (AppState.projects[name]) {
+        updateStatus('⚠️ Projet déjà existant');
+        return;
+      }
+      
+      AppState.addProject(name, desc);
+      AppState.setCurrentProject(name);
+      updateStatus(`✅ Projet "${name}" créé`);
+      loadProjects();
+      document.getElementById('projectDesc').value = '';
+    }
+
+    function loadProjects() {
+      const container = document.getElementById('projectList');
+      container.innerHTML = '';
+      
+      const projects = AppState.projects;
+      Object.keys(projects).forEach(name => {
+        const project = projects[name];
+        const div = document.createElement('div');
+        div.className = `file-item ${name === AppState.currentProject ? 'active' : ''}`;
+        div.onclick = () => selectProject(name);
+        div.innerHTML = `
+          <div class="file-name">📦 ${name}</div>
+          <div class="file-size">${project.description}</div>
+          <div class="file-size">Fichiers: ${Object.keys(project.files).length}</div>
+          <div><span class="tag">Créé: ${new Date(project.created).toLocaleDateString('fr')}</span></div>
+        `;
+        container.appendChild(div);
+      });
+      
+      document.getElementById('projectCount').textContent = Object.keys(projects).length;
+      document.getElementById('activeCount').textContent = AppState.currentProject ? 1 : 0;
+    }
+
+    function selectProject(name) {
+      AppState.setCurrentProject(name);
+      loadProjects();
+      updateStatus(`📂 Projet "${name}" sélectionné`);
+    }
+
+    function deleteProject() {
+      const name = AppState.currentProject;
+      if (!name || !confirm(`Supprimer le projet "${name}" ?`)) return;
+      
+      AppState.deleteProject(name);
+      AppState.currentProject = null;
+      updateStatus(`🗑️ Projet "${name}" supprimé`);
+      loadProjects();
+    }
+
+    // EDITOR FUNCTIONS
+    function clearEditor() {
+      document.getElementById('codeEditor').value = '';
+      updateStatus('🗑️ Éditeur vidé');
+    }
+
+    // EXPORT FUNCTIONS
+    function exportJSON() {
+      const project = AppState.getProject(AppState.currentProject);
+      if (!project) {
+        updateStatus('⚠️ Sélectionnez un projet');
+        return;
+      }
+      
+      const exportData = {
+        metadata: {
+          timestamp: new Date().toISOString(),
+          version: '1.0.0',
+          format: 'JSON'
+        },
+        project: project
+      };
+      
+      const preview = JSON.stringify(exportData, null, 2);
+      document.getElementById('exportPreview').value = preview;
+      document.getElementById('exportSize').textContent = (preview.length / 1024).toFixed(2) + ' KB';
+      document.getElementById('exportFormat').textContent = 'JSON';
+      updateStatus('📤 Export JSON préparé');
+    }
+
+    function exportHTML() {
+      const project = AppState.getProject(AppState.currentProject);
+      if (!project) {
+        updateStatus('⚠️ Sélectionnez un projet');
+        return;
+      }
+      
+      const html = `<!DOCTYPE html>
+<html>
+<head>
+  <title>${project.name}</title>
+  <style>
+    body { font-family: monospace; background: #1e1e32; color: #e0e0e0; padding: 20px; }
+    .project { border: 1px solid #667eea; padding: 20px; border-radius: 8px; }
+    h1 { color: #667eea; }
+  </style>
+</head>
+<body>
+  <div class="project">
+    <h1>📦 ${project.name}</h1>
+    <p><strong>Description:</strong> ${project.description}</p>
+    <p><strong>Créé:</strong> ${project.created}</p>
+    <p><strong>Fichiers:</strong> ${Object.keys(project.files).length}</p>
+  </div>
+</body>
+</html>`;
+      
+      document.getElementById('exportPreview').value = html;
+      document.getElementById('exportSize').textContent = (html.length / 1024).toFixed(2) + ' KB';
+      document.getElementById('exportFormat').textContent = 'HTML';
+      updateStatus('📤 Export HTML préparé');
+    }
+
+    function exportJS() {
+      const code = document.getElementById('codeEditor').value;
+      const fileName = document.getElementById('fileName').value || 'script.js';
+      
+      const jsCode = `// File: ${fileName}
+// Generated: ${new Date().toISOString()}
+// ProjectM - Zero Trust Native Logic
+
+${code}
+`;
+      
+      document.getElementById('exportPreview').value = jsCode;
+      document.getElementById('exportSize').textContent = (jsCode.length / 1024).toFixed(2) + ' KB';
+      document.getElementById('exportFormat').textContent = 'JavaScript';
+      updateStatus('📤 Export JavaScript préparé');
+    }
+
+    function exportZIP() {
+      updateStatus('⏳ Préparation du ZIP...');
+      const project = AppState.getProject(AppState.currentProject);
+      if (!project) {
+        updateStatus('⚠️ Sélectionnez un projet');
+        return;
+      }
+      
+      const zipData = {
+        type: 'application/zip',
+        project: project.name,
+        files: Object.keys(project.files).length,
+        timestamp: new Date().toISOString()
+      };
+      
+      document.getElementById('exportPreview').value = JSON.stringify(zipData, null, 2);
+      document.getElementById('exportSize').textContent = '1.2 KB';
+      document.getElementById('exportFormat').textContent = 'ZIP';
+      updateStatus('📤 Export ZIP préparé');
+    }
+
+    function copyToClipboard() {
+      const text = document.getElementById('exportPreview').value;
+      if (!text) {
+        updateStatus('⚠️ Rien à copier');
+        return;
+      }
+      navigator.clipboard.writeText(text).then(() => {
+        updateStatus('✅ Copié dans le presse-papiers');
+      });
+    }
+
+    function downloadFile() {
+      const text = document.getElementById('exportPreview').value;
+      const format = document.getElementById('exportFormat').textContent;
+      const name = document.getElementById('fileName').value || 'export';
+      
+      if (!text) {
+        updateStatus('⚠️ Rien à télécharger');
+        return;
+      }
+      
+      const blob = new Blob([text], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${name}.${format.toLowerCase()}`;
+      a.click();
+      updateStatus(`⬇️ Fichier téléchargé: ${a.download}`);
+    }
+
+    // UTILITY FUNCTIONS
+    function updateStatus(msg) {
+      document.getElementById('status').textContent = msg.split(' ').slice(0, 5).join(' ');
+      document.getElementById('lastAction').textContent = new Date().toLocaleTimeString('fr');
+      
+      const used = (performance.memory?.usedJSHeapSize || 0) / 1048576;
+      document.getElementById('memory').textContent = used.toFixed(1) + ' MB';
+    }
+
+    function closeModal() {
+      document.getElementById('exportModal').classList.remove('active');
+    }
+
+    function confirmExport() {
+      updateStatus('✅ Export confirmé');
+      closeModal();
+    }
+
+    // INITIALIZATION
+    function init() {
+      loadProjects();
+      updateStatus('✅ Système prêt');
+      console.log('%c🚀 ProjectM Manager initialized', 'color: #667eea; font-size: 14px; font-weight: bold;');
+    }
+
+    window.addEventListener('load', init);
+  </script>
+</body>
+</html>
