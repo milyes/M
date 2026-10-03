@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Enterprise_BIN_HTML</title>
+  <style>
+    :root {
+      --bg: #07111d;
+      --bg2: #0d1727;
+      --panel: #101b2d;
+      --panel2: #16273d;
+      --line: #213657;
+      --primary: #7c9cff;
+      --primary2: #8b5cf6;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --text: #ebf1ff;
+      --muted: #9bb2d9;
+      --shadow: rgba(0, 0, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; }
+    body {
+      font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+      background: linear-gradient(135deg, #060d18 0%, #0d1727 32%, #091521 100%);
+      color: var(--text);
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(90deg, var(--primary), var(--primary2));
+      padding: 18px 24px;
+      box-shadow: 0 14px 30px var(--shadow);
+      position: relative;
+      z-index: 5;
+    }
+
+    .brand {
+      font-size: clamp(18px, 2vw, 32px);
+      font-weight: 900;
+      letter-spacing: 0.05em;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(0,0,0,0.12);
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.15);
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #73f7b0;
+      box-shadow: 0 0 12px rgba(115,247,176,0.9);
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: 285px 1.45fr 360px;
+      height: calc(100vh - 84px);
+      min-height: 0;
+    }
+
+    .panel {
+      background: rgba(16, 27, 45, 0.95);
+      border-right: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .panel:last-child {
+      border-right: none;
+      border-left: 1px solid var(--line);
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(124,156,255,0.08);
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+
+    .panel-body {
+      padding: 14px;
+      overflow: auto;
+      height: 100%;
+    }
+
+    .input, textarea, select, input[type="text"], input[type="file"] {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: rgba(7, 17, 29, 0.9);
+      color: var(--text);
+      border-radius: 9px;
+      padding: 10px 12px;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .input:focus, textarea:focus, select:focus, input[type="text"]:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(124,156,255,0.18);
+    }
+
+    .btn-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    button {
+      appearance: none;
+      border: none;
+      border-radius: 9px;
+      padding: 10px 12px;
+      color: white;
+      font-weight: 800;
+      font-size: 12px;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--primary), var(--primary2));
+      box-shadow: 0 8px 18px rgba(124,156,255,0.16);
+      transition: transform 0.15s ease, filter 0.2s ease;
+    }
+
+    button:hover { transform: translateY(-1px); filter: brightness(1.08); }
+    button.secondary { background: linear-gradient(135deg, #334155, #475569); }
+    button.success { background: linear-gradient(135deg, #22c55e, #16a34a); }
+    button.warning { background: linear-gradient(135deg, #f59e0b, #d97706); }
+    button.danger { background: linear-gradient(135deg, #ef4444, #b91c1c); }
+    button.muted { background: linear-gradient(135deg, #1f2937, #374151); }
+
+    .tag {
+      display: inline-block;
+      padding: 4px 8px;
+      background: rgba(124,156,255,0.15);
+      border: 1px solid rgba(124,156,255,0.24);
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 800;
+      color: #dfe8ff;
+    }
+
+    .project-list {
+      margin-top: 14px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .project-item {
+      background: rgba(17, 24, 39, 0.9);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .project-item:hover {
+      border-color: var(--primary);
+      transform: translateX(1px);
+    }
+
+    .project-item.active {
+      background: rgba(124,156,255,0.12);
+      border-color: var(--primary);
+      box-shadow: inset 0 0 0 1px rgba(124,156,255,0.18);
+    }
+
+    .project-name {
+      display: block;
+      font-weight: 800;
+      margin-bottom: 4px;
+      color: var(--text);
+    }
+
+    .project-meta {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .stats {
+      margin-top: 14px;
+      padding: 12px;
+      background: rgba(8, 14, 23, 0.8);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .stat-row strong { color: var(--text); }
+
+    .editor-shell {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      background: rgba(10, 18, 30, 0.9);
+    }
+
+    .editor-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(12, 20, 33, 0.95);
+      flex-wrap: wrap;
+    }
+
+    .file-pill {
+      background: rgba(124,156,255,0.1);
+      border: 1px solid rgba(124,156,255,0.3);
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .editor-area {
+      display: grid;
+      grid-template-rows: minmax(0,1fr) 180px;
+      flex: 1;
+      min-height: 0;
+    }
+
+    textarea.code {
+      width: 100%;
+      height: 100%;
+      resize: none;
+      border: none;
+      border-radius: 0;
+      background: #0b1220;
+      color: #dfe9ff;
+      font-size: 13px;
+      padding: 18px 18px 0 18px;
+      font-family: Consolas, "Courier New", monospace;
+      line-height: 1.62;
+    }
+
+    .preview-panel {
+      border-top: 1px solid var(--line);
+      background: rgba(13, 20, 34, 0.97);
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .preview-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    iframe {
+      width: 100%;
+      border: none;
+      height: 100%;
+      min-height: 140px;
+      background: white;
+    }
+
+    .tree {
+      display: grid;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .tree-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: rgba(15, 23, 36, 0.8);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px 10px;
+      cursor: pointer;
+      transition: border-color 0.2s ease, background 0.2s ease;
+      font-size: 13px;
+    }
+
+    .tree-item:hover {
+      border-color: var(--primary);
+      background: rgba(124,156,255,0.06);
+    }
+
+    .tree-item.active {
+      border-color: var(--success);
+      background: rgba(34,197,94,0.08);
+    }
+
+    .tree-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      flex: 1;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .tree-name {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .ai-box {
+      margin-top: 16px;
+      background: rgba(9, 17, 28, 0.92);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px;
+    }
+
+    .ai-box textarea {
+      min-height: 115px;
+      resize: vertical;
+    }
+
+    .chip-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .chip {
+      background: rgba(124,156,255,0.12);
+      border: 1px solid rgba(124,156,255,0.2);
+      border-radius: 999px;
+      color: #dfe8ff;
+      font-size: 11px;
+      padding: 6px 8px;
+      cursor: pointer;
+    }
+
+    .warning-box {
+      margin-top: 16px;
+      background: rgba(245,158,11,0.1);
+      border: 1px solid rgba(245,158,11,0.35);
+      border-radius: 8px;
+      color: #f8d98b;
+      font-size: 12px;
+      line-height: 1.55;
+      padding: 10px 12px;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(1, 4, 10, 0.72);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 18px;
+    }
+
+    .modal.show { display: flex; }
+
+    .modal-card {
+      width: min(520px, 100%);
+      background: #102033;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      box-shadow: 0 28px 60px rgba(0,0,0,0.4);
+      overflow: hidden;
+    }
+
+    .modal-header {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(124,156,255,0.075);
+      font-weight: 800;
+    }
+
+    .modal-body {
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    @media (max-width: 1180px) {
+      .workspace {
+        grid-template-columns: 270px 1fr;
+      }
+      .panel:last-child {
+        grid-column: 1 / -1;
+        border-left: none;
+        border-top: 1px solid var(--line);
+      }
+    }
+
+    @media (max-width: 760px) {
+      body { overflow: auto; }
+      .workspace { grid-template-columns: 1fr; }
+      .btn-row { grid-template-columns: 1fr; }
+      .editor-area { grid-template-rows: 1fr 200px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">🚀 Enterprise_BIN_HTML</div>
+    <div class="status"><span class="dot"></span><span id="statusLabel">Système prêt</span></div>
+  </header>
+
+  <main class="workspace">
+    <aside class="panel">
+      <div class="panel-header">
+        <span>📁 Projets</span>
+        <span class="tag" id="projectCountBadge">0</span>
+      </div>
+      <div class="panel-body">
+        <input id="projectNameInput" class="input" type="text" value="ProjectX" placeholder="Nom du projet" />
+        <div class="btn-row">
+          <button class="success" id="createProjectBtn">Créer</button>
+          <button class="secondary" id="loadProjectsBtn">Charger</button>
+          <button class="warning" id="newFileBtn">Fichier</button>
+          <button class="danger" id="deleteProjectBtn">Supprimer</button>
+        </div>
+
+        <div id="projectList" class="project-list"></div>
+
+        <div class="stats">
+          <div class="stat-row"><span>Actif</span><strong id="activeProjectLabel">Aucun</strong></div>
+          <div class="stat-row"><span>Fichiers</span><strong id="fileCountLabel">0</strong></div>
+          <div class="stat-row"><span>Taille</span><strong id="projectSizeLabel">0 KB</strong></div>
+        </div>
+      </div>
+    </aside>
+
+    <section class="panel editor-shell">
+      <div class="editor-toolbar">
+        <div class="file-pill" id="activeFileLabel">main.js</div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="secondary" id="saveFileBtn">💾 Enregistrer</button>
+          <button class="muted" id="newFolderBtn">📁 Dossier</button>
+          <button class="warning" id="previewBtn">👁️ Aperçu</button>
+        </div>
+      </div>
+
+      <div class="editor-area">
+        <textarea id="editor" spellcheck="false" class="code" placeholder="Écrivez le code ici..."></textarea>
+        <div class="preview-panel">
+          <div class="preview-top">
+            <span>Prévisualisation</span>
+            <span id="previewTypeLabel">HTML</span>
+          </div>
+          <iframe id="previewFrame" title="preview"></iframe>
+        </div>
+      </div>
+    </section>
+
+    <aside class="panel">
+      <div class="panel-header">
+        <span>🧠 Structure</span>
+        <span class="tag">Tree</span>
+      </div>
+      <div class="panel-body">
+        <div id="treeView" class="tree"></div>
+
+        <div class="ai-box">
+          <label style="display:block; margin-bottom:8px; color:var(--muted); font-size:12px; font-weight:700;">Prompt d'enterprise</label>
+          <textarea id="promptInput" placeholder="Ex: Crée un panel d'entreprise avec dashboard, modules, sécurité Zero Trust et design premium..."> </textarea>
+          <div class="btn-row" style="margin-top:10px;">
+            <button class="success" id="generateBtn">🪄 Générer</button>
+            <button class="secondary" id="exportJsonBtn">JSON</button>
+            <button class="secondary" id="exportHtmlBtn">HTML</button>
+            <button class="secondary" id="exportZipBtn">ZIP</button>
+          </div>
+
+          <div class="chip-list">
+            <span class="chip" data-prompt="crée un dashboard d'entreprise avec sidebar, KPI, activité récente et design premium">Dashboard</span>
+            <span class="chip" data-prompt="crée une application de management de projets avec modules de planning, équipe et sécurité native">PMO</span>
+            <span class="chip" data-prompt="crée une interface de sécurité zero trust avec états, logs et permissions avancées">Security</span>
+            <span class="chip" data-prompt="crée une plateforme SaaS enterprise avec hero, pricing, features et dark mode premium">SaaS</span>
+          </div>
+        </div>
+
+        <div class="warning-box">
+          Modèle entreprise autonome. Génération locale, sans dépendances, architecture orientée production et logique native avancée.
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <div id="modal" class="modal" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-header">Nouvel élément</div>
+      <div class="modal-body">
+        <label for="modalInput" style="font-size:12px; color:var(--muted);">Nom du fichier ou dossier</label>
+        <input id="modalInput" class="input" type="text" placeholder="Ex: src/app.js ou src/modules" />
+        <div class="modal-actions">
+          <button class="secondary" id="cancelModalBtn" type="button">Annuler</button>
+          <button class="success" id="confirmModalBtn" type="button">Valider</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'enterprise-bin-html-v1';
+    const state = {
+      projects: {},
+      currentProject: null,
+      currentFile: null,
+      modalType: null
+    };
+
+    const els = {
+      statusLabel: document.getElementById('statusLabel'),
+      projectNameInput: document.getElementById('projectNameInput'),
+      projectCountBadge: document.getElementById('projectCountBadge'),
+      projectList: document.getElementById('projectList'),
+      activeProjectLabel: document.getElementById('activeProjectLabel'),
+      fileCountLabel: document.getElementById('fileCountLabel'),
+      projectSizeLabel: document.getElementById('projectSizeLabel'),
+      activeFileLabel: document.getElementById('activeFileLabel'),
+      editor: document.getElementById('editor'),
+      treeView: document.getElementById('treeView'),
+      previewFrame: document.getElementById('previewFrame'),
+      previewTypeLabel: document.getElementById('previewTypeLabel'),
+      modal: document.getElementById('modal'),
+      modalInput: document.getElementById('modalInput')
+    };
+
+    function setStatus(msg) {
+      els.statusLabel.textContent = msg;
+    }
+
+    function saveStorage() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.projects));
+    }
+
+    function makeProject(name, description = '') {
+      return {
+        name,
+        description,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        files: {}
+      };
+    }
+
+    function getProject(name) {
+      return state.projects[name] || null;
+    }
+
+    function getFirstFile(project) {
+      if (!project) return null;
+      const files = Object.keys(project.files).filter((p) => !p.endsWith('/'));
+      return files[0] || null;
+    }
+
+    function normalizePath(value) {
+      return value.replace(/\\/g, '/').replace(/^\/+|\/+$/g, '').trim();
+    }
+
+    function projectSizeKB(project) {
+      const totalBytes = Object.values(project.files).reduce((sum, entry) => {
+        const content = entry && typeof entry === 'object' ? (entry.content || '') : '';
+        return sum + new TextEncoder().encode(content).length;
+      }, 0);
+      return (totalBytes / 1024).toFixed(1) + ' KB';
+    }
+
+    function createDefaultProject() {
+      const project = makeProject('ProjectX', 'Projet Entreprise avancé');
+      project.files['index.html'] = {
+        type: 'file',
+        content: `<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>ProjectX</title>
+  <style>
+    body { margin:0; font-family:Arial; background:#07111d; color:#edf2ff; }
+    .wrap { max-width:900px; margin:40px auto; background:#0f172a; border:1px solid #334155; border-radius:16px; padding:30px; }
+    h1 { color:#7c9cff; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>ProjectX</h1>
+    <p>Projet Enterprise prêt à évoluer.</p>
+  </div>
+</body>
+</html>`
+      };
+      project.files['src/main.js'] = {
+        type: 'file',
+        content: `console.log('ProjectX ready');\nconst app = { name: 'ProjectX', mode: 'enterprise' };\nconsole.log(app);`
+      };
+      project.files['README.md'] = {
+        type: 'file',
+        content: '# ProjectX\n\nProjet d’entreprise avancé.'
+      };
+      state.projects['ProjectX'] = project;
+    }
+
+    function loadStorage() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        state.projects = raw ? JSON.parse(raw) : {};
+      } catch (e) {
+        state.projects = {};
+      }
+      if (!Object.keys(state.projects).length) {
+        createDefaultProject();
+      }
+      state.currentProject = Object.keys(state.projects)[0];
+      state.currentFile = getFirstFile(state.projects[state.currentProject]);
+      saveStorage();
+    }
+
+    function renderProjectList() {
+      const keys = Object.keys(state.projects);
+      els.projectCountBadge.textContent = keys.length;
+      els.projectList.innerHTML = '';
+
+      keys.forEach((name) => {
+        const project = state.projects[name];
+        const item = document.createElement('div');
+        item.className = 'project-item' + (name === state.currentProject ? ' active' : '');
+        item.innerHTML = `
+          <span class="project-name">${project.name}</span>
+          <div class="project-meta">${project.description || 'Aucune description'}<br>${Object.keys(project.files).length} fichiers<br><span class="tag">${projectSizeKB(project)}</span></div>
+        `;
+        item.addEventListener('click', () => {
+          state.currentProject = name;
+          state.currentFile = getFirstFile(project);
+          renderAll();
+          setStatus(`Projet sélectionné: ${name}`);
+        });
+        els.projectList.appendChild(item);
+      });
+
+      const active = getProject(state.currentProject);
+      if (active) {
+        els.activeProjectLabel.textContent = active.name;
+        els.fileCountLabel.textContent = Object.keys(active.files).length;
+        els.projectSizeLabel.textContent = projectSizeKB(active);
+      } else {
+        els.activeProjectLabel.textContent = 'Aucun';
+        els.fileCountLabel.textContent = '0';
+        els.projectSizeLabel.textContent = '0 KB';
+      }
+    }
+
+    function renderTree() {
+      const project = getProject(state.currentProject);
+      els.treeView.innerHTML = '';
+      if (!project) return;
+
+      const root = {};
+      Object.keys(project.files).forEach((path) => {
+        const segments = path.split('/');
+        let current = root;
+        segments.forEach((seg, idx) => {
+          const isLast = idx === segments.length - 1;
+          if (!current[seg]) {
+            current[seg] = { type: isLast ? 'file' : 'folder', path: segments.slice(0, idx + 1).join('/'), children: {} };
+          }
+          if (!isLast) current = current[seg].children;
+        });
+      });
+
+      const renderNode = (node, name, depth = 0) => {
+        const wrapper = document.createElement('div');
+        const isActive = node.path === state.currentFile;
+        wrapper.className = 'tree-item' + (isActive ? ' active' : '');
+        wrapper.style.marginLeft = depth * 12 + 'px';
+        wrapper.innerHTML = `
+          <div class="tree-label">
+            <span>${node.type === 'folder' ? '📁' : '📄'}</span>
+            <span class="tree-name">${name}</span>
+          </div>
+          <span>${node.type === 'folder' ? 'D' : 'F'}</span>
+        `;
+        wrapper.addEventListener('click', () => {
+          if (node.type === 'file') {
+            state.currentFile = node.path;
+            renderAll();
+            setStatus(`Fichier ouvert: ${node.path}`);
+          }
+        });
+        return wrapper;
+      };
+
+      const entries = Object.entries(root).sort((a, b) => a[0].localeCompare(b[0]));
+      entries.forEach(([key, value]) => {
+        els.treeView.appendChild(renderNode(value, key, 0));
+      });
+    }
+
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function updatePreview() {
+      const project = getProject(state.currentProject);
+      const file = project && state.currentFile ? project.files[state.currentFile] : null;
+      const content = file && file.content ? file.content : '';
+      const filename = state.currentFile || 'preview';
+
+      if (filename.endsWith('.html') || filename.endsWith('.htm')) {
+        els.previewTypeLabel.textContent = 'HTML';
+        els.previewFrame.srcdoc = content;
+      } else if (filename.endsWith('.css')) {
+        els.previewTypeLabel.textContent = 'CSS';
+        els.previewFrame.srcdoc = `<style>${content}</style><div style="padding:20px;">CSS preview</div>`;
+      } else {
+        els.previewTypeLabel.textContent = 'TEXT';
+        els.previewFrame.srcdoc = `<pre style="padding:20px;white-space:pre-wrap;font-family:Consolas,monospace;">${escapeHtml(content || 'Aucun contenu')}</pre>`;
+      }
+    }
+
+    function renderEditor() {
+      const project = getProject(state.currentProject);
+      if (!project || !state.currentFile) {
+        els.editor.value = '';
+        els.activeFileLabel.textContent = 'aucun fichier';
+        return;
+      }
+      const file = project.files[state.currentFile];
+      els.editor.value = file && file.content ? file.content : '';
+      els.activeFileLabel.textContent = state.currentFile;
+      updatePreview();
+    }
+
+    function saveCurrentFile() {
+      const project = getProject(state.currentProject);
+      if (!project || !state.currentFile) {
+        setStatus('Aucun fichier actif');
+        return;
+      }
+      project.files[state.currentFile] = {
+        type: 'file',
+        content: els.editor.value,
+        updatedAt: new Date().toISOString()
+      };
+      project.updatedAt = new Date().toISOString();
+      saveStorage();
+      renderProjectList();
+      setStatus(`Sauvegardé: ${state.currentFile}`);
+    }
+
+    function createProject() {
+      const name = (els.projectNameInput.value || '').trim();
+      if (!name) {
+        setStatus('Indiquez un nom de projet');
+        return;
+      }
+      if (state.projects[name]) {
+        setStatus('Projet existant');
+        return;
+      }
+      const project = makeProject(name, 'Projet enterprise');
+      project.files['main.js'] = { type: 'file', content: "console.log('Enterprise project created');\n" };
+      state.projects[name] = project;
+      state.currentProject = name;
+      state.currentFile = 'main.js';
+      saveStorage();
+      renderAll();
+      setStatus(`Projet créé: ${name}`);
+    }
+
+    function deleteProject() {
+      const project = getProject(state.currentProject);
+      if (!project) {
+        setStatus('Aucun projet actif');
+        return;
+      }
+      if (!confirm(`Supprimer le projet "${project.name}" ?`)) return;
+      delete state.projects[project.name];
+      const keys = Object.keys(state.projects);
+      state.currentProject = keys[0] || null;
+      state.currentFile = state.currentProject ? getFirstFile(state.projects[state.currentProject]) : null;
+      saveStorage();
+      renderAll();
+      setStatus(`Projet supprimé: ${project.name}`);
+    }
+
+    function openModal(type) {
+      state.modalType = type;
+      els.modal.classList.add('show');
+      els.modalInput.value = '';
+      els.modalInput.placeholder = type === 'file' ? 'Ex: src/app.js' : 'Ex: src/modules';
+    }
+
+    function closeModal() {
+      state.modalType = null;
+      els.modal.classList.remove('show');
+      els.modalInput.value = '';
+    }
+
+    function confirmModal() {
+      const project = getProject(state.currentProject);
+      if (!project) {
+        setStatus('Sélectionnez un projet');
+        closeModal();
+        return;
+      }
+      const value = normalizePath(els.modalInput.value || '');
+      if (!value) {
+        setStatus('Nom invalide');
+        return;
+      }
+
+      if (state.modalType === 'file') {
+        if (project.files[value]) {
+          setStatus('Fichier déjà existant');
+          return;
+        }
+        project.files[value] = { type: 'file', content: '' };
+        state.currentFile = value;
+      }
+
+      if (state.modalType === 'folder') {
+        const folder = value.endsWith('/') ? value : `${value}/`;
+        const clean = folder.replace(/\/$/, '');
+        project.files[clean] = { type: 'folder', content: '' };
+      }
+
+      project.updatedAt = new Date().toISOString();
+      saveStorage();
+      renderAll();
+      closeModal();
+      setStatus(`${state.modalType === 'file' ? 'Fichier' : 'Dossier'} créé`);
+    }
+
+    function generateFromPrompt() {
+      const prompt = (document.getElementById('promptInput').value || '').trim();
+      const project = getProject(state.currentProject);
+      if (!project) {
+        setStatus('Créez ou sélectionnez un projet');
+        return;
+      }
+      if (!prompt) {
+        setStatus('Saisissez un prompt');
+        return;
+      }
+
+      const lower = prompt.toLowerCase();
+      const files = {};
+
+      if (lower.includes('dashboard') || lower.includes('kpi') || lower.includes('analytics')) {
+        files['index.html'] = `<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Enterprise Dashboard</title>
+  <style>
+    body { margin:0; font-family:Arial; background:#08111e; color:#edf2ff; }
+    .app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+    .sidebar{background:#111827;padding:24px;border-right:1px solid #334155}
+    .nav{display:grid;gap:10px}
+    .nav div{padding:10px 12px;border-radius:10px;background:rgba(124,156,255,0.08);border:1px solid #334155}
+    .main{padding:26px}
+    .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+    .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .card{background:rgba(17,24,39,0.9);border:1px solid #334155;border-radius:16px;padding:18px}
+    .big{font-size:32px;font-weight:700}.muted{color:#94a3b8}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <h2>Enterprise</h2>
+      <div class="nav">
+        <div>Overview</div>
+        <div>Projects</div>
+        <div>Security</div>
+        <div>Reports</div>
+      </div>
+    </aside>
+    <main class="main">
+      <div class="top"><h2>Dashboard</h2><span style="padding:6px 10px;background:#1d4ed8;border-radius:999px;">Live</span></div>
+      <div class="kpis">
+        <div class="card"><div class="muted">Revenue</div><div class="big">$128K</div></div>
+        <div class="card"><div class="muted">Users</div><div class="big">42K</div></div>
+        <div class="card"><div class="muted">Retention</div><div class="big">91%</div></div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>`;
+        files['src/dashboard.js'] = `const metrics = { revenue: '$128K', users: '42K', retention: '91%' };\nconsole.log(metrics);`;
+      }
+
+      if (lower.includes('security') || lower.includes('zero trust') || lower.includes('sécurité')) {
+        files['index.html'] = `<!doctype html><html><head><meta charset="UTF-8"><title>Zero Trust</title><style>body{margin:0;font-family:Arial;background:#050f1d;color:#edf2ff;padding:30px}.wrap{max-width:900px;margin:auto}.card{background:#0b1220;border:1px solid #1d4ed8;border-radius:14px;padding:20px;margin-top:18px}.status{color:#70f7a7;font-weight:700}.chip{display:inline-block;padding:5px 10px;background:#1d4ed8;border-radius:999px;font-size:12px;margin-right:8px}</style></head><body><div class="wrap"><h1>Zero Trust Security</h1><div class="card"><div class="status">✅ Vérification active</div><p>Authentification continue, contrôle strict des accès, validation permanente des sessions.</p><div><span class="chip">Policy</span><span class="chip">Verify</span><span class="chip">Access</span></div></div></div></body></html>`;
+        files['src/security.js'] = `const policy = { mode: 'zero-trust', verified: true, native: true };\nconsole.log(policy);`;
+      }
+
+      if (lower.includes('saas') || lower.includes('startup') || lower.includes('product')) {
+        files['index.html'] = `<!doctype html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>LaunchFlow</title><style>body{margin:0;font-family:Arial;background:#0b1020;color:#edf2ff} .wrap{max-width:1200px;margin:auto;padding:30px 20px 80px}.nav{display:flex;justify-content:space-between;align-items:center}.logo{font-size:24px;font-weight:800;color:#7c9cff}.cta{display:inline-block;background:linear-gradient(135deg,#7c9cff,#8b5cf6);padding:12px 18px;border-radius:999px;text-decoration:none;color:white;font-weight:700}.hero{display:grid;grid-template-columns:1.2fr 1fr;gap:30px;padding:30px 0}.hero h1{font-size:clamp(2.5rem,4vw,4rem);margin-bottom:16px}.card{background:rgba(17,24,39,0.9);border:1px solid #334155;border-radius:16px;padding:22px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:30px}.plan{background:rgba(17,24,39,0.9);border:1px solid #334155;border-radius:16px;padding:20px}.button{display:inline-block;margin-top:12px;background:#22c55e;color:white;padding:10px 16px;border-radius:10px;font-weight:700;text-decoration:none}</style></head><body><div class="wrap"><nav class="nav"><div class="logo">LaunchFlow</div><a class="cta" href="#">Essai gratuit</a></nav><section class="hero"><div><h1>Faites passer votre produit au niveau supérieur.</h1><p>Plateforme SaaS premium, orchestration intelligente et expérience utilisateur fluide.</p><a class="cta" href="#">Démarrer</a></div><div class="card"><h3>Performance</h3><p>• 32K utilisateurs actifs<br>• 18.4% de conversion<br>• 99.9% de disponibilité</p></div></section><div class="grid"><div class="card"><h3>Rapidité</h3><p>Déploiement intelligent.</p></div><div class="card"><h3>Analyse</h3><p>Insights précis.</p></div><div class="card"><h3>Scaling</h3><p>Évolue avec votre business.</p></div></div></div></body></html>`;
+        files['src/app.js'] = `console.log('SaaS product ready');\nconst metrics = { users: 32000, conversion: '18.4%' };\nconsole.log(metrics);`;
+      }
+
+      if (!Object.keys(files).length) {
+        files['index.html'] = `<!doctype html><html><body><h1>Enterprise Project</h1><p>${escapeHtml(prompt)}</p></body></html>`;
+        files['src/main.js'] = `console.log(${JSON.stringify(prompt)});`;
+      }
+
+      Object.entries(files).forEach(([path, content]) => {
+        project.files[path] = { type: 'file', content };
+      });
+      state.currentFile = Object.keys(project.files)[0] || null;
+      project.updatedAt = new Date().toISOString();
+      saveStorage();
+      renderAll();
+      setStatus('Projet généré');
+    }
+
+    function exportJson() {
+      const project = getProject(state.currentProject);
+      if (!project) {
+        setStatus('Aucun projet actif');
+        return;
+      }
+      downloadBlob(new Blob([JSON.stringify(project, null, 2)], { type: 'application/json' }), `${project.name}.json`);
+      setStatus(`Export JSON: ${project.name}.json`);
+    }
+
+    function exportHtml() {
+      const project = getProject(state.currentProject);
+      if (!project) {
+        setStatus('Aucun projet actif');
+        return;
+      }
+      const html = project.files['index.html']?.content || `<!doctype html><html><body><h1>${project.name}</h1></body></html>`;
+      downloadBlob(new Blob([html], { type: 'text/html' }), `${project.name}.html`);
+      setStatus(`Export HTML: ${project.name}.html`);
+    }
+
+    function exportZip() {
+      const project = getProject(state.currentProject);
+      if (!project) {
+        setStatus('Aucun projet actif');
+        return;
+      }
+      const files = {};
+      Object.entries(project.files).forEach(([path, entry]) => {
+        if (entry && entry.type === 'file') files[path] = String(entry.content || '');
+      });
+      const zipBlob = buildMinimalZip(files);
+      downloadBlob(new Blob([zipBlob], { type: 'application/zip' }), `${project.name}.zip`);
+      setStatus(`Export ZIP: ${project.name}.zip`);
+    }
+
+    function buildMinimalZip(files) {
+      const encoder = new TextEncoder();
+      const localParts = [];
+      const centralParts = [];
+      const entries = [];
+
+      const crc32 = (buffer) => {
+        let crc = 0xffffffff;
+        for (let i = 0; i < buffer.length; i++) {
+          crc ^= buffer[i];
+          for (let j = 0; j < 8; j++) {
+            const odd = (crc & 1) === 1;
+            crc = (crc >>> 1) ^ (odd ? 0xedb88320 : 0);
+          }
+        }
+        return (crc ^ 0xffffffff) >>> 0;
+      };
+
+      const writeU16 = (arr, value) => {
+        arr.push(value & 0xff, (value >>> 8) & 0xff);
+      };
+
+      const writeU32 = (arr, value) => {
+        arr.push(value & 0xff, (value >>> 8) & 0xff, (value >>> 16) & 0xff, (value >>> 24) & 0xff);
+      };
+
+      Object.entries(files).forEach(([path, content]) => {
+        const data = encoder.encode(content || '');
+        const name = encoder.encode(path);
+        const crc = crc32(data);
+
+        const localHeader = [0x50,0x4b,0x03,0x04];
+        writeU16(localHeader, 20);
+        writeU16(localHeader, 0);
+        writeU16(localHeader, 0);
+        writeU16(localHeader, 0);
+        writeU16(localHeader, 0);
+        writeU32(localHeader, crc);
+        writeU32(localHeader, data.length);
+        writeU32(localHeader, data.length);
+        writeU16(localHeader, name.length);
+        writeU16(localHeader, 0);
+        localHeader.push(...name, ...data);
+
+        const centralHeader = [0x50,0x4b,0x01,0x02];
+        writeU16(centralHeader, 20);
+        writeU16(centralHeader, 20);
+        writeU16(centralHeader, 0);
+        writeU16(centralHeader, 0);
+        writeU16(centralHeader, 0);
+        writeU16(centralHeader, 0);
+        writeU32(centralHeader, crc);
+        writeU32(centralHeader, data.length);
+        writeU32(centralHeader, data.length);
+        writeU16(centralHeader, name.length);
+        writeU16(centralHeader, 0);
+        writeU16(centralHeader, 0);
+        writeU16(centralHeader, 0);
+        writeU16(centralHeader, 0);
+        writeU16(centralHeader, 0);
+        writeU32(centralHeader, 0);
+        writeU32(centralHeader, 0);
+        writeU32(centralHeader, 0);
+        centralHeader.push(...name);
+
+        entries.push({ localHeader, centralHeader });
+      });
+
+      entries.forEach((entry) => localParts.push(...entry.localHeader));
+      const centralOffset = localParts.length;
+      entries.forEach((entry) => centralParts.push(...entry.centralHeader));
+
+      const end = [0x50,0x4b,0x05,0x06];
+      writeU16(end, 0);
+      writeU16(end, 0);
+      writeU16(end, entries.length);
+      writeU16(end, entries.length);
+      writeU32(end, centralParts.length);
+      writeU32(end, centralOffset);
+      writeU16(end, 0);
+
+      const total = new Uint8Array(localParts.length + centralParts.length + end.length);
+      let cursor = 0;
+      const flush = (arr) => {
+        total.set(arr, cursor);
+        cursor += arr.length;
+      };
+      localParts.forEach((v) => total[cursor++] = v);
+      centralParts.forEach((v) => total[cursor++] = v);
+      end.forEach((v) => total[cursor++] = v);
+      return total;
+    }
+
+    function downloadBlob(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function renderAll() {
+      renderProjectList();
+      renderTree();
+      renderEditor();
+    }
+
+    document.getElementById('createProjectBtn').addEventListener('click', createProject);
+    document.getElementById('deleteProjectBtn').addEventListener('click', deleteProject);
+    document.getElementById('newFileBtn').addEventListener('click', () => openModal('file'));
+    document.getElementById('newFolderBtn').addEventListener('click', () => openModal('folder'));
+    document.getElementById('saveFileBtn').addEventListener('click', saveCurrentFile);
+    document.getElementById('previewBtn').addEventListener('click', updatePreview);
+    document.getElementById('generateBtn').addEventListener('click', generateFromPrompt);
+    document.getElementById('exportJsonBtn').addEventListener('click', exportJson);
+    document.getElementById('exportHtmlBtn').addEventListener('click', exportHtml);
+    document.getElementById('exportZipBtn').addEventListener('click', exportZip);
+    document.getElementById('loadProjectsBtn').addEventListener('click', () => renderAll());
+    document.getElementById('cancelModalBtn').addEventListener('click', closeModal);
+    document.getElementById('confirmModalBtn').addEventListener('click', confirmModal);
+    document.getElementById('editor').addEventListener('input', () => {
+      const project = getProject(state.currentProject);
+      if (!project || !state.currentFile) return;
+      project.files[state.currentFile].content = els.editor.value;
+      project.updatedAt = new Date().toISOString();
+      saveStorage();
+      renderProjectList();
+    });
+
+    document.querySelectorAll('.chip').forEach((chip) => {
+      chip.addEventListener('click', () => {
+        document.getElementById('promptInput').value = chip.dataset.prompt || '';
+      });
+    });
+
+    els.modalInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') confirmModal();
+      if (event.key === 'Escape') closeModal();
+    });
+
+    loadStorage();
+    renderAll();
+    setStatus('Système prêt');
+  </script>
+</body>
+</html>
